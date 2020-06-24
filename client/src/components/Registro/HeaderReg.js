@@ -1,0 +1,210 @@
+import React, { useContext , useEffect } from "react";
+import {
+  Grid,
+  Paper,
+  Button,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableContainer,
+  TableRow
+} from "@material-ui/core";
+import { GlobalContex } from '../../context/GlobalState'
+import {
+    ArrowBackIosRounded,
+    Delete
+} from '@material-ui/icons'
+import moment from 'moment'
+import { getRegProd, getRegParada } from '../../context/Api' 
+
+const useStyles = makeStyles(theme => ({
+    PaperSite: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    padding: "2rem",
+    margin: "2rem",
+    height: "16rem",
+    [theme.breakpoints.down('xs')]: {
+        overflow: "scroll"
+    },
+    [theme.breakpoints.down('sm')]: {
+        overflow: "scroll"
+    },
+    [theme.breakpoints.up('md')]: {
+        overflow: "hiden"
+    },
+    [theme.breakpoints.up('lg')]: {
+        overflow: "hiden"
+    },
+    [theme.breakpoints.up('xl')]: {
+        overflow: "hiden"
+    }
+    
+  },
+  GridContainer: {
+    
+  },
+  GridSections: {
+      padding: "2rem",
+      margin: "2rem"
+  },
+  GridSideTable: {
+  },
+  dividerStyle: {
+    margin: '.3rem'
+  },
+
+  ButtonSection: {
+    bottom: '0',
+    left: '39rem'
+  },
+  btnB: {
+    background: "red",
+    color: "white",
+    margin: "0 .5em",
+    marginBottom: "-5rm",
+    '&:hover': {
+        color: 'black', 
+        background: " #ffcccb"
+}
+  }
+
+}));
+
+const HeaderReg = ({ header }) => {
+    const classes = useStyles();
+    const aceroContext = useContext(GlobalContex)
+    const { integrantesGrp, clearHeaderRegActive, loadRegProdData, loadRegPadadData  } = aceroContext
+
+    let listaGrp = integrantesGrp.map(grp => {
+        return {
+            nombre: grp.Nombres,
+            grupo: grp.grupo
+        }
+    }).filter(g => {
+        return g.grupo === header.Grupo
+    })
+    listaGrp = [... new Set(listaGrp)]
+
+    useEffect(() => {
+        console.log(header.id)
+        getRegProd(header.id, (err, data) => {
+            loadRegProdData(data)
+        })
+        getRegParada(header.id, (err, data) => {
+            loadRegPadadData(data)
+        })
+    },[])
+
+    const handlerBack = (e) => {
+        e.preventDefault()
+        clearHeaderRegActive()
+    }
+
+  return (
+    <>
+      <Paper elevation={4} className={classes.PaperSite}>
+        <Grid
+          spacing={3}
+          container
+          justify="flex-start"
+          alignContent="space-between"
+          wrap="wrap"
+          direction="row"
+        >
+          <Grid item>
+            <div><Button onClick={handlerBack}><ArrowBackIosRounded/></Button></div>
+            <div><b>Fecha:</b> {moment(header.Fecha).format('L')}</div>
+            <div><b>Turno:</b> {header.Turno}</div>
+            <div><b>Grupo:</b> {header.Grupo}</div>
+            <div><b>Puesto de Trabajo: </b> {header.Puesto}</div>
+            {
+                listaGrp.map(l => {
+                    return <div key={l.nombre}><b>Operador: </b>{l.nombre}</div>
+                })
+            }
+          </Grid>
+          <Grid item>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <b>TC</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>TL</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>TE</b>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Grid item >
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <b>TI</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>TP</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>M</b>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell>
+                    <TableCell>
+                      <b>M</b>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell>
+                    <TableCell>
+                      <b>O</b>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>0</TableCell>
+                    <TableCell>0</TableCell>
+                    <TableCell>
+                      <b>TOT</b>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          <Grid item className={classes.GridSections}>
+            <Button type="submit" className={classes.btnB} startIcon={<Delete />}>
+              Eliminar
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+    </>
+  );
+};
+
+export default HeaderReg;
