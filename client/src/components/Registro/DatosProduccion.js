@@ -12,12 +12,12 @@ import {
   TablePagination,
   Fab,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import moment from "moment";
 
 import { Add, Pageview, Edit } from "@material-ui/icons";
 import { GlobalContex } from "../../context/GlobalState";
-
+import { getApiRegProdComp } from "../../context/Api"
 let rows = [];
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +42,8 @@ const DatosProduccion = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex);
-  const { regproddata, loadRegProdData } = aceroContext;
+  const { regproddata, LoadRegCompData, SetNumComp } = aceroContext;
+  const history = useHistory()
   const columns = [
     {
       id: "id",
@@ -139,19 +140,32 @@ const DatosProduccion = () => {
       label: "",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Pageview/> </Button>,
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleGetPrima}> <Pageview/> </Button>,
     },{
       id: "id",
       label: "",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Edit/> </Button>,//value.toLocaleString(), //toFixed(2),
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Edit/> </Button>,
     },
   ]
   
   const handleAddMPrima = (e) => {
     e.preventDefault()
-    console.log(e.currentTarget.dataset.id)
+    history.push("/registro/prodcomp")
+    SetNumComp(e.currentTarget.dataset.id)
+  }
+
+  const handleGetPrima = (e) => {
+    e.preventDefault()
+    getApiRegProdComp(e.currentTarget.dataset.id, (err, data) => {
+      console.log(data)
+      if(err) {
+
+      }else {
+        LoadRegCompData(data)
+      }
+    })
   }
 
   useEffect(() => {

@@ -141,6 +141,7 @@ class Routes {
         })
 
         this.app.get('/api/registro/getregprodcompdata', (req, res) => {
+            console.log(req.query.PosProdId)
             this.db.getProdComp(req.query.PosProdId, (err, data)=> {
                 if(err){
                     res.status(500).json({

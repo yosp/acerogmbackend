@@ -14,7 +14,7 @@ const Registro = () => {
     let subChildren
 
     if(regprodcompdata == null) {
-        subChildren = <></>
+        subChildren =  <DataPanel/>
     } else {
         subChildren = <CompData/>
     }
@@ -25,7 +25,7 @@ const Registro = () => {
     } else {
         children = <div>
             <HeaderReg header={headerReg}  />
-            <DataPanel/>
+            {subChildren}
         </div>
     }
 
@@ -33,7 +33,7 @@ const Registro = () => {
         <>
             <NavigationBar />
             {children}
-            {subChildren}
+            
         </>
     )
 }

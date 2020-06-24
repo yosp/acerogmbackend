@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Button,
@@ -10,14 +10,14 @@ import {
   InputLabel,
   Tooltip,
 } from "@material-ui/core";
+import HeaderPrincipal from '../Util/NavBar'
 
 import { GlobalContex } from "../../context/GlobalState";
 import { getOdenenComp, insRegProd, getTipoComb } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(1),
-    overflow: "scroll",
+    padding: theme.spacing(1)
   },
   LogoSize: {
     [theme.breakpoints.down("xs")]: {
@@ -64,7 +64,7 @@ const DataCompForm = ({ Id }) => {
   const classes = useStyle();
   const [mprima, setMprima] = useState([]);
   const aceroContext = useContext(GlobalContex);
-  const { ordenes } = aceroContext;
+  const { ordenes, compNumber } = aceroContext;
   const history = useHistory();
 
   const onChangeOrden = (e) => {
@@ -82,30 +82,30 @@ const DataCompForm = ({ Id }) => {
 
   const onFormSubmit = (e) => {
     e.preventDefault();
+    console.log(compNumber)
+    // const {
+    //   orden,
+    //   mprima,
+    //   Lote,
+    //   MpUme,
+    //   MpFactor,
+    //   MpUmb,
+    // } = e.target.elements;
 
-    const {
-      orden,
-      mprima,
-      Lote,
-      MpUme,
-      MpFactor,
-      MpUmb,
-    } = e.target.elements;
+    // let torden = ordenes.filter((o) => {
+    //   return o.Id == orden.value;
+    // });
 
-    let torden = ordenes.filter((o) => {
-      return o.Id == orden.value;
-    });
-
-    const data = {
-      PosProdId: Id,
-      CodComponentes: mprima,
+    // const data = {
+    //   PosProdId: Id,
+    //   CodComponentes: mprima,
       
-    };
+    // };
 
-    insRegProd(data, (err, res) => {
+    // insRegProd(data, (err, res) => {
       
-      history.push("/registro");
-    });
+    //   history.push("/registro");
+    // });
   };
 
   const HandlerClose = (e) => {
@@ -115,6 +115,7 @@ const DataCompForm = ({ Id }) => {
 
   return (
     <>
+      <HeaderPrincipal/>
       <Grid
         container
         spacing={1}

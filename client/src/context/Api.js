@@ -98,6 +98,13 @@ const getRegProd = (headerid, callback) => {
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
+
+const getApiRegProdComp = (PosProdId, callback) => {
+    axios.get(`${base}/registro/getregprodcompdata?PosProdId=${PosProdId}`)
+    .then(response => { callback(null, response.data)})
+    .catch(err => console.warn(err));
+}
+
 const getApiOdenenes = (callback) => {
     axios.get(`${base}/ordenes/getOrdenes`,
         {
@@ -286,6 +293,7 @@ export {
     GetTipoChatarra,
     GetMotivoChatarra,
     sapSendChatarra,
-    getDemoras
+    getDemoras,
+    getApiRegProdComp,
 
 }

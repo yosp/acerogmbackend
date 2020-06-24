@@ -25,6 +25,7 @@ import {
     CLEAR_DEMORA,
     LOAD_COMP_NUMBER,
     LOAD_REG_COMP_DATA,
+    CLEAR_REG_COMP_DATA
 } from "./Actions";
 
 const InitialState = {
@@ -231,6 +232,12 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function ClearRegComp(){
+      dispatch({
+        type: CLEAR_REG_COMP_DATA
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -257,6 +264,7 @@ export const GlobalProvider = ({ children }) => {
         ClearDemora,
         LoadRegCompData,
         SetNumComp,
+        ClearRegComp,
 
         userInfo: state.userInfo,
         user: state.user,

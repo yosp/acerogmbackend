@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import {
   makeStyles,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -10,11 +11,16 @@ import {
   TableRow,
   TablePagination,
 } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+
+import {
+  ArrowBackIosRounded
+} from '@material-ui/icons'
 import { GlobalContex } from "../../context/GlobalState";
 
 const columns = [
   {
-    id: "id",
+    id: "Id",
     label: "Cod Reg",
     minWidth: "100",
     align: "left",
@@ -42,21 +48,21 @@ const columns = [
     format: (value) => value.toLocaleString(),
   },
   {
-    id: "MpUme",
+    id: "MP_UME",
     label: "Consumo Acumulado",
     minWidth: "170",
     align: "left",
     format: (value) => value.toLocaleString(),
   },
   {
-    id: "MpFactor",
+    id: "MP_Factor",
     label: "Factor",
     minWidth: "200",
     align: "left",
     format: (value) => value.toLocaleString(),
   },
   {
-    id: "MpUmb",
+    id: "MP_UMB",
     label: "UMB",
     minWidth: "170",
     align: "left",
@@ -87,9 +93,16 @@ const DataCompPanel = () => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const history = useHistory();
   const aceroContext = useContext(GlobalContex);
-  const { } = aceroContext;
+  const { regprodcompdata, ClearRegComp } = aceroContext;
   
+  useEffect(()=> {
+    if(regprodcompdata != null) {
+      rows = regprodcompdata
+    }
+  },[regprodcompdata])
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -99,8 +112,14 @@ const DataCompPanel = () => {
     setPage(0);
   };
 
+  const HandlerClose = (e) => {
+    e.preventDefault();
+    ClearRegComp()
+  };
+
   return (
     <Paper className={classes.root}>
+      <div><Button onClick={HandlerClose}><ArrowBackIosRounded/></Button></div>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
