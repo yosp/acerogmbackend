@@ -13,7 +13,7 @@ import {
 import HeaderPrincipal from '../Util/NavBar'
 
 import { GlobalContex } from "../../context/GlobalState";
-import { getOdenenComp, insRegProd, getTipoComb } from "../../context/Api";
+import { getOdenenComp, InsertProdComp } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -60,11 +60,11 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const DataCompForm = ({ Id }) => {
+const DataCompForm = () => {
   const classes = useStyle();
   const [mprima, setMprima] = useState([]);
   const aceroContext = useContext(GlobalContex);
-  const { ordenes, compNumber } = aceroContext;
+  const { ordenes, compNumber, user } = aceroContext;
   const history = useHistory();
 
   const onChangeOrden = (e) => {
@@ -82,30 +82,38 @@ const DataCompForm = ({ Id }) => {
 
   const onFormSubmit = (e) => {
     e.preventDefault();
-    console.log(compNumber)
-    // const {
-    //   orden,
-    //   mprima,
-    //   Lote,
-    //   MpUme,
-    //   MpFactor,
-    //   MpUmb,
-    // } = e.target.elements;
 
-    // let torden = ordenes.filter((o) => {
-    //   return o.Id == orden.value;
-    // });
+    const {
+      orden,
+      mprima,
+      Lote,
+      MpUme,
+      MpFactor,
+      MpUmb,
+    } = e.target.elements;
 
-    // const data = {
-    //   PosProdId: Id,
-    //   CodComponentes: mprima,
+    let torden = ordenes.filter((o) => {
+      return o.Id == orden.value;
+    });
+
+    const data = {
+      PosProdId: compNumber,
+      CodComponentes: mprima.value,
+      Descripcion: torden[0].Material,
+      Batch: Lote.value,
+      MP_UME: MpUme.value,
+      MP_UMB: MpUmb.value,
+      MP_Factor: MpFactor.value,
+      UsrReg: user.CodigoEmp,
+    };
+
+    console.log('data')
+    console.log(data)
+
+    InsertProdComp(data, (err, res) => {
       
-    // };
-
-    // insRegProd(data, (err, res) => {
-      
-    //   history.push("/registro");
-    // });
+      history.push("/registro");
+    });
   };
 
   const HandlerClose = (e) => {
@@ -168,7 +176,7 @@ const DataCompForm = ({ Id }) => {
                       <option value="0"> </option>
                       {mprima.map((prima) => {
                         return (
-                          <option key={prima.Id} value={prima.Id}>
+                          <option key={prima.Id} value={prima.Componente}>
                             {prima.Componente}
                           </option>
                         );

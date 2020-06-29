@@ -141,7 +141,7 @@ class Routes {
         })
 
         this.app.get('/api/registro/getregprodcompdata', (req, res) => {
-            console.log(req.query.PosProdId)
+            
             this.db.getProdComp(req.query.PosProdId, (err, data)=> {
                 if(err){
                     res.status(500).json({
@@ -165,6 +165,19 @@ class Routes {
                     })
                 }
                 else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/registro/insProdCompData', (req, res) => {
+            this.db.insProdComp(req.body.procompdat, (err, data)=> {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
                     res.status(200).json(data.recordset)
                 }
             })
