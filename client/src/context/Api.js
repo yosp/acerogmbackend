@@ -121,6 +121,20 @@ const InsertProdComp = (procompdat, callback) => {
             })
 }
 
+const DelProdComp = (PosProdId, callback) => {
+    axios.post(`${base}/registro/delProdCompData`, {PosProdId}
+    ,  {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+).then(function (response) {
+    callback(null, response.data)
+}
+).catch(function (error) {
+    callback(error, null)
+})
+}
 
 const getApiOdenenes = (callback) => {
     axios.get(`${base}/ordenes/getOrdenes`,
@@ -312,6 +326,7 @@ export {
     sapSendChatarra,
     getDemoras,
     getApiRegProdComp,
-    InsertProdComp
+    InsertProdComp,
+    DelProdComp
 
 }

@@ -107,9 +107,6 @@ const DataCompForm = () => {
       UsrReg: user.CodigoEmp,
     };
 
-    console.log('data')
-    console.log(data)
-
     InsertProdComp(data, (err, res) => {
       
       history.push("/registro");

@@ -14,62 +14,11 @@ import {
 import { useHistory } from "react-router-dom";
 
 import {
-  ArrowBackIosRounded
+  ArrowBackIosRounded,
+  Delete
 } from '@material-ui/icons'
 import { GlobalContex } from "../../context/GlobalState";
-
-const columns = [
-  {
-    id: "Id",
-    label: "Cod Reg",
-    minWidth: "100",
-    align: "left",
-    format: (value) => value.toLocaleString(), //toFixed(2),
-  },
-  {
-    id: "CodComponentes",
-    label: "Componentes",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "Descripcion",
-    label: "Descripcion",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "Batch",
-    label: "Lote",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "MP_UME",
-    label: "Consumo Acumulado",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "MP_Factor",
-    label: "Factor",
-    minWidth: "200",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "MP_UMB",
-    label: "UMB",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-]
-
+import { DelProdComp } from '../../context/Api'
 let rows = [];
 
 const useStyles = makeStyles((theme) => ({
@@ -97,6 +46,64 @@ const DataCompPanel = () => {
   const aceroContext = useContext(GlobalContex);
   const { regprodcompdata, ClearRegComp } = aceroContext;
   
+  const columns = [
+    {
+      id: "Id",
+      label: "Cod Reg",
+      minWidth: "100",
+      align: "left",
+      format: (value) => value.toLocaleString(), //toFixed(2),
+    },
+    {
+      id: "CodComponentes",
+      label: "Componentes",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "Descripcion",
+      label: "Descripcion",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "Batch",
+      label: "Lote",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "MP_UME",
+      label: "Consumo Acumulado",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "MP_Factor",
+      label: "Factor",
+      minWidth: "200",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "MP_UMB",
+      label: "UMB",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },{
+      id: "Id",
+      label: "Borrar",
+      minWidth: "100",
+      align: "left",
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerDeletePrima}> <Delete/> </Button>,
+    }
+  ]
+  
   useEffect(()=> {
     if(regprodcompdata != null) {
       rows = regprodcompdata
@@ -106,6 +113,11 @@ const DataCompPanel = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+
+  const handlerDeletePrima = (e) => {
+    e.preventDefault();
+    DelProdComp(e.currentTarget.dataset.id)
+  }
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
