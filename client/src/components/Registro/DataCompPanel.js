@@ -18,7 +18,7 @@ import {
   Delete
 } from '@material-ui/icons'
 import { GlobalContex } from "../../context/GlobalState";
-import { DelProdComp } from '../../context/Api'
+import { DelProdComp, getApiRegProdComp } from '../../context/Api'
 let rows = [];
 
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +44,7 @@ const DataCompPanel = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const history = useHistory();
   const aceroContext = useContext(GlobalContex);
-  const { regprodcompdata, ClearRegComp } = aceroContext;
+  const { regprodcompdata, ClearRegComp, LoadRegCompData, compNumber } = aceroContext;
   
   const columns = [
     {
@@ -116,7 +116,17 @@ const DataCompPanel = () => {
 
   const handlerDeletePrima = (e) => {
     e.preventDefault();
-    DelProdComp(e.currentTarget.dataset.id)
+    console.log(e.currentTarget.dataset.id)
+    console.log(compNumber)
+    DelProdComp(e.currentTarget.dataset.id, (err, res) => {
+      if(err) {
+
+      } else {
+        getApiRegProdComp(compNumber, (err, data) => {
+          LoadRegCompData(data)
+        })
+      }
+    })
   }
 
   const handleChangeRowsPerPage = (event) => {

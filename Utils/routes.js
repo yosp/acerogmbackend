@@ -182,6 +182,20 @@ class Routes {
                 }
             })
         })
+
+        this.app.post('/api/registro/delProdCompData', (req, res) => {
+            console.log(req.body.PosProdId)
+            this.db.delProdComp(req.body.PosProdId, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data)
+                }
+            })
+        })
         
         this.app.post('/api/registro/updProdData', (req, res) => {
             this.db.updProdData(req.body.proddat, (err, data)=>{
@@ -421,6 +435,58 @@ class Routes {
                 }
             })
         })
+
+        this.app.post('/api/notifHead', (req, res) => {
+            this.db.getNotifHeader(req.body.header, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: data
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.post('/api/notifPos', (req, res) => {
+            this.db.getNotifPos(req.body.pos, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/mfbf', (req, res) => {
+            this.db.getMfbf(req.body.header, (err, data) => {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/mfbfPos', (req, res) => {
+            this.db.getMfbfPos(req.body.header, (err, data) => {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
     }
     routesConfig() {
         this.appRoutes()

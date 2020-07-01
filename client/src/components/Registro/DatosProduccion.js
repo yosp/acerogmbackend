@@ -158,8 +158,9 @@ const DatosProduccion = () => {
 
   const handleGetPrima = (e) => {
     e.preventDefault()
+    
+    SetNumComp(e.currentTarget.dataset.id)
     getApiRegProdComp(e.currentTarget.dataset.id, (err, data) => {
-      console.log(data)
       if(err) {
 
       }else {

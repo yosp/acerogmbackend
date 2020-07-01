@@ -225,10 +225,12 @@ class Db {
   async delProdComp(PosProdId, callback) {
     try {
         await sql.connect(this.setting)
-        const result = await sql.query`delete from PosRegProdComponente
-                                                where PosProdId = ${PosProdId}`
-        callback(null, result)
+        const query = await sql.query`delete from PosRegProdComponente
+                                                where Id = ${PosProdId}`
+        
+        callback(null, query)
     } catch (e) { 
+        console.log(e)
         callback(e, null)
     }
   }
@@ -699,40 +701,159 @@ class Db {
   async getDemora(demora, callback) {
     try {
       await sql.connect(this.setting);
+      console.log(demora)
       const result = await sql.query`select p.HoraInicio
-                                      ,p.HoraFin
-                                      ,p.Tiempo
-                                      ,stan.TiempoStandard
-                                      ,car.Codigo as cargo
-                                      ,area.Denominacion area_falla
-                                      ,lug.Denominacion Equipo
-                                      ,fa.Denominacion CausaFalla
-                                      ,p.MP_Perd
-                                      ,p.MP_Desc
-                                      ,ord.Orden
-                                      ,ord.Material
-                                      ,ma.Perfil
-                                      ,p.Notas
-                                      ,tr.Descripcion as gatillo
-                                      ,p.EstadoTF
-                                      ,p.ComentarioDemora
-                                      from PosRegParada p
-                                        inner join HeaderReg h on p.HeaderRegId = h.Id
-                                        inner join tbMatrizTiempoEstandar stan on p.Tprog_Id = stan.Id
-                                        inner join tbListaCargos car on car.id = p.Cargo
-                                        inner join tbMotivoFallaArea area on area.Id = p.MotivoFallaAreaId
-                                        inner join tbMotivoFallaLugarAveria lug on lug.Id = p.MotivoFallaLugarAveriaId
-                                        inner join tbMotivoFalla fa on fa.Id = p.MotivoFallaId
-                                        inner join tbOrdenProduccion ord on ord.Id = p.OrdenProdId
-                                        inner join tbMateriales ma on ord.Material = ma.Material
-                                        inner join strListaGatillos tr on tr.Id = p.TipoGatillo 
-                                      where convert(date,p.RegDate,101) between 
-                                              CONVERT(date,${demora.FechaI},101) and 
-                                              CONVERT(date,${demora.FechaF},101) and
-                                              h.PuestoTrabajoId = ${demora.PtrId}`;
+                                              ,p.HoraFin
+                                              ,p.Tiempo
+                                              ,stan.TiempoStandard
+                                              ,car.Codigo as cargo
+                                              ,area.Denominacion area_falla
+                                              ,lug.Denominacion Equipo
+                                              ,fa.Denominacion CausaFalla
+                                              ,p.MP_Perd
+                                              ,p.MP_Desc
+                                              ,ord.Orden
+                                              ,ord.Material
+                                              ,ma.Perfil
+                                              ,p.Notas
+                                              ,tr.Descripcion as gatillo
+                                              ,p.EstadoTF
+                                              ,p.ComentarioDemora
+                                              from PosRegParada p
+                                                inner join HeaderReg h on p.HeaderRegId = h.Id
+                                                inner join tbMatrizTiempoEstandar stan on p.Tprog_Id = stan.Id
+                                                inner join tbListaCargos car on car.id = p.Cargo
+                                                inner join tbMotivoFallaArea area on area.Id = p.MotivoFallaAreaId
+                                                inner join tbMotivoFallaLugarAveria lug on lug.Id = p.MotivoFallaLugarAveriaId
+                                                inner join tbMotivoFalla fa on fa.Id = p.MotivoFallaId
+                                                inner join tbOrdenProduccion ord on ord.Id = p.OrdenProdId
+                                                inner join tbMateriales ma on ord.Material = ma.Material
+                                                inner join strListaGatillos tr on tr.Id = p.TipoGatillo 
+                                              where convert(date,h.Fecha,101) between 
+                                                      CONVERT(date,${demora.FechaI},101) and CONVERT(date,${demora.FechaF},101) and
+                                                      h.PuestoTrabajoId = ${demora.PtrId}`;
       callback(null, result);
     } catch (error) {
       callback(error, null);
+    }
+  }
+
+  async getNotifHeader (header, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select 
+                                          o.Orden,
+                                          o.NumOperacion as operacion,
+                                          h.Fecha,
+                                          n.[Centro Planif] as centro,
+                                          n.[UM PT] as undMendida,
+                                          sum(p.PT_UMB) as cantNot,
+                                          sum(p.TU) as HoraMaquina,
+                                          n.[UM Actividad 1] as UndHM,
+                                          sum(p.TC) as HoraHombre,
+                                          n.[UM Actividad 2] as UnHH,
+                                          h.TurnoId,
+                                          t.Descripcion as Turno,
+                                            n.[UM Actividad 3] as UnTurno
+                                          from HeaderReg h
+                                            inner join PosRegProd p on p.HeaderRegId = h.Id
+                                            inner join tbOrdenProduccion o on o.Id = p.OrdenProdId
+                                            inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
+                                            inner join strListaTurnos t on t.Id = h.TurnoId
+                                            where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PuestoTr}
+                                            group by o.Orden, o.NumOperacion, h.Fecha, 
+                                                n.[Centro Planif], n.[UM PT], n.[UM Actividad 1], n.[UM Actividad 2], n.[UM Actividad 3], 
+                                                h.TurnoId, t.Descripcion`
+      callback(null, result)
+    } catch (error) {
+      callback(err, null)
+    }
+  }
+  async getNotifPos (pos, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select   h.Id,
+                                              o.Material,
+                                              n.[Centro Planif] as centro,
+                                              n.[Almacen PT] as almacen,
+                                              n.[CIMv PT] as Clmv,
+                                              sum(p.PT_UMB) as cant,
+                                              n.[UM PT] as UndMed,
+                                              '' as batch
+                                              from HeaderReg h
+                                                inner join PosRegProd p on p.HeaderRegId = h.Id
+                                                inner join tbOrdenProduccion o on p.OrdenProdId = o.Id
+                                                inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
+                                                where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PuestoTr}
+                                                group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT]
+                                      union all
+                                      select  h.Id,
+                                              o.Material,
+                                              n.[Centro Planif] as centro,
+                                              n.[Almacen PT] as almacen,
+                                              n.[CIMv PT] as Clmv,
+                                              sum(c.MP_UMB) as cant,
+                                              n.[UM PT] as UndMed,
+                                              c.Batch
+                                              from HeaderReg h
+                                                inner join PosRegProd p on p.HeaderRegId = h.Id
+                                                inner join PosRegProdComponente c on c.PosProdId = p.id
+                                                inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                                                inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
+                                                where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PuestoTr}
+                                                group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT], c.Batch`
+      callback(null, result);
+    } catch (error) {
+      callback(error, null)
+    }
+  }
+
+  async getMfbf (header, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select o.Material,
+                                            n.[Centro Planif] as centroPlanif,
+                                            n.Centro,
+                                            n.[Almacen PT] as almacen,
+                                            o.VerFab,
+                                            o.PuestoTrabajo,
+                                            CONVERT(date,h.Fecha,101) as Fecha,
+                                            CONVERT(date,h.Fecha,101) as docdate,
+                                            sum(p.PT_UMB) UndMedida,
+                                            n.[UM PT] as cantnot
+                                          from HeaderReg h
+                                            inner join PosRegProd p on h.Id = p.HeaderRegId
+                                            inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                                            inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
+                                            where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PuestoTr}
+                                            group by o.Material, n.[Centro Planif], n.Centro, n.[Almacen PT], o.VerFab, o.PuestoTrabajo, h.Fecha, n.[UM PT]`
+      callback(null, result)
+    } catch (error) {
+      callback(error, null)
+    }
+  }
+
+  async getMfbfPos (header, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`
+                                  select o.Material,
+                                      n.Centro,
+                                      n.[Almacen PT] as almacen,
+                                      '' as batch,
+                                      n.[CIMv PT] as Clmv,
+                                      sum(p.PT_UMB) as Cant,
+                                      n.[UM PT] as UndMed
+                                    from HeaderReg h
+                                      inner join PosRegProd p on p.HeaderRegId = h.id
+                                      inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                                      inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
+                                      where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PuestoTr}
+                                      group by o.Material, 
+                                      n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT]`
+      callback(null, result)
+    } catch (error) {
+      callback(error, null)
     }
   }
 }

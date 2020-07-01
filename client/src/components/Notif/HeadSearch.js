@@ -15,6 +15,7 @@ import {
 import { NewReleases } from "@material-ui/icons";
 import MomentUtils from "@date-io/moment";
 import { GlobalContex } from "../../context/GlobalState";
+import { getNotif, getNotifPos } from  "../../context/Api"
 
 const useStyles = makeStyles((theme) => ({
   PaperSite: {
@@ -82,7 +83,7 @@ const HeadSearch = () => {
   const classes = useStyles();
   const [Fecha, SetFecha] = useState(new Date());
   const AceroContex = useContext(GlobalContex);
-  const { userInfo } = AceroContex;
+  const { userInfo, LoadNotifPos, LoadNotif  } = AceroContex;
   const puestos = userInfo.map((puesto) => {
     return {
       id: puesto.PuestoTrId,
@@ -93,6 +94,28 @@ const HeadSearch = () => {
 
   const handlerSubmit = (e) => {
     e.preventDefault();
+    const { ptr } = e.target.elements
+    const data = {
+      PtrId: ptr.value,
+      Fecha: Fecha
+    }
+    getNotif(data, (err, data) => {
+      if(err) {
+
+      } else {
+        console.log(data)
+        LoadNotif(data)
+      }
+    })
+
+    getNotifPos(data, (err, data)=> {
+      if(err) {
+
+      } else {
+        console.log(data)
+        LoadNotifPos(data)
+      }
+    })
   };
 
   const handleFechaCHange = (date) => {

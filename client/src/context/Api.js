@@ -132,6 +132,7 @@ const DelProdComp = (PosProdId, callback) => {
     callback(null, response.data)
 }
 ).catch(function (error) {
+    console.log(error)
     callback(error, null)
 })
 }
@@ -285,7 +286,6 @@ const sapSendChatarra = (ZgmAcerogmChatarra, callback) => {
 }
 
 const getDemoras = (demora, callback) => {
-    console.log('Esto es el post de demora')
     axios.post(`${base}/demora`, {demora}
     , {
         headers: {
@@ -297,6 +297,59 @@ const getDemoras = (demora, callback) => {
             callback(err, null)
         })
 } 
+
+const getNotif = (header, callback) => {
+    axios.post(`${base}/notifHead`, {pos}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const getNotifPos = (pos, callback) => {
+    axios.post(`${base}/notifPos`, {pos}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const getmfbf = (header, callback) => {
+    axios.post(`${base}/mfbf`, {header}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const getmfbfPos = (header, callback) => {
+    axios.post(`${base}/mfbfPos`, {header}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
 
 export {
     LoginUser,
@@ -325,8 +378,11 @@ export {
     GetMotivoChatarra,
     sapSendChatarra,
     getDemoras,
+    getNotif,
+    getNotifPos,
     getApiRegProdComp,
     InsertProdComp,
-    DelProdComp
-
+    DelProdComp,
+    getmfbf,
+    getmfbfPos
 }

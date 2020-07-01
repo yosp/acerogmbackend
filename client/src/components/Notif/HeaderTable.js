@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import moment from "moment";
 import { Pageview } from '@material-ui/icons'
-
+import { GlobalContex } from '../../context/GlobalState'
 
 import NotifPos from './NotifPos'
 
@@ -162,6 +162,8 @@ const HeaderTable = () => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const AceroContex = useContext(GlobalContex)
+  const { regDemora } = AceroContex
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -171,6 +173,13 @@ const HeaderTable = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  useEffect(()=>{
+    if(regDemora !== null && regDemora !== undefined){
+      rows = regDemora
+    }
+
+  },[regDemora])
 
   return (
     <Paper className={classes.root}>

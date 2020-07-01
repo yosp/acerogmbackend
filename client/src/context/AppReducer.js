@@ -23,7 +23,8 @@ import {
     CLEAR_DEMORA,
     LOAD_REG_COMP_DATA,
     LOAD_COMP_NUMBER,
-    CLEAR_REG_COMP_DATA
+    CLEAR_REG_COMP_DATA,
+    LOAD_DEMORA_POS
     
 } from './Actions'
 
@@ -157,6 +158,11 @@ export default (state, action) => {
             return {
                 ...state,
                 regprodcompdata: null
+            }
+        case LOAD_DEMORA_POS:
+            return {
+                ...state,
+                regDemoraPos: action.payload
             }
         default:
             return state
