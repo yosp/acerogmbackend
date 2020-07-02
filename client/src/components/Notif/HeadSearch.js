@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -16,6 +16,8 @@ import { NewReleases } from "@material-ui/icons";
 import MomentUtils from "@date-io/moment";
 import { GlobalContex } from "../../context/GlobalState";
 import { getNotif, getNotifPos } from  "../../context/Api"
+
+import TypeNotif from './TypeNotif'
 
 const useStyles = makeStyles((theme) => ({
   PaperSite: {
@@ -83,7 +85,7 @@ const HeadSearch = () => {
   const classes = useStyles();
   const [Fecha, SetFecha] = useState(new Date());
   const AceroContex = useContext(GlobalContex);
-  const { userInfo, LoadNotifPos, LoadNotif  } = AceroContex;
+  const { userInfo, LoadNotifPos, LoadNotif, SetTypoNotif  } = AceroContex;
   const puestos = userInfo.map((puesto) => {
     return {
       id: puesto.PuestoTrId,
@@ -92,6 +94,13 @@ const HeadSearch = () => {
     };
   });
 
+  const PtrChange = (e) => {
+    e.preventDefault();
+    let index = e.target.selectedIndex;
+    let optionElement = e.target.childNodes[index]
+    let option =  optionElement.getAttribute('data-type');
+    SetTypoNotif(option)
+  }
   const handlerSubmit = (e) => {
     e.preventDefault();
     const { ptr } = e.target.elements
@@ -112,7 +121,6 @@ const HeadSearch = () => {
       if(err) {
 
       } else {
-        console.log(data)
         LoadNotifPos(data)
       }
     })
@@ -159,7 +167,9 @@ const HeadSearch = () => {
                   native
                   label="Puesto de Trabajo"
                   className={classes.SelectStyle}
+                  onChange={PtrChange}
                 >
+                  <option value='0'>...</option>
                   {puestos.map((puesto) => {
                     return (
                       <option
@@ -188,6 +198,7 @@ const HeadSearch = () => {
           </Grid>
         </form>
       </Paper>
+      <TypeNotif/>
     </>
   );
 };

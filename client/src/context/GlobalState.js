@@ -27,7 +27,10 @@ import {
     LOAD_REG_COMP_DATA,
     CLEAR_REG_COMP_DATA,
     LOAD_NOTIF,
-    LOAD_NOTIF_POS
+    LOAD_NOTIF_POS,
+    CLEAR_NOTIF,
+    SET_ACTIVE_TYPE_NOTIF,
+    SET_ACTIVE_NOTIF_HEADER
 } from "./Actions";
 
 const InitialState = {
@@ -55,6 +58,8 @@ const InitialState = {
     compNumber: null,
     headerNotif: null,
     notifPos: null,
+    ActiveTypeNotif: null,
+    ActiveNotifId: null
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -256,6 +261,26 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function ClearNotif() {
+      dispatch({
+        type: CLEAR_NOTIF
+      })
+    } 
+
+    function SetTypoNotif(notif) {
+      dispatch({
+        type: SET_ACTIVE_TYPE_NOTIF,
+        payload: notif
+      })
+    }
+
+    function SetActiveNotif(notifId) {
+      dispatch({
+        type: SET_ACTIVE_NOTIF_HEADER,
+        payload: notifId
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -285,6 +310,9 @@ export const GlobalProvider = ({ children }) => {
         ClearRegComp,
         LoadNotifPos,
         LoadNotif,
+        ClearNotif,
+        SetTypoNotif,
+        SetActiveNotif,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -308,6 +336,8 @@ export const GlobalProvider = ({ children }) => {
         compNumber: state.compNumber,
         notifPos: state.notifPos,
         headerNotif: state.headerNotif,
+        ActiveTypeNotif: state.ActiveTypeNotif,
+        ActiveNotifId: state.ActiveNotifId,
           }}
     >
       {children}

@@ -24,8 +24,11 @@ import {
     LOAD_REG_COMP_DATA,
     LOAD_COMP_NUMBER,
     CLEAR_REG_COMP_DATA,
-    LOAD_DEMORA_POS
-    
+    CLEAR_NOTIF,
+    LOAD_NOTIF,
+    LOAD_NOTIF_POS,
+    SET_ACTIVE_TYPE_NOTIF,
+    SET_ACTIVE_NOTIF_HEADER
 } from './Actions'
 
 export default (state, action) => {
@@ -159,10 +162,31 @@ export default (state, action) => {
                 ...state,
                 regprodcompdata: null
             }
-        case LOAD_DEMORA_POS:
+        case LOAD_NOTIF:
             return {
                 ...state,
-                regDemoraPos: action.payload
+                headerNotif: action.payload
+                }
+        case LOAD_NOTIF_POS:
+            return {
+                ...state,
+                notifPos: action.payload
+            }
+        case CLEAR_NOTIF:
+            return {
+                ...state,
+                headerNotif: null,
+                notifPos: null
+            }
+        case SET_ACTIVE_TYPE_NOTIF:
+            return {
+                ...state,
+                ActiveTypeNotif: action.payload
+            }
+        case SET_ACTIVE_NOTIF_HEADER:
+            return {
+                ...state,
+                ActiveNotifId: action.payload
             }
         default:
             return state

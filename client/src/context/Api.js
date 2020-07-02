@@ -299,7 +299,7 @@ const getDemoras = (demora, callback) => {
 } 
 
 const getNotif = (header, callback) => {
-    axios.post(`${base}/notifHead`, {pos}
+    axios.post(`${base}/notifHead`, {header}
     , {
         headers: {
             'Content-Type': 'application/json'
@@ -323,7 +323,6 @@ const getNotifPos = (pos, callback) => {
             callback(err, null)
         })
 }
-
 const getmfbf = (header, callback) => {
     axios.post(`${base}/mfbf`, {header}
     , {
@@ -349,7 +348,6 @@ const getmfbfPos = (header, callback) => {
             callback(err, null)
         })
 }
-
 
 export {
     LoginUser,

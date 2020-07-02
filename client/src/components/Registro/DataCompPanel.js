@@ -116,8 +116,6 @@ const DataCompPanel = () => {
 
   const handlerDeletePrima = (e) => {
     e.preventDefault();
-    console.log(e.currentTarget.dataset.id)
-    console.log(compNumber)
     DelProdComp(e.currentTarget.dataset.id, (err, res) => {
       if(err) {
 

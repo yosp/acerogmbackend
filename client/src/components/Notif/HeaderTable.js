@@ -9,135 +9,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination,
+  TablePagination
 } from "@material-ui/core";
 import moment from "moment";
-import { Pageview } from '@material-ui/icons'
+import { Check, Toc, Publish } from '@material-ui/icons'
 import { GlobalContex } from '../../context/GlobalState'
+import SapIcon from '../Util/SapIcon'
 
-import NotifPos from './NotifPos'
-
-const columns = [
-  {
-    id: "Orden",
-    label: "Orden",
-    minWidth: "175",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "NumOperacion",
-    label: "Operacion",
-    minWidth: "175",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "Fecha",
-    label: "Fecha",
-    minWidth: "195",
-    align: "left",
-    format: (value) => moment(value.toLocaleString()).format('L'), //value.toLocaleString()
-  },
-  {
-    id: "Centro",
-    label: "Centro",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "UmPt",
-    label: "Und Medida",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "CantNot",
-    label: "CantNot",
-    minWidth: "170",
-    align: "center",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "HoraMaquina",
-    label: "Hora Maquina",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "UndHM",
-    label: "Und HM",
-    minWidth: "170",
-    align: "center",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "HoraHombre",
-    label: "Hora Hombre",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "UndHH",
-    label: "Und HH",
-    minWidth: "170",
-    align: "center",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "Turno",
-    label: "Turno",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "UnTurno",
-    label: "Seccion",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "ComentarioDemora",
-    label: "Observacion",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "gatillo",
-    label: "Gatillo",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "EstadoTF",
-    label: "Realizar TF",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "Nota",
-    label: "Comentario Demora",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "Id",
-    label: "...",
-    minWidth: "170",
-    align: "center",
-    format: (value) => <Button><Pageview/> </Button>,
-  },
-];
+// import NotifPos from './NotifPos'
 
 let rows = [];
 
@@ -163,11 +42,130 @@ const HeaderTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContex = useContext(GlobalContex)
-  const { regDemora } = AceroContex
+  const { headerNotif, SetActiveNotif } = AceroContex
+
+  const columns = [
+    {
+      id: "Orden",
+      label: "Orden",
+      minWidth: "175",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "operacion",
+      label: "Operacion",
+      minWidth: "175",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "Fecha",
+      label: "Fecha",
+      minWidth: "195",
+      align: "left",
+      format: (value) => moment(value.toLocaleString()).format('L'), //value.toLocaleString()
+    },
+    {
+      id: "centro",
+      label: "Centro",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "undMendida",
+      label: "Und Medida",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "cantNot",
+      label: "CantNot",
+      minWidth: "170",
+      align: "center",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "HoraMaquina",
+      label: "Hora Maquina",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "UndHM",
+      label: "Und HM",
+      minWidth: "170",
+      align: "center",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "HoraHombre",
+      label: "Hora Hombre",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "UnHH",
+      label: "Und HH",
+      minWidth: "170",
+      align: "center",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "TurnoId",
+      label: "Id Turno",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "Turno",
+      label: "Turno",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "UnTurno",
+      label: "Seccion",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "hid",
+      label: "Posiciones",
+      minWidth: "100",
+      align: "left",
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleViewPos}> <Toc/> </Button>,
+    },  {
+      id: "hid",
+      label: "Validar",
+      minWidth: "100",
+      align: "left",
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleViewPos}> <Check/> </Button>,
+    },
+    {
+      id: "hid",
+      label: "Enviar A SAP",
+      minWidth: "200",
+      align: "left",
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleViewPos}> <Publish/> </Button>,
+    },
+  ];
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+
+  const handleViewPos = (e) => {
+    e.preventDefault()
+    SetActiveNotif(e.currentTarget.dataset.id)
+  }
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -175,11 +173,15 @@ const HeaderTable = () => {
   };
 
   useEffect(()=>{
-    if(regDemora !== null && regDemora !== undefined){
-      rows = regDemora
+    if(headerNotif !== null && headerNotif !== undefined){
+      headerNotif.map((reg) => {
+        reg.Fecha = moment(new Date(reg.Fecha)).format("l");
+        return reg;
+      });
+      rows = headerNotif
     }
 
-  },[regDemora])
+  },[headerNotif])
 
   return (
     <Paper className={classes.root}>

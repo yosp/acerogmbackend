@@ -701,7 +701,6 @@ class Db {
   async getDemora(demora, callback) {
     try {
       await sql.connect(this.setting);
-      console.log(demora)
       const result = await sql.query`select p.HoraInicio
                                               ,p.HoraFin
                                               ,p.Tiempo
@@ -742,6 +741,7 @@ class Db {
     try {
       await sql.connect(this.setting)
       const result = await sql.query`select 
+                                          h.id as hid,
                                           o.Orden,
                                           o.NumOperacion as operacion,
                                           h.Fecha,
@@ -760,19 +760,20 @@ class Db {
                                             inner join tbOrdenProduccion o on o.Id = p.OrdenProdId
                                             inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
                                             inner join strListaTurnos t on t.Id = h.TurnoId
-                                            where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PuestoTr}
-                                            group by o.Orden, o.NumOperacion, h.Fecha, 
+                                            where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId}
+                                            group by o.Orden, o.NumOperacion, h.Fecha, h.id, 
                                                 n.[Centro Planif], n.[UM PT], n.[UM Actividad 1], n.[UM Actividad 2], n.[UM Actividad 3], 
                                                 h.TurnoId, t.Descripcion`
       callback(null, result)
     } catch (error) {
-      callback(err, null)
+      console.log(error)
+      callback(error, null)
     }
   }
   async getNotifPos (pos, callback) {
     try {
       await sql.connect(this.setting)
-      const result = await sql.query`select   h.Id,
+      const result = await sql.query`select   h.Id as hid,
                                               o.Material,
                                               n.[Centro Planif] as centro,
                                               n.[Almacen PT] as almacen,
@@ -784,10 +785,10 @@ class Db {
                                                 inner join PosRegProd p on p.HeaderRegId = h.Id
                                                 inner join tbOrdenProduccion o on p.OrdenProdId = o.Id
                                                 inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
-                                                where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PuestoTr}
+                                                where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PtrId}
                                                 group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT]
                                       union all
-                                      select  h.Id,
+                                      select  h.Id as hid,
                                               o.Material,
                                               n.[Centro Planif] as centro,
                                               n.[Almacen PT] as almacen,
@@ -800,7 +801,7 @@ class Db {
                                                 inner join PosRegProdComponente c on c.PosProdId = p.id
                                                 inner join tbOrdenProduccion o on o.id = p.OrdenProdId
                                                 inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
-                                                where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PuestoTr}
+                                                where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PtrId}
                                                 group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT], c.Batch`
       callback(null, result);
     } catch (error) {
