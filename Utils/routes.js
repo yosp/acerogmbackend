@@ -436,12 +436,64 @@ class Routes {
             })
         })
 
+        this.app.post('/api/regheadernotif', (req, res) => {
+            this.db.regHeaderNotif(req.body.header, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset[0])
+                }
+            })
+        })
+
+        this.app.post('/api/regposnotif', (req, res) => {
+            this.db.regPosNotif(req.body.posData, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data)
+                }
+            })
+        })
+        this.app.post('/api/regheadernotifmbfb', (req, res) => {
+            this.db.RegHeaderNotifMFBF(req.body.header,(err, data)=>{
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset[0])
+                }
+            })
+        })
+
+        this.app.post('/api/regposmfbf', (req, res) => {
+            this.db.regMfbfPos(req.body.header, (err,data)=>{
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data)
+                }
+            })
+        })
+
+
         this.app.post('/api/notifHead', (req, res) => {
             this.db.getNotifHeader(req.body.header, (err, data) => {
                 if(err) {
                     res.status(500).json({
                         error: true,
-                        message: data
+                        message: err
                     })
                 } else {
                     res.status(200).json(data.recordset)

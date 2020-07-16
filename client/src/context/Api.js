@@ -285,6 +285,33 @@ const sapSendChatarra = (ZgmAcerogmChatarra, callback) => {
             })
 }
 
+const regHeaderNotif = (header, callback) => {
+    axios.post(`${base}/regheadernotif`, {header}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const regPosNotif = (posData, callback) => {
+    axios.post(`${base}/regposnotif`, {posData}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+
 const getDemoras = (demora, callback) => {
     axios.post(`${base}/demora`, {demora}
     , {
@@ -332,6 +359,7 @@ const getmfbf = (header, callback) => {
     }).then(function(res) {
             callback(null, res.data)
         }).catch(function(err){
+            debugger
             callback(err, null)
         })
 }
@@ -382,5 +410,7 @@ export {
     InsertProdComp,
     DelProdComp,
     getmfbf,
-    getmfbfPos
+    getmfbfPos,
+    regHeaderNotif,
+    regPosNotif
 }

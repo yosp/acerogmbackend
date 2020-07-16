@@ -10,7 +10,7 @@ import {
   makeStyles,
   Drawer
 } from "@material-ui/core";
-import { Note, NextWeek, AccountCircle, PowerSettingsNew } from "@material-ui/icons";
+import { Note, NextWeek, AccountCircle, PowerSettingsNew, AccessTime, NotificationsActive } from "@material-ui/icons";
 import { GlobalContex } from '../../context/GlobalState'
 
 import { Link } from 'react-router-dom'
@@ -93,6 +93,28 @@ const DrawerMenu = ({ draw, onToggle }) => {
                 <NextWeek />
               </ListItemIcon>
               <ListItemText primary="chatarra" />
+            </ListItem>
+        </Link>
+          </List>
+      <Divider />
+      <List>
+              <Link to="/demora" className={classes.linkStyle}> 
+            <ListItem button>
+              <ListItemIcon>
+                <AccessTime />
+              </ListItemIcon>
+              <ListItemText primary="Demora" />
+            </ListItem>
+        </Link>
+          </List>
+      <Divider />
+      <List>
+              <Link to="/notif" className={classes.linkStyle}> 
+            <ListItem button>
+              <ListItemIcon>
+                <NotificationsActive />
+              </ListItemIcon>
+              <ListItemText primary="Notificaciones" />
             </ListItem>
         </Link>
           </List>

@@ -28,7 +28,8 @@ import {
     LOAD_NOTIF,
     LOAD_NOTIF_POS,
     SET_ACTIVE_TYPE_NOTIF,
-    SET_ACTIVE_NOTIF_HEADER
+    SET_ACTIVE_NOTIF_HEADER,
+    SET_ACTIVE_PTR
 } from './Actions'
 
 export default (state, action) => {
@@ -187,6 +188,11 @@ export default (state, action) => {
             return {
                 ...state,
                 ActiveNotifId: action.payload
+            }
+        case SET_ACTIVE_PTR:
+            return {
+                ...state,
+                ActivePtr: action.payload
             }
         default:
             return state

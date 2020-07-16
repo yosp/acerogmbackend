@@ -15,9 +15,9 @@ import {
 import { NewReleases } from "@material-ui/icons";
 import MomentUtils from "@date-io/moment";
 import { GlobalContex } from "../../context/GlobalState";
-import { getNotif, getNotifPos } from  "../../context/Api"
+import { getNotif, getNotifPos, getmfbf, getmfbfPos } from "../../context/Api";
 
-import TypeNotif from './TypeNotif'
+import TypeNotif from "./TypeNotif";
 
 const useStyles = makeStyles((theme) => ({
   PaperSite: {
@@ -84,8 +84,10 @@ const useStyles = makeStyles((theme) => ({
 const HeadSearch = () => {
   const classes = useStyles();
   const [Fecha, SetFecha] = useState(new Date());
+  const [Tipo, SetTipo] = useState(new Date());
   const AceroContex = useContext(GlobalContex);
-  const { userInfo, LoadNotifPos, LoadNotif, SetTypoNotif  } = AceroContex;
+  const { userInfo, LoadNotifPos, LoadNotif, SetTypoNotif, SetActivePtr } = AceroContex;
+
   const puestos = userInfo.map((puesto) => {
     return {
       id: puesto.PuestoTrId,
@@ -97,33 +99,53 @@ const HeadSearch = () => {
   const PtrChange = (e) => {
     e.preventDefault();
     let index = e.target.selectedIndex;
-    let optionElement = e.target.childNodes[index]
-    let option =  optionElement.getAttribute('data-type');
-    SetTypoNotif(option)
-  }
+    let optionElement = e.target.childNodes[index];
+    let option = optionElement.getAttribute("data-type");
+    SetTypoNotif(option);
+    SetTipo(option)
+  };
   const handlerSubmit = (e) => {
     e.preventDefault();
-    const { ptr } = e.target.elements
+    const { ptr } = e.target.elements;
+    SetActivePtr(ptr.value)
     const data = {
       PtrId: ptr.value,
-      Fecha: Fecha
+      Fecha: Fecha,
+    };
+    console.log(Tipo)
+    if(Tipo == 1) {
+      getNotif(data, (err, data) => {
+        if (err) {
+  
+        } else {
+          LoadNotif(data);
+        }
+      });
+  
+      getNotifPos(data, (err, data) => {
+        if (err) {
+          
+        } else {
+          LoadNotifPos(data);
+        }
+      });
+    } else {
+      console.log("en mfbf")
+      getmfbf(data, (err, data) => {
+        if (err) {
+  
+        } else {
+          LoadNotif(data);
+        }
+      });
+      getmfbfPos(data, (err, data) => {
+        if (err) {
+          
+        } else {
+          LoadNotifPos(data);
+        }
+      });
     }
-    getNotif(data, (err, data) => {
-      if(err) {
-
-      } else {
-        console.log(data)
-        LoadNotif(data)
-      }
-    })
-
-    getNotifPos(data, (err, data)=> {
-      if(err) {
-
-      } else {
-        LoadNotifPos(data)
-      }
-    })
   };
 
   const handleFechaCHange = (date) => {
@@ -169,7 +191,7 @@ const HeadSearch = () => {
                   className={classes.SelectStyle}
                   onChange={PtrChange}
                 >
-                  <option value='0'>...</option>
+                  <option value="0">...</option>
                   {puestos.map((puesto) => {
                     return (
                       <option
@@ -198,7 +220,7 @@ const HeadSearch = () => {
           </Grid>
         </form>
       </Paper>
-      <TypeNotif/>
+      <TypeNotif />
     </>
   );
 };

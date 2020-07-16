@@ -30,7 +30,8 @@ import {
     LOAD_NOTIF_POS,
     CLEAR_NOTIF,
     SET_ACTIVE_TYPE_NOTIF,
-    SET_ACTIVE_NOTIF_HEADER
+    SET_ACTIVE_NOTIF_HEADER,
+    SET_ACTIVE_PTR
 } from "./Actions";
 
 const InitialState = {
@@ -59,7 +60,9 @@ const InitialState = {
     headerNotif: null,
     notifPos: null,
     ActiveTypeNotif: null,
-    ActiveNotifId: null
+    ActiveNotifId: null,
+    ActivePtr: null,
+
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -281,6 +284,13 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function SetActivePtr(ptr) {
+      dispatch({
+        type: SET_ACTIVE_PTR,
+        payload: ptr
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -313,6 +323,7 @@ export const GlobalProvider = ({ children }) => {
         ClearNotif,
         SetTypoNotif,
         SetActiveNotif,
+        SetActivePtr,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -338,6 +349,7 @@ export const GlobalProvider = ({ children }) => {
         headerNotif: state.headerNotif,
         ActiveTypeNotif: state.ActiveTypeNotif,
         ActiveNotifId: state.ActiveNotifId,
+        ActivePtr: state.ActivePtr
           }}
     >
       {children}
