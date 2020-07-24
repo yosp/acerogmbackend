@@ -106,7 +106,6 @@ const Login = () => {
               console.log(error.message)
               return
           }
-          console.log(logininfo)
           if (logininfo !== "" && logininfo !== undefined && logininfo !== null || logininfo.length != 0) {
               setUserLogin(logininfo)
               UserInfo(parseInt(user.value), (error, info) => {

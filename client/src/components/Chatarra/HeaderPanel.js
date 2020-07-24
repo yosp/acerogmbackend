@@ -94,7 +94,7 @@ const HeaderPanel = () => {
     }
 
     sapSendChatarra(ZgmAcerogmChatarra, (err, data) =>{
-      console.log(data)
+      
     })
   }
 

@@ -77,8 +77,6 @@ const Reset = ({ HandlerClose }) => {
 
   function onFormSubmint(e) {
     e.preventDefault();
-    // const { user, password } = e.target.elements;
-    // console.log(user.value, password.value);
     history.push("/");
   }
 

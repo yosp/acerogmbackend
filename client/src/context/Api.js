@@ -132,7 +132,6 @@ const DelProdComp = (PosProdId, callback) => {
     callback(null, response.data)
 }
 ).catch(function (error) {
-    console.log(error)
     callback(error, null)
 })
 }
@@ -377,7 +376,6 @@ const getmfbfPos = (header, callback) => {
         })
 }
 const regHeaderNotifMfbf = (header, callback) => {
-    console.log(header)
     axios.post(`${base}/regheadernotifmbfb`, {header}
     , {
         headers: {

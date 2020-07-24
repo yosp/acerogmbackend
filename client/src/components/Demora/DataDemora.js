@@ -166,7 +166,6 @@ const DataDemora = () => {
         reg.HoraFin = moment(new Date(reg.HoraFin)).format("LT");
         return reg;
       });
-      console.log("demora row")
       rows = regDemora
     }
   },[])

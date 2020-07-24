@@ -113,7 +113,7 @@ const HeadSearch = () => {
       PtrId: ptr.value,
       Fecha: Fecha,
     };
-    console.log(Tipo)
+   
     if(Tipo == 1) {
       getNotif(data, (err, data) => {
         if (err) {
@@ -131,7 +131,6 @@ const HeadSearch = () => {
         }
       });
     } else {
-      console.log("en mfbf")
       getmfbf(data, (err, data) => {
         if (err) {
   

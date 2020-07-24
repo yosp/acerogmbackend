@@ -124,7 +124,6 @@ const PuestoTr = () => {
           UsrReg: user.CodigoEmp,
           RegDate: new Date()
       }
-      console.log(data)
       
       InsertHeaderRegistro(data, (err, res) => {
           

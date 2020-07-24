@@ -184,7 +184,6 @@ class Routes {
         })
 
         this.app.post('/api/registro/delProdCompData', (req, res) => {
-            console.log(req.body.PosProdId)
             this.db.delProdComp(req.body.PosProdId, (err, data) => {
                 if(err) {
                     res.status(500).json({
@@ -342,14 +341,12 @@ class Routes {
 
         this.app.post('/api/sap/ordenes', (req, res)=>{
             this.db.InsSapOrdenes(req.body.ordenesField, (err, data)=> {
-                console.log(data.recordset)
             })
             res.status(200).json({'Resp': 'OK'})
         })
 
         this.app.post('/api/sap/ordenescomp', (req, res)=>{
             this.db.InsSapOrdenesComp(req.body.componentesField, (err, data)=> {
-                console.log(data.recordset)
             })
             res.status(200).json({'Resp': 'OK'})
         })

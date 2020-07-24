@@ -91,7 +91,6 @@ const HeaderReg = ({ header }) => {
     listaGrp = [... new Set(listaGrp)]
 
     useEffect(() => {
-        console.log(header.id)
         getRegProd(header.id, (err, data) => {
             loadRegProdData(data)
         })

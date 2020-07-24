@@ -223,7 +223,6 @@ const HeaderTable = () => {
 
   const handleSapPublish = (e) => {
     e.preventDefault()
-    console.log(e.currentTarget.dataset.id)
   }
 
   const handleChangeRowsPerPage = (event) => {
