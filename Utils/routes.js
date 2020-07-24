@@ -475,7 +475,7 @@ class Routes {
         })
 
         this.app.post('/api/regposmfbf', (req, res) => {
-            this.db.regMfbfPos(req.body.header, (err,data)=>{
+            this.db.regMfbfPos(req.body.PosData, (err,data)=>{
                 if(err) {
                     res.status(500).json({
                         error: true,

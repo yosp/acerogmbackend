@@ -86,7 +86,7 @@ const HeadSearch = () => {
   const [Fecha, SetFecha] = useState(new Date());
   const [Tipo, SetTipo] = useState(new Date());
   const AceroContex = useContext(GlobalContex);
-  const { userInfo, LoadNotifPos, LoadNotif, SetTypoNotif, SetActivePtr } = AceroContex;
+  const { userInfo, LoadNotifPos, LoadNotif, SetTypoNotif, SetActivePtr, SetActiveFechaN } = AceroContex;
 
   const puestos = userInfo.map((puesto) => {
     return {
@@ -108,6 +108,7 @@ const HeadSearch = () => {
     e.preventDefault();
     const { ptr } = e.target.elements;
     SetActivePtr(ptr.value)
+    SetActiveFechaN(Fecha);
     const data = {
       PtrId: ptr.value,
       Fecha: Fecha,

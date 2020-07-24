@@ -16,7 +16,7 @@ import moment from "moment";
 import { Check, Toc, Publish } from '@material-ui/icons'
 import { GlobalContex } from '../../context/GlobalState'
 
-import { regHeaderNotif, regPosNotif, getNotif, getNotifPos} from '../../context/Api'
+import { regHeaderNotifMfbf, regPosNotifMfbf, getmfbf, getmfbfPos} from '../../context/Api'
 
 let rows = [];
 
@@ -44,135 +44,113 @@ const HeaderTable = () => {
   const AceroContex = useContext(GlobalContex)
   const {userInfo, headerNotif, SetActiveNotif, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos } = AceroContex
 
-  const columns = [
-    {
-      id: "Orden",
-      label: "Orden",
-      minWidth: "175",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "Operacion",
-      label: "Operacion",
-      minWidth: "175",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "FechaCount",
-      label: "Fecha",
-      minWidth: "195",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "Centro",
-      label: "Centro",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "UndMedida",
-      label: "Und Medida",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "CantNot",
-      label: "CantNot",
-      minWidth: "170",
-      align: "center",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "HoraMaquina",
-      label: "Hora Maquina",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "UndHM",
-      label: "Und HM",
-      minWidth: "170",
-      align: "center",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "HoraHombre",
-      label: "Hora Hombre",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "UnHH",
-      label: "Und HH",
-      minWidth: "170",
-      align: "center",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "Turno",
-      label: "Id Turno",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "TurnoDesc",
-      label: "Turno",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "UnTurno",
-      label: "Seccion",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
-      id: "Id",
-      label: "Posiciones",
+  const columns = [{
+    id: "Material",
+    label: "Material",
+    minWidth: "175",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "centroPlanif",
+    label: "Cantro Planif",
+    minWidth: "175",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "Centro",
+    label: "Centro",
+    minWidth: "195",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "almacen",
+    label: "Almacen",
+    minWidth: "175",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "VerFab",
+    label: "VerFab",
+    minWidth: "195",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "PuestoTrabajo",
+    label: "Puesto de Trabajo",
+    minWidth: "195",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "Fecha",
+    label: "Fecha",
+    minWidth: "195",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "docdate",
+    label: "Fecha Documento",
+    minWidth: "195",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "UndMedida",
+    label: "Unidad Medida",
+    minWidth: "195",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "cantnot",
+    label: "CantNot",
+    minWidth: "195",
+    align: "left",
+    format: (value) => value.toLocaleString(),
+  },
+  {
+    id: "Id",
+    label: "Posiciones",
       minWidth: "100",
       align: "left",
       format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleViewPos}> <Toc/> </Button>,
-    },  
-    {
-      id: "hid",
-      label: "Validar",
-      minWidth: "100",
-      align: "left",
-      format: (value) =>{ 
-            let m = null;
-            if(value.toLocaleString() == '0'){
-              m = <Button  disabled > <Check/> </Button>
-          } else {
-            m = <Button  data-Id={value.toLocaleString()} onClick={handleValid}> <Check/> </Button>
-          }
-          return m},
-    },
-    {
-      id: "RegSap",
-      label: "Registro SAP",
-      minWidth: "200",
-      align: "left",
-      format: (value) => {
-        let x 
-        if(value.toLocaleString() == '0' || value.toLocaleString() == null) {
-          x = <Button data-Id={value.toLocaleString()} onClick={handleSapPublish}> <Publish/> </Button>
+  },  
+  {
+    id: "HeaderId",
+    label: "Validar",
+    minWidth: "100",
+    align: "left",
+    format: (value) =>{ 
+          let m = null;
+          if(value.toLocaleString() == '0' ){
+            m = <Button  disabled > <Check/> </Button>
         } else {
-          x = value.toLocaleString()
+          m = <Button  data-Id={value.toLocaleString()} onClick={handleValidMfbf}> <Check/> </Button>
         }
-        return x
-      },
+        return m},
+  },
+  {
+    id: "RegSap",
+    label: "Registro SAP",
+    minWidth: "200",
+    align: "left",
+    format: (value) => {
+      let x 
+      if(value.toLocaleString() == '0' || value.toLocaleString() == null) {
+        x = <Button data-Id={value.toLocaleString()} onClick={handleSapPublish}> <Publish/> </Button>
+      } else {
+        x = value.toLocaleString()
+      }
+      return x
     },
-  ];
+  },
+  ]
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -183,40 +161,43 @@ const HeaderTable = () => {
     SetActiveNotif(e.currentTarget.dataset.id)
   }
 
-  const handleValid = (e) => {
+  const handleValidMfbf = (e) => {
     e.preventDefault()
     let header = {
       id: e.currentTarget.dataset.id,
       codigo: userInfo[0].CodigoEmp,
-      ptr: ActivePtr
+      ptr: ActivePtr,
+      Fecha: ActiveFechaN
     }
 
     let predata = {
       PtrId: ActivePtr,
       Fecha: ActiveFechaN,
     };
-    regHeaderNotif(header, (err, data) => {
+    regHeaderNotifMfbf(header, (err, data) => {
       if(err) {
         toast.error("Ocurrio un error al intentar validar Cabecera", {
           position: toast.POSITION.BOTTOM_RIGHT,
           autoClose: 3000
       });
       } else {
-        regPosNotif({id:header.id, headerId: data.headerId }, (err, data) => {
+        header.hid = header.id
+        header.id = data.headerId 
+        regPosNotifMfbf(header, (err, data) => {
           if(err) {
             toast.error("Ocurrio un error al intentar validar las posiciones", {
               position: toast.POSITION.BOTTOM_RIGHT,
               autoClose: 3000
           });
           } else {
-            getNotif(predata, (err, res)=> {
+            getmfbf(predata, (err, res)=> {
               if(err) {
 
               } else {
                 LoadNotif(res)
               }
             })
-            getNotifPos(predata, (err, res) => {
+            getmfbfPos(predata, (err, res) => {
               if(err){
 
               }else{
@@ -224,7 +205,6 @@ const HeaderTable = () => {
                 SetActiveNotif(null)
               }
             })
-            
             toast.success("Posiciones de notificacion validadas", {
               position: toast.POSITION.BOTTOM_RIGHT,
               autoClose: 3000
@@ -254,7 +234,8 @@ const HeaderTable = () => {
   useEffect(()=>{
     if(headerNotif !== null && headerNotif !== undefined){
       headerNotif.map((reg) => {
-          reg.FechaCount = moment(new Date(reg.FechaCount)).format("L");
+          reg.Fecha = moment(new Date(reg.Fecha)).format("L");
+          reg.docdate = moment(new Date(reg.docdate)).format("L");
         return reg;
       });
       rows = headerNotif

@@ -376,6 +376,32 @@ const getmfbfPos = (header, callback) => {
             callback(err, null)
         })
 }
+const regHeaderNotifMfbf = (header, callback) => {
+    console.log(header)
+    axios.post(`${base}/regheadernotifmbfb`, {header}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const regPosNotifMfbf = (PosData, callback) => {
+    debugger
+    axios.post(`${base}/regposmfbf`, {PosData}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
 
 export {
     LoginUser,
@@ -412,5 +438,7 @@ export {
     getmfbf,
     getmfbfPos,
     regHeaderNotif,
-    regPosNotif
+    regPosNotif,
+    regHeaderNotifMfbf,
+    regPosNotifMfbf
 }

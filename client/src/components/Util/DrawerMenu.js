@@ -10,7 +10,13 @@ import {
   makeStyles,
   Drawer
 } from "@material-ui/core";
-import { Note, NextWeek, AccountCircle, PowerSettingsNew, AccessTime, NotificationsActive } from "@material-ui/icons";
+import { Note, 
+          NextWeek, 
+          AccountCircle, 
+          PowerSettingsNew, 
+          AccessTime, 
+          NotificationsActive,
+          LocalShipping } from "@material-ui/icons";
 import { GlobalContex } from '../../context/GlobalState'
 
 import { Link } from 'react-router-dom'
@@ -90,9 +96,9 @@ const DrawerMenu = ({ draw, onToggle }) => {
               <Link to="/chatarra" className={classes.linkStyle}> 
             <ListItem button>
               <ListItemIcon>
-                <NextWeek />
+                <LocalShipping />
               </ListItemIcon>
-              <ListItemText primary="chatarra" />
+              <ListItemText primary="Chatarra" />
             </ListItem>
         </Link>
           </List>

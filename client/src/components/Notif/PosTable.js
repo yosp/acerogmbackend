@@ -61,7 +61,7 @@ const PosTable = () => {
       label: "Almacen",
       minWidth: "195",
       align: "left",
-      format: (value) => moment(value.toLocaleString()).format("L"), //value.toLocaleString()
+      format: (value) => moment(value.toLocaleString()).format("L"), 
     },
     {
       id: "batch",
@@ -110,8 +110,15 @@ const PosTable = () => {
       notifPos !== undefined
     ) {
       rows = notifPos.filter((pos) => {
-        return pos.hid == ActiveNotifId;
+          if(pos.hid != undefined || pos.hid != null){
+            return pos.hid == parseInt(ActiveNotifId);
+          } else {
+            return pos.Id == parseInt(ActiveNotifId);
+          }
+        
       });
+    } else {
+      rows = []
     }
   }, [ActiveNotifId, notifPos]);
 

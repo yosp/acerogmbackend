@@ -230,7 +230,6 @@ class Db {
         
         callback(null, query)
     } catch (e) { 
-        console.log(e)
         callback(e, null)
     }
   }
@@ -697,7 +696,6 @@ class Db {
   }
 
   /// Demora
-
   async getDemora(demora, callback) {
     try {
       await sql.connect(this.setting);
@@ -737,11 +735,12 @@ class Db {
     }
   }
 
+  //Notificaciones Co11
   async regHeaderNotif (header, callback) {
     try {
       await sql.connect(this.setting)
       await sql.query`insert into HeaderNotificacion (Orden, Operacion, FechaCont, Centro, UndMedida, CantNot, 
-                                        HoraMaquina, UndHM, HoraHombre, UnHH, Turno, UnTurno, RegHeaderId, UsrReg, PuestoTrabajoid, RegDate, UpdDate)
+                                        HoraMaquina, UndHM, HoraHombre, UnHH, Turno, UnTurno, RegHeaderId, RegSap , UsrReg, PuestoTrabajoid, RegDate, UpdDate)
                                   select                         
                                         o.Orden,
                                         o.NumOperacion,
@@ -756,6 +755,7 @@ class Db {
                                         h.TurnoId,
                                         n.[UM Actividad 3],
                                         h.Id,
+                                        0,
                                         ${header.codigo},
                                         ${header.ptr},
                                         GETDATE(),
@@ -776,10 +776,8 @@ class Db {
       callback(e, null)
     }
   }
-
   async regPosNotif (posData, callback) {
     try {
-      console.log(posData)
       await sql.connect(this.setting) //${header.headerId}  ${header.id} 
       await sql.query`insert into PosNotificacion (HeaderId ,Material, Centro, Almacen, Clmv, Cant,UndMed, Batch, RegHeaderId, PuestoTrabajoId, RegDate)
       select  
@@ -843,8 +841,8 @@ class Db {
                                         h.TurnoId as Turno,
                                         t.Descripcion as TurnoDesc,
                                         n.[UM Actividad 3] as UnTurno,
-                                        null as RegSap,
-                                        h.id as hid
+                                        0 as RegSap,
+                                        h.Id as hid
                                         from HeaderReg h
                                         inner join PosRegProd p on p.HeaderRegId = h.Id
                                         inner join tbOrdenProduccion o on o.Id = p.OrdenProdId
@@ -878,7 +876,6 @@ class Db {
 
       callback(null, result)
     } catch (error) {
-      console.log(error)
       callback(error, null)
     }
   }
@@ -934,23 +931,24 @@ select p.Id as hid,
       callback(error, null)
     }
   }
-
+  //Notificaciones MFBF
   async RegHeaderNotifMFBF (header, callback) {
     try {
       await sql.connect(this.setting)
-      await sql.query`insert into headernotifmfbf (Material, CentroPlanif, Centro, Almacen, VerFab, PuestoTrabajo, PuestoTrabajoId, Fecha, DocDate, UndMedida, CantNot, HeaderId, UsrReg, RegDate, UpdDate)  
+      await sql.query`insert into headernotifmfbf (Material, CentroPlanif, Centro, Almacen, VerFab, PuestoTrabajo, PuestoTrabajoId, Fecha, DocDate, UndMedida, CantNot, HeaderId, RegSap, UsrReg, RegDate, UpdDate)  
                     select o.Material,
                         n.[Centro Planif],
                         n.Centro,
                         n.[Almacen PT],
                         o.VerFab,
                         o.PuestoTrabajo,
-                        ${header.PtrId},
+                        n.PuestoTrabajoid,
                         CONVERT(date,h.Fecha,101) as Fecha,
                         CONVERT(date,h.Fecha,101) as docdate,
                         sum(p.PT_UMB) UndMedida,
                         n.[UM PT] as CantNot,
                         h.Id,
+                        0,
                         ${header.codigo},
                         GETDATE(),
                         GETDATE()
@@ -958,28 +956,26 @@ select p.Id as hid,
                         inner join PosRegProd p on h.Id = p.HeaderRegId
                         inner join tbOrdenProduccion o on o.id = p.OrdenProdId
                         inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
-                        where convert(date,h.Fecha,101) = CONVERT(date,${header.fecha},101) and h.PuestoTrabajoId = ${header.PtrId}
-                        group by o.Material, n.[Centro Planif], n.Centro, n.[Almacen PT], o.VerFab, o.PuestoTrabajo, h.Fecha, n.[UM PT], h.Id`
+                        where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.ptr} and h.Id = ${header.id}
+                        group by o.Material, n.[Centro Planif], n.Centro, n.[Almacen PT], o.VerFab, o.PuestoTrabajo, h.Fecha, n.[UM PT], h.Id, n.PuestoTrabajoid`
       const result = await sql.query`SELECT @@IDENTITY as headerId`
       callback(null, result)       
     } catch (e) {
       callback(e,null)
     }
   }
-
   async regMfbfPos (PosData, callback) {
     try {
       await sql.connect(this.setting) 
-      await sql.query`insert into PosNotifMFBF (HeaderId, Material, Centro, Almacen, Batch, Clmv, Cant, UndMed,  RegHeaderId, HeaderDate, PuestoTrabajoId, RegDate) 
-                      select  ${PosData.headerId},
+      await sql.query`insert into PosNotifMFBF (HeaderId, Material, Centro, Almacen, Batch, Clmv, Cant, UndMed, HeaderDate, PuestoTrabajoId, RegDate) 
+                      select ${PosData.hid},
                           o.Material,
-                          n.Centro,
+                          n.Centro as centro,
                           n.[Almacen PT] as almacen,
                           '' as batch,
                           n.[CIMv PT] as Clmv,
-                          sum(p.PT_UMB) as Cant,
+                          sum(p.PT_UMB) as cant,
                           n.[UM PT] as UndMed,
-                          h.Id,
                           h.Fecha,
                           h.PuestoTrabajoId,
                           GETDATE()
@@ -987,14 +983,14 @@ select p.Id as hid,
                               inner join PosRegProd p on p.HeaderRegId = h.id
                               inner join tbOrdenProduccion o on o.id = p.OrdenProdId
                               inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
-                              where convert(date,h.Fecha,101) = CONVERT(date,${PosData.Fecha},101) and h.PuestoTrabajoId = ${PosData.PuestoTr}
+                              where convert(date,h.Fecha,101) = CONVERT(date,${PosData.Fecha},101) 
+                                and h.PuestoTrabajoId = ${PosData.ptr} and h.Id =  ${PosData.hid}
                               group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.PuestoTrabajoId, h.Id, h.Fecha`
       callback(null, 'OK')
     } catch (error) {
       callback(error, null)
     }
   }
-
   async getMfbf (header, callback) {
     try {
       await sql.connect(this.setting) 
@@ -1009,13 +1005,14 @@ select p.Id as hid,
           CONVERT(date,h.Fecha,101) as docdate,
           sum(p.PT_UMB) UndMedida,
           n.[UM PT] as cantnot,
-      0 as HeaderId
+          h.Id as HeaderId,
+          0 as RegSap
           from HeaderReg h
           inner join PosRegProd p on h.Id = p.HeaderRegId
           inner join tbOrdenProduccion o on o.id = p.OrdenProdId
           inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
-          where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha}',101) and h.PuestoTrabajoId = ${header.PuestoTr} 
-      and h.Id not in (select HeaderId from HeaderNotifMFBF where convert(date,Fecha,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PuestoTr})
+          where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} 
+      and h.Id not in (select HeaderId from HeaderNotifMFBF where convert(date,Fecha,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PtrId})
           group by o.Material, n.[Centro Planif], n.Centro, n.[Almacen PT], o.VerFab, o.PuestoTrabajo, h.Fecha, n.[UM PT],h.Id
   union all 
     select Id,
@@ -1029,45 +1026,44 @@ select p.Id as hid,
         DocDate,
         UndMedida,
         CantNot,
-        HeaderId
+        0,
+        RegSap
         from HeaderNotifMFBF 
-        where convert(date,Fecha,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PuestoTr}`
+        where convert(date,Fecha,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PtrId}`
       callback(null, result)
     } catch (error) {
-      console.log(error)
       callback(error, null)
     }
   }
-
-  async getMfbfPos (header, callback) {
+async getMfbfPos (header, callback) {
     try {
       await sql.connect(this.setting) 
       const result = await sql.query`select  h.Id,
                                             o.Material,
-                                            n.Centro,
+                                            n.Centro as centro,
                                             n.[Almacen PT] as almacen,
                                             '' as batch,
                                             n.[CIMv PT] as Clmv,
-                                            sum(p.PT_UMB) as Cant,
+                                            sum(p.PT_UMB) as cant,
                                             n.[UM PT] as UndMed
                                           from HeaderReg h
                                             inner join PosRegProd p on p.HeaderRegId = h.id
                                             inner join tbOrdenProduccion o on o.id = p.OrdenProdId
                                             inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
-                                            where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PuestoTr} 
-                                            and h.id not in (select RegHeaderId from PosNotifMFBF where PuestoTrabajoId = ${header.PuestoTr} and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)  )
+                                            where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} 
+                                            and h.id not in (select HeaderId from PosNotifMFBF where PuestoTrabajoId = ${header.PtrId} and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)  )
                                             group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.Id
                                         union all
                                         select  id,
                                             Material,
-                                            Centro,
-                                            Almacen,
-                                            Batch,
+                                            Centro as centro,
+                                            Almacen as almacen,
+                                            Batch as batch,
                                             Clmv, 
-                                            Cant, 
+                                            Cant as cant, 
                                             UndMed
                                             from PosNotifMFBF
-                                              where PuestoTrabajoId = ${header.PuestoTr} and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)`
+                                              where PuestoTrabajoId = ${header.PtrId} and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)`
       callback(null, result)
     } catch (error) {
       callback(error, null)

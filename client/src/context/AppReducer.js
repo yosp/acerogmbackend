@@ -29,7 +29,8 @@ import {
     LOAD_NOTIF_POS,
     SET_ACTIVE_TYPE_NOTIF,
     SET_ACTIVE_NOTIF_HEADER,
-    SET_ACTIVE_PTR
+    SET_ACTIVE_PTR,
+    SET_FECHA_NOTIF,
 } from './Actions'
 
 export default (state, action) => {
@@ -193,6 +194,11 @@ export default (state, action) => {
             return {
                 ...state,
                 ActivePtr: action.payload
+            }
+        case SET_FECHA_NOTIF:
+            return {
+                ...state,
+                ActiveFechaN: action.payload
             }
         default:
             return state

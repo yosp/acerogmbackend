@@ -31,7 +31,8 @@ import {
     CLEAR_NOTIF,
     SET_ACTIVE_TYPE_NOTIF,
     SET_ACTIVE_NOTIF_HEADER,
-    SET_ACTIVE_PTR
+    SET_ACTIVE_PTR,
+    SET_FECHA_NOTIF
 } from "./Actions";
 
 const InitialState = {
@@ -62,7 +63,7 @@ const InitialState = {
     ActiveTypeNotif: null,
     ActiveNotifId: null,
     ActivePtr: null,
-
+    ActiveFechaN: null,
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -291,6 +292,13 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function SetActiveFechaN(fecha) {
+      dispatch({
+        type: SET_FECHA_NOTIF,
+        payload: fecha
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -324,6 +332,7 @@ export const GlobalProvider = ({ children }) => {
         SetTypoNotif,
         SetActiveNotif,
         SetActivePtr,
+        SetActiveFechaN,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -349,7 +358,8 @@ export const GlobalProvider = ({ children }) => {
         headerNotif: state.headerNotif,
         ActiveTypeNotif: state.ActiveTypeNotif,
         ActiveNotifId: state.ActiveNotifId,
-        ActivePtr: state.ActivePtr
+        ActivePtr: state.ActivePtr,
+        ActiveFechaN: state.ActiveFechaN,
           }}
     >
       {children}
