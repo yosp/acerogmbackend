@@ -104,8 +104,6 @@ const PosTable = () => {
 
   useEffect(() => {
     if (
-      ActiveNotifId !== null &&
-      ActiveNotifId !== undefined &&
       notifPos !== null &&
       notifPos !== undefined
     ) {

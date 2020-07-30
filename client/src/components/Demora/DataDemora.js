@@ -167,8 +167,10 @@ const DataDemora = () => {
         return reg;
       });
       rows = regDemora
+    } else {
+      rows = []
     }
-  },[])
+  },[regDemora])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

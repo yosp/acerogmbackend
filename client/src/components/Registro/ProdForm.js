@@ -92,7 +92,6 @@ const ProdFrom = () => {
     let torden = ordenes.filter((o) => {
       return o.Id == orden.value;
     });
-
     const data = {
       HeaderRegId: headerReg.id,
       OrdenProdId: orden.value,
@@ -102,9 +101,8 @@ const ProdFrom = () => {
       PT_UMB: prodacumulado.value,
       Notas: observ.value,
       EPH: torden.EPH,
-      TotalComb: combustible.value == undefined ? 0 : combustible.value,
-      Total_Potencia:
-        conscombustible.value == undefined ? 0 : combustible.value,
+      TotalComb: combustible == undefined ? 0 : combustible.value,
+      Total_Potencia: conscombustible == undefined ? 0 : conscombustible.value,
       UsrReg: user.CodigoEmp,
     };
 

@@ -1,5 +1,5 @@
 import "moment";
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { useHistory } from 'react-router-dom'
 import {
   Button,
@@ -16,8 +16,7 @@ import { insChatarraPos } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(1),
-    overflow: "scroll",
+    padding: theme.spacing(1)
   },
   LogoSize: {
     [theme.breakpoints.down("xs")]: {
@@ -70,7 +69,7 @@ const ChatarraForm = () => {
     user,
     motivoChatara,
     tipoChatarra,
-    chatarraPos,
+    SetChatarraPos,
   } = aceroContext;
   const puestos = userInfo.map((puesto) => {
     return {
@@ -86,7 +85,7 @@ const ChatarraForm = () => {
   }
   const onFormSubmit = (e) => {
     e.preventDefault();
-
+    
     const {
       puestotr,
       tipoChatarra,
@@ -112,8 +111,10 @@ const ChatarraForm = () => {
 
     insChatarraPos(data, (err, data) => {
       if (err) {
+
       } else {
-        chatarraPos(data);
+        SetChatarraPos(data)
+
         history.push("/chatarra")
       }
     });

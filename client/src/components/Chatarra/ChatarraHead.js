@@ -101,12 +101,12 @@ const ChatarraHead = () => {
 
       }else {
         LoadChataraHeader(data)
-        getChatarraPos(data.Id,(err, data)=> {
+        getChatarraPos(data.Id,(err, res)=> {
             if(err) {
 
             } else {
-              if(data.length>0){
-                SetChatarraPos(data)
+              if(res.length>0){
+                SetChatarraPos(res)
               }
             }
         })

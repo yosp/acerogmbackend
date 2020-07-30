@@ -99,8 +99,8 @@ const ParadaForm = () => {
       subArea: SeSubArea.value,
       Motivo: SEquipo.value,
       Notas: Observ.value,
-      MpPerd: PlqPerd.value == undefined ? 0 : PlqPerd.value,
-      MpDesc: PlqDesc.value == undefined ? 0 : PlqDesc.value,
+      MpPerd: PlqPerd == undefined ? 0 : PlqPerd.value,
+      MpDesc: PlqDesc == undefined ? 0 : PlqDesc.value,
       UsrReg: user.CodigoEmp,
     };
 

@@ -137,13 +137,13 @@ const DatosProduccion = () => {
       format: (value) => value.toLocaleString(),
     },{
       id: "id",
-      label: "",
+      label: "Componentes",
       minWidth: "100",
       align: "left",
       format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleGetPrima}> <Pageview/> </Button>,
     },{
       id: "id",
-      label: "",
+      label: "Agregar Componente",
       minWidth: "100",
       align: "left",
       format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Edit/> </Button>,

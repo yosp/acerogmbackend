@@ -102,8 +102,10 @@ const ChatarraPos = () => {
   useEffect(() => {
     if (chatarraPos !== null && chatarraPos !== undefined) {
       rows = chatarraPos
+    } else {
+      rows = []
     }
-  },[])
+  },[chatarraPos])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
