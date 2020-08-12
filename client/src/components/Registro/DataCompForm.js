@@ -10,6 +10,7 @@ import {
   InputLabel,
   Tooltip,
 } from "@material-ui/core";
+import NumberFormat from 'react-number-format';
 import HeaderPrincipal from '../Util/NavBar'
 
 import { GlobalContex } from "../../context/GlobalState";
@@ -99,10 +100,8 @@ const DataCompForm = () => {
     const data = {
       PosProdId: compNumber,
       CodComponentes: mprima.value,
-      Descripcion: torden[0].Material,
       Batch: Lote.value,
       MP_UME: MpUme.value,
-      MP_UMB: MpUmb.value,
       MP_Factor: MpFactor.value,
       UsrReg: user.CodigoEmp,
     };
@@ -209,27 +208,15 @@ const DataCompForm = () => {
                 </Grid>
                 <Grid container spacing={1} alignItems="center">
                   <Grid item>
-                    <Tooltip title="Solo Números" placement="right">
-                      <TextField
-                        id="MpFactor"
-                        name="MpFactor"
-                        label="Factor"
-                        type="number"
-                        className={classes.InputTextStyle}
-                      />
-                    </Tooltip>
-                  </Grid>
-                </Grid>
-                <Grid container spacing={1} alignItems="center">
-                  <Grid item>
-                    <Tooltip title="Solo Números" placement="right">
-                      <TextField
-                        id="MpUmb"
-                        name="MpUmb"
-                        label="UMB"
-                        type="number"
-                        className={classes.InputTextStyle}
-                      />
+                    <Tooltip title="Solo Numeros" placement="right">
+                    <NumberFormat
+                      id="MpFactor"
+                      name="MpFactor"
+                      label="Factor"
+                      customInput={TextField}
+                      type="text"
+                      className={classes.InputTextStyle}
+                    />
                     </Tooltip>
                   </Grid>
                 </Grid>

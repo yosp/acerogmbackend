@@ -153,7 +153,8 @@ class Db {
       const result2 = await sql.query`select hea.id, hea.Fecha, hea.GrupoId,
                                                 grp.Descripcion as Grupo, hea.TurnoId, trn.Descripcion as Turno,
                                                 hea.PuestoTrabajoId, ptr.Descripcion as Puesto, hea.UsrReg,
-                                                info.Nombres as UserNombre, hea.RegDate
+                                                info.Nombres as UserNombre, hea.RegDate,TC,TL,TE,TR,TI,TIM,TIO,TPP,
+                                                TPPM,TPPO,TU,TPU,
                                                     from HeaderReg hea
                                                         inner join StrListaGrupos grp on hea.GrupoId = grp.id
                                                         inner join StrPuestosTrabajos ptr on hea.PuestoTrabajoId = ptr.id
@@ -181,7 +182,7 @@ class Db {
             ,ord.Eph
             ,comp.Un_Medida as ume
             ,prod.PT_UMB as emb
-            ,'23GL' as comb
+            ,cb.Descripcion as comb
             ,prod.TotalComb as conscomb
             ,prod.Total_Potencia as conselect 
             ,prod.Notas
@@ -189,6 +190,7 @@ class Db {
                     inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
                     inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
                     inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
+                    inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
                     where prod.HeaderRegId = ${headerid}`;
 
       callback(null, result);
@@ -201,9 +203,9 @@ class Db {
     try {
       await sql.connect(this.setting);
       const query = await sql.query`insert into PosRegProdComponente 
-                                                (PosProdId, CodComponentes, Descripcion, Batch, MP_UME, MP_UMB, MP_Factor, UsrReg, RegDate, UpdDate)
-                                                values (${ProdComp.PosProdId}, ${ProdComp.CodComponentes}, ${ProdComp.Descripcion}, ${ProdComp.Batch}, 
-                                                    ${ProdComp.MP_UME}, ${ProdComp.MP_UMB}, ${ProdComp.MP_Factor}, ${ProdComp.UsrReg},getdate(), getDate())`;
+                                                (PosProdId, CodComponentes, Batch, MP_UME, MP_Factor, UsrReg, RegDate, UpdDate)
+                                                values (${ProdComp.PosProdId}, ${ProdComp.CodComponentes}, ${ProdComp.Batch}, 
+                                                    ${ProdComp.MP_UME}, ${ProdComp.MP_Factor}, ${ProdComp.UsrReg},getdate(), getDate())`;
       callback(null, query);
     } catch (e) {
       callback(e, null)
@@ -237,11 +239,12 @@ class Db {
   async insProdData(proddat, callback) {
     try {
       await sql.connect(this.setting);
+      console.log(proddat)
       const query = await sql.query`insert into PosRegProd 
-                                                (HeaderRegId, OrdenProdId, Hora, PT_UME, PT_UMB, Notas, TotalComb, Total_Potencia, EPH, UsrReg, RegDate, UpdDate)
+                                                (HeaderRegId, OrdenProdId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, UsrReg, RegDate, UpdDate)
                                                 values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.Hora}, ${proddat.PT_UME}, 
-                                                    ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TotalComb}, ${proddat.Total_Potencia}, ${proddat.EPH}, ${proddat.UsrReg},
-                                                    getdate(), getDate())`;
+                                                    ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TipoCombId}, ${proddat.TotalComb}, ${proddat.EPH}, ${proddat.UsrReg},
+                                                    getdate(), getDate())`; 
 
       const result = await sql.query`select prod.id
                         ,prod.OrdenProdId
@@ -253,7 +256,7 @@ class Db {
                         ,ord.Eph
                         ,comp.Un_Medida as ume
                         ,prod.PT_UMB as emb
-                        ,'23GL' as comb
+                        ,cb.Descripcion as comb
                         ,prod.TotalComb as conscomb
                         ,prod.Total_Potencia as conselect 
                         ,prod.Notas
@@ -261,10 +264,12 @@ class Db {
                                 inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
                                 inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
                                 inner join tbOrdenCompPartida par on comp.id = par.OrdenComponenteId
+                                inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
                                 where prod.HeaderRegId = ${proddat.HeaderRegId}`;
 
       callback(null, result);
     } catch (e) {
+      console.log(e)
       callback(e, null);
     }
   }
@@ -408,18 +413,18 @@ class Db {
   async updPosRegParada(regParadaD, callback) {
     try {
       await sql.connect(this.setting);
-      await sql.query`update PosRegParada set HoraInicio = ${regParaD.HoraI}
-                                                    ,HoraFin = ${regParaD.HoraF}
-                                                    ,Cargo = ${regParaD.Cargo}
-                                                    ,MotivoFallaId = ${regParaD.Motivo}
-                                                    ,MotivoFallaSubAreaId = ${regParaD.subArea}
-                                                    ,MP_Perd = ${regParaD.MpPerd}
-                                                    ,MP_Desc =  ${regParaD.MpDesc}
-                                                    ,Notas = '${regParaD.Notas}'
-                                                    ,OrdenProdId = ${regParaD.Orden}
-                                                    ,UsrReg = ${regParaD.UsrReg}
+      await sql.query`update PosRegParada set HoraInicio = ${regParadaD.HoraI}
+                                                    ,HoraFin = ${regParadaD.HoraF}
+                                                    ,Cargo = ${regParadaD.Cargo}
+                                                    ,MotivoFallaId = ${regParadaD.Motivo}
+                                                    ,MotivoFallaSubAreaId = ${regParadaD.subArea}
+                                                    ,MP_Perd = ${regParadaD.MpPerd}
+                                                    ,MP_Desc =  ${regParadaD.MpDesc}
+                                                    ,Notas = '${regParadaD.Notas}'
+                                                    ,OrdenProdId = ${regParadaD.Orden}
+                                                    ,UsrReg = ${regParadaD.UsrReg}
                                                     ,UpdDate = getDate()
-                                    where id = ${regParaD.Id}`;
+                                    where id = ${regParadaD.Id}`;
       callback(null, result);
     } catch (e) {
       callback(e, null);

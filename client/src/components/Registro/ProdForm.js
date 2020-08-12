@@ -16,6 +16,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
 } from "@material-ui/pickers";
+import NumberFormat from 'react-number-format';
 
 import { GlobalContex } from "../../context/GlobalState";
 import { getOdenenComp, insRegProd, getTipoComb } from "../../context/Api";
@@ -100,9 +101,9 @@ const ProdFrom = () => {
       PT_UME: consacumulado.value,
       PT_UMB: prodacumulado.value,
       Notas: observ.value,
-      EPH: torden.EPH,
-      TotalComb: combustible == undefined ? 0 : combustible.value,
-      Total_Potencia: conscombustible == undefined ? 0 : conscombustible.value,
+      EPH: torden.EPH, 
+      TipoCombId: combustible == undefined ? 0 : combustible.value,
+      TotalComb: conscombustible == undefined ? 0 : conscombustible.value,
       UsrReg: user.CodigoEmp,
     };
 
@@ -280,14 +281,15 @@ const ProdFrom = () => {
                 </Grid>
                 <Grid container spacing={1} alignItems="center">
                   <Grid item>
-                    <Tooltip title="Solo Números" placement="right">
-                      <TextField
-                        id="ProdAcu"
-                        name="prodacumulado"
-                        label="Producción Acumulado"
-                        type="number"
-                        className={classes.InputTextStyle}
-                      />
+                    <Tooltip title="Solo Numeros" placement="right">
+                    <NumberFormat
+                      id="ProdAcu"
+                      name="prodacumulado"
+                      label="Producción Acumulado"
+                      customInput={TextField}
+                      type="text"
+                      className={classes.InputTextStyle}
+                    />
                     </Tooltip>
                   </Grid>
                 </Grid>

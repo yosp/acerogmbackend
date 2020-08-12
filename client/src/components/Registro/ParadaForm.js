@@ -271,7 +271,7 @@ const ParadaForm = () => {
                         {cargos.map((cargo) => {
                           return (
                             <option key={cargo.Id} value={cargo.Id}>
-                              {cargo.Codigo}
+                              {cargo.Codigo} - {cargo.Descripcion}
                             </option>
                           );
                         })}
