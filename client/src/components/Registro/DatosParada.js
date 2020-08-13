@@ -17,6 +17,54 @@ import { Add } from "@material-ui/icons";
 import { GlobalContex } from "../../context/GlobalState";
 import { getMotivoFallaArea } from "../../context/Api";
 import { red } from "@material-ui/core/colors";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position: "relative",
+  },
+  FabStyle: {
+    position: "absolute",
+    background: "#FFCC00",
+    color: "#003366",
+    right: "0",
+    top: "-4rem",
+    zIndex: "999",
+    "&:hover": {
+      background: "#FFE166",
+    },
+    MainModal: {
+      overflow: "scroll",
+      background: red,
+      [theme.breakpoints.down("xs")]: {
+        heigth: "50em",
+      },
+      [theme.breakpoints.down("sm")]: {
+        heigth: "60em",
+      },
+      [theme.breakpoints.up("md")]: {
+        heigth: "70em",
+      },
+      [theme.breakpoints.up("lg")]: {},
+    },
+  },
+}));
+
+let rows = [];
+
+const DatosParada = () => {
+  const classes = useStyles();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const AceroContext = useContext(GlobalContex);
+  
+  const {
+    regparaddata,
+    fallaAreas,
+    LoadFallaArea,
+    headerReg,
+  } = AceroContext;
+
+  
 const columns = [
   {
     id: "idreg",
@@ -26,14 +74,14 @@ const columns = [
     format: (value) => value.toLocaleString(), //toFixed(2),
   },
   {
-    id: "horaI",
+    id: "horaIn",
     label: "Hora Inicio",
     minWidth: "200",
     align: "left",
     format: (value) => value.toLocaleString(),
   },
   {
-    id: "horaF",
+    id: "horaFn",
     label: "Hora Fin",
     minWidth: "200",
     align: "left",
@@ -124,59 +172,16 @@ const columns = [
     format: (value) => value.toLocaleString(),
   },
 ];
-
-let rows = [];
-
-const DatosParada = () => {
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      position: "relative",
-    },
-    FabStyle: {
-      position: "absolute",
-      background: "#FFCC00",
-      color: "#003366",
-      right: "0",
-      top: "-4rem",
-      zIndex: "999",
-      "&:hover": {
-        background: "#FFE166",
-      },
-      MainModal: {
-        overflow: "scroll",
-        background: red,
-        [theme.breakpoints.down("xs")]: {
-          heigth: "50em",
-        },
-        [theme.breakpoints.down("sm")]: {
-          heigth: "60em",
-        },
-        [theme.breakpoints.up("md")]: {
-          heigth: "70em",
-        },
-        [theme.breakpoints.up("lg")]: {},
-      },
-    },
-  }));
-  const classes = useStyles();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const AceroContext = useContext(GlobalContex);
-  const {
-    regparaddata,
-    fallaAreas,
-    LoadFallaArea,
-    headerReg,
-  } = AceroContext;
-
   useEffect(() => {
     if (regparaddata !== null && regparaddata !== undefined) {
+      console.log(regparaddata)
       regparaddata.map((reg) => {
-        reg.horaI = moment(new Date(reg.horaI)).format("LT");
-        reg.horaF = moment(new Date(reg.horaF)).format("LT");
+        reg.horaIn = moment(new Date(reg.horaI)).format("LT");
+        reg.horaFn = moment(new Date(reg.horaF)).format("LT");
         return reg;
       });
       rows = regparaddata;
+
     }
 
     if (fallaAreas === null || fallaAreas === undefined) {
@@ -187,6 +192,7 @@ const DatosParada = () => {
         }
       });
     }
+    setRowsPerPage(25);
   }, [regparaddata]);
 
   const handleChangePage = (event, newPage) => {

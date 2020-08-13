@@ -65,7 +65,7 @@ const DataCompForm = () => {
   const classes = useStyle();
   const [mprima, setMprima] = useState([]);
   const aceroContext = useContext(GlobalContex);
-  const { ordenes, compNumber, user } = aceroContext;
+  const { ordenes, compNumber, user, OrdenComp } = aceroContext;
   const history = useHistory();
 
   const onChangeOrden = (e) => {
@@ -102,6 +102,7 @@ const DataCompForm = () => {
       CodComponentes: mprima.value,
       Batch: Lote.value,
       MP_UME: MpUme.value,
+      MP_UMB: MpUmb.value,
       MP_Factor: MpFactor.value,
       UsrReg: user.CodigoEmp,
     };
@@ -146,6 +147,8 @@ const DataCompForm = () => {
                       native
                       label="Orden"
                       name="orden"
+                      value={OrdenComp}
+                      disabled
                       className={classes.SelectStyle}
                       onChange={onChangeOrden}
                     >
@@ -213,6 +216,20 @@ const DataCompForm = () => {
                       id="MpFactor"
                       name="MpFactor"
                       label="Factor"
+                      customInput={TextField}
+                      type="text"
+                      className={classes.InputTextStyle}
+                    />
+                    </Tooltip>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <Tooltip title="Solo Numeros" placement="right">
+                    <NumberFormat
+                      id="MpUmb"
+                      name="MpUmb"
+                      label="MP UMB"
                       customInput={TextField}
                       type="text"
                       className={classes.InputTextStyle}

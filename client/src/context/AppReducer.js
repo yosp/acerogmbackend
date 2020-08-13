@@ -31,6 +31,7 @@ import {
     SET_ACTIVE_NOTIF_HEADER,
     SET_ACTIVE_PTR,
     SET_FECHA_NOTIF,
+    SET_ORDENCOMP,
 } from './Actions'
 
 export default (state, action) => {
@@ -199,6 +200,11 @@ export default (state, action) => {
             return {
                 ...state,
                 ActiveFechaN: action.payload
+            }
+        case SET_ORDENCOMP: 
+            return {
+                ...state,
+                OrdenComp: action.payload
             }
         default:
             return state

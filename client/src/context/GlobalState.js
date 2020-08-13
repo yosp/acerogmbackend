@@ -32,7 +32,8 @@ import {
     SET_ACTIVE_TYPE_NOTIF,
     SET_ACTIVE_NOTIF_HEADER,
     SET_ACTIVE_PTR,
-    SET_FECHA_NOTIF
+    SET_FECHA_NOTIF,
+    SET_ORDENCOMP
 } from "./Actions";
 
 const InitialState = {
@@ -64,6 +65,7 @@ const InitialState = {
     ActiveNotifId: null,
     ActivePtr: null,
     ActiveFechaN: null,
+    OrdenComp: null
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -299,6 +301,13 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function SetOrdenComp(OrdenId) {
+      dispatch({
+        type: SET_ORDENCOMP,
+        payload: OrdenId
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -333,6 +342,7 @@ export const GlobalProvider = ({ children }) => {
         SetActiveNotif,
         SetActivePtr,
         SetActiveFechaN,
+        SetOrdenComp,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -360,6 +370,7 @@ export const GlobalProvider = ({ children }) => {
         ActiveNotifId: state.ActiveNotifId,
         ActivePtr: state.ActivePtr,
         ActiveFechaN: state.ActiveFechaN,
+        OrdenComp: state.OrdenComp,
           }}
     >
       {children}

@@ -132,7 +132,8 @@ class Db {
       const result2 = await sql.query`select hea.id, hea.Fecha, hea.GrupoId,
             grp.Descripcion as Grupo, hea.TurnoId, trn.Descripcion as Turno,
             hea.PuestoTrabajoId, ptr.Descripcion as Puesto, hea.UsrReg,
-            info.Nombres as UserNombre, hea.RegDate
+            info.Nombres as UserNombre, hea.RegDate,TC,TL,TE,TR,TI,TIM,TIO,TPP,
+            TPPM,TPPO,TU,TPU,TOPR,TOMP
                 from HeaderReg hea
                     inner join StrListaGrupos grp on hea.GrupoId = grp.id
                     inner join StrPuestosTrabajos ptr on hea.PuestoTrabajoId = ptr.id
@@ -147,22 +148,20 @@ class Db {
     }
   }
 
-  async getHeaderRegistro(header, callback) {
+  async getHeaderRegistro(HeaderId, callback) {
     try {
       await sql.connect(this.setting);
-      const result2 = await sql.query`select hea.id, hea.Fecha, hea.GrupoId,
+      const result = await sql.query`select hea.id, hea.Fecha, hea.GrupoId,
                                                 grp.Descripcion as Grupo, hea.TurnoId, trn.Descripcion as Turno,
                                                 hea.PuestoTrabajoId, ptr.Descripcion as Puesto, hea.UsrReg,
                                                 info.Nombres as UserNombre, hea.RegDate,TC,TL,TE,TR,TI,TIM,TIO,TPP,
-                                                TPPM,TPPO,TU,TPU,
+                                                TPPM,TPPO,TU,TPU,TOPR,TOMP
                                                     from HeaderReg hea
                                                         inner join StrListaGrupos grp on hea.GrupoId = grp.id
                                                         inner join StrPuestosTrabajos ptr on hea.PuestoTrabajoId = ptr.id
                                                         inner join LoginUsuarios info on hea.UsrReg = info.CodigoEmp
                                                         inner join StrListaTurnos trn on hea.TurnoId = trn.Id
-                                                        where hea.GrupoId = ${header.GrupoId} and hea.TurnoId = ${header.TurnoId}
-                                                            and hea.PuestoTrabajoId = ${header.PuestoTrabajoId} 
-                                                            and convert(date,hea.Fecha,101) = ${header.Fecha}`;
+                                                        where hea.Id = ${HeaderId} `;
       callback(null, result);
     } catch (e) {
       callback(e, null);
@@ -173,24 +172,25 @@ class Db {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`select prod.id
-            ,prod.OrdenProdId
-            ,ord.Orden 
-            ,comp.Componente as mprima
-            ,par.Partida as lote
-            ,ord.Material as producto
-            ,prod.Hora
-            ,ord.Eph
-            ,comp.Un_Medida as ume
-            ,prod.PT_UMB as emb
-            ,cb.Descripcion as comb
-            ,prod.TotalComb as conscomb
-            ,prod.Total_Potencia as conselect 
-            ,prod.Notas
-                from PosRegProd prod
-                    inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
-                    inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
-                    inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
-                    inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
+                    ,prod.OrdenProdId
+                    ,ord.Orden 
+                    ,comp.Componente as mprima
+                    ,par.Partida as lote
+                    ,ord.Material as producto
+                    ,prod.Hora
+                    ,ord.Eph
+                    ,comp.Un_Medida as umb
+                    ,prod.PT_UME as ume
+                    ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
+                    ,cb.Descripcion as comb
+                    ,prod.TotalComb as conscomb
+                    ,prod.Total_Potencia as conselect 
+                    ,prod.Notas
+                        from PosRegProd prod
+                            inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
+                            inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
+                            inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
+                            inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
                     where prod.HeaderRegId = ${headerid}`;
 
       callback(null, result);
@@ -203,9 +203,9 @@ class Db {
     try {
       await sql.connect(this.setting);
       const query = await sql.query`insert into PosRegProdComponente 
-                                                (PosProdId, CodComponentes, Batch, MP_UME, MP_Factor, UsrReg, RegDate, UpdDate)
+                                                (PosProdId, CodComponentes, Batch, MP_UME, MP_UMB, MP_Factor, UsrReg, RegDate, UpdDate)
                                                 values (${ProdComp.PosProdId}, ${ProdComp.CodComponentes}, ${ProdComp.Batch}, 
-                                                    ${ProdComp.MP_UME}, ${ProdComp.MP_Factor}, ${ProdComp.UsrReg},getdate(), getDate())`;
+                                                    ${ProdComp.MP_UME}, ${ProdComp.MP_UMB} ,${ProdComp.MP_Factor}, ${ProdComp.UsrReg},getdate(), getDate())`;
       callback(null, query);
     } catch (e) {
       callback(e, null)
@@ -239,7 +239,6 @@ class Db {
   async insProdData(proddat, callback) {
     try {
       await sql.connect(this.setting);
-      console.log(proddat)
       const query = await sql.query`insert into PosRegProd 
                                                 (HeaderRegId, OrdenProdId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, UsrReg, RegDate, UpdDate)
                                                 values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.Hora}, ${proddat.PT_UME}, 
@@ -247,29 +246,29 @@ class Db {
                                                     getdate(), getDate())`; 
 
       const result = await sql.query`select prod.id
-                        ,prod.OrdenProdId
-                        ,ord.Orden 
-                        ,comp.Componente as mprima
-                        ,par.Partida as lote
-                        ,ord.Material as producto
-                        ,prod.Hora
-                        ,ord.Eph
-                        ,comp.Un_Medida as ume
-                        ,prod.PT_UMB as emb
-                        ,cb.Descripcion as comb
-                        ,prod.TotalComb as conscomb
-                        ,prod.Total_Potencia as conselect 
-                        ,prod.Notas
-                            from PosRegProd prod
-                                inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
-                                inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
-                                inner join tbOrdenCompPartida par on comp.id = par.OrdenComponenteId
-                                inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
-                                where prod.HeaderRegId = ${proddat.HeaderRegId}`;
+                                        ,prod.OrdenProdId
+                                        ,ord.Orden 
+                                        ,comp.Componente as mprima
+                                        ,par.Partida as lote
+                                        ,ord.Material as producto
+                                        ,prod.Hora
+                                        ,ord.Eph
+                                        ,comp.Un_Medida as umb
+                                        ,prod.PT_UME as ume
+                                        ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
+                                        ,cb.Descripcion as comb
+                                        ,prod.TotalComb as conscomb
+                                        ,prod.Total_Potencia as conselect 
+                                        ,prod.Notas
+                                            from PosRegProd prod
+                                                inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
+                                                inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
+                                                inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
+                                                inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
+                                          where prod.HeaderRegId = ${proddat.HeaderRegId}`;
 
       callback(null, result);
     } catch (e) {
-      console.log(e)
       callback(e, null);
     }
   }

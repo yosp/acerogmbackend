@@ -19,7 +19,7 @@ import {
 import NumberFormat from 'react-number-format';
 
 import { GlobalContex } from "../../context/GlobalState";
-import { getOdenenComp, insRegProd, getTipoComb } from "../../context/Api";
+import { getOdenenComp, insRegProd, getTipoComb, getHeaderReg } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -73,7 +73,7 @@ const ProdFrom = () => {
   const [mprima, setMprima] = useState([]);
   const [comb, setComb] = useState([]);
   const aceroContext = useContext(GlobalContex);
-  const { isLam, ordenes, headerReg, user, loadRegProdData } = aceroContext;
+  const { isLam, ordenes, headerReg, user, loadRegProdData, setHeaderRegActive } = aceroContext;
   const history = useHistory();
   let Lam = null;
 
@@ -109,8 +109,16 @@ const ProdFrom = () => {
 
     insRegProd(data, (err, res) => {
       loadRegProdData(res);
-      history.push("/registro");
     });
+
+    getHeaderReg(headerReg.id, (err, data)=> {
+      if(err){
+
+      } else {
+      setHeaderRegActive(data)
+      history.push("/registro");
+    }
+    })
   };
 
   const HandlerClose = (e) => {

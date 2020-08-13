@@ -78,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 const HeaderReg = ({ header }) => {
     const classes = useStyles();
     const aceroContext = useContext(GlobalContex)
-    const { integrantesGrp, clearHeaderRegActive, loadRegProdData, loadRegPadadData  } = aceroContext
+    const { integrantesGrp, clearHeaderRegActive, loadRegProdData, loadRegPadadData, headerReg  } = aceroContext
 
     let listaGrp = integrantesGrp.map(grp => {
         return {
@@ -97,7 +97,7 @@ const HeaderReg = ({ header }) => {
         getRegParada(header.id, (err, data) => {
             loadRegPadadData(data)
         })
-    },[])
+    },[headerReg])
 
     const handlerBack = (e) => {
         e.preventDefault()
@@ -141,13 +141,21 @@ const HeaderReg = ({ header }) => {
                     <TableCell>
                       <b>TE</b>
                     </TableCell>
+                    <TableCell>
+                      <b>TOP</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>TOMP</b>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
+                    <TableCell>{headerReg.TC}</TableCell>
+                    <TableCell>{headerReg.TL}</TableCell>
+                    <TableCell>{headerReg.TE}</TableCell>
+                    <TableCell>{headerReg.TOPR}</TableCell>
+                    <TableCell>{headerReg.TOMP}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -162,7 +170,7 @@ const HeaderReg = ({ header }) => {
                       <b>TI</b>
                     </TableCell>
                     <TableCell>
-                      <b>TP</b>
+                      <b>TPP</b>
                     </TableCell>
                     <TableCell>
                       <b>M</b>
@@ -171,22 +179,22 @@ const HeaderReg = ({ header }) => {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
+                    <TableCell>{headerReg.TIM}</TableCell>
+                    <TableCell>{headerReg.TPPM}</TableCell>
                     <TableCell>
                       <b>M</b>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
+                    <TableCell>{headerReg.TPPO}</TableCell>
+                    <TableCell>{headerReg.TPPM}</TableCell>
                     <TableCell>
                       <b>O</b>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
+                    <TableCell>{headerReg.TI}</TableCell>
+                    <TableCell>{headerReg.TPP}</TableCell>
                     <TableCell>
                       <b>TOT</b>
                     </TableCell>

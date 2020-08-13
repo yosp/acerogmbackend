@@ -1,7 +1,7 @@
 ﻿import axios from 'axios'
 
-const base = "http://10.82.33.70:5000/api"
-//const base = "http://localhost:5000/api"
+//const base = "http://10.82.33.70:5000/api"
+const base = "http://localhost:5000/api"
 
 const LoginUser = (CodigoEmp, Password, callback) => {    
     axios.post(`${base}/agm/loginUser`, {CodigoEmp, Password}
@@ -92,6 +92,23 @@ const InsertHeaderRegistro = (header, callback) => {
             callback(error, null)
         })
 }
+
+const getHeaderReg = (HeaderId, callback) => {
+
+    axios.get(`${base}/registro/getHeaderReg?HeaderId=${HeaderId}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    ).then(function (response) {
+        callback(null, response.data[0])
+    })
+        .catch(function (error) {
+            callback(error, null)
+        })
+}
+
 const getRegProd = (headerid, callback) => {
     axios.get(`${base}/registro/getregproddata?headerid=${headerid}`
     )
@@ -407,6 +424,7 @@ export {
     getApiTurnos,
     getApiGrupos,
     InsertHeaderRegistro,
+    getHeaderReg,
     getRegProd,
     getApiOdenenes,
     getOdenenComp,

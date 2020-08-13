@@ -11,7 +11,6 @@ import {
   TableRow,
   TablePagination,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 
 import {
   ArrowBackIosRounded,
@@ -42,7 +41,6 @@ const DataCompPanel = () => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const history = useHistory();
   const aceroContext = useContext(GlobalContex);
   const { regprodcompdata, ClearRegComp, LoadRegCompData, compNumber } = aceroContext;
   
@@ -107,6 +105,7 @@ const DataCompPanel = () => {
   useEffect(()=> {
     if(regprodcompdata != null) {
       rows = regprodcompdata
+      setRowsPerPage(25);
     }
   },[regprodcompdata])
 

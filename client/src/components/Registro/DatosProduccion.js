@@ -42,7 +42,7 @@ const DatosProduccion = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex);
-  const { regproddata, LoadRegCompData, SetNumComp } = aceroContext;
+  const { regproddata, LoadRegCompData, SetNumComp, SetOrdenComp } = aceroContext;
   const history = useHistory()
   const columns = [
     {
@@ -102,10 +102,17 @@ const DatosProduccion = () => {
       format: (value) => value.toLocaleString(),
     },
     {
-      id: "emb",
+      id: "mpume",
       label: "Producción Acumulado",
       minWidth: "170",
       align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "umb",
+      label: "Unidad de Medida",
+      minWidth: "170",
+      align: "center",
       format: (value) => value.toLocaleString(),
     },
     {
@@ -152,8 +159,14 @@ const DatosProduccion = () => {
   
   const handleAddMPrima = (e) => {
     e.preventDefault()
-    history.push("/registro/prodcomp")
+    let registro = regproddata.filter(reg => {
+      return reg.id == e.currentTarget.dataset.id
+    })
+    let CompOrden = registro[0].OrdenProdId
+    console.log(CompOrden)
+    SetOrdenComp(CompOrden)
     SetNumComp(e.currentTarget.dataset.id)
+    history.push("/registro/prodcomp")
   }
 
   const handleGetPrima = (e) => {

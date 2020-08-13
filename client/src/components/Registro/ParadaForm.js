@@ -15,13 +15,14 @@ import {
   KeyboardTimePicker,
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import { useHistory } from 'react-router-dom'
+import { useHistory } from "react-router-dom";
 import { GlobalContex } from "../../context/GlobalState";
 import {
   getMotivoFallaSubArea,
   getMotivoFallaLugarAveria,
   getMotivoFalla,
   insRegParada,
+  getHeaderReg,
 } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
@@ -63,7 +64,7 @@ const ParadaForm = () => {
   const [lugarFalla, setLugarFalla] = useState([]);
   const [equipos, setEquipos] = useState([]);
   const aceroContext = useContext(GlobalContex);
-  const history = useHistory()
+  const history = useHistory();
   const {
     isLam,
     ordenes,
@@ -72,6 +73,7 @@ const ParadaForm = () => {
     user,
     headerReg,
     loadRegPadadData,
+    setHeaderRegActive,
   } = aceroContext;
 
   const onFormSubmit = (e) => {
@@ -108,7 +110,14 @@ const ParadaForm = () => {
       if (err) {
       } else {
         loadRegPadadData(res);
-        history.push("/registro")
+      }
+    });
+
+    getHeaderReg(headerReg.id, (err, data) => {
+      if (err) {
+      } else {
+        setHeaderRegActive(data);
+        history.push("/registro");
       }
     });
   };
@@ -137,8 +146,8 @@ const ParadaForm = () => {
 
   const HandlerClose = (e) => {
     e.preventDefault();
-    history.push("/registro")
-  }
+    history.push("/registro");
+  };
 
   const onChangeLugar = (e) => {
     e.preventDefault();
@@ -241,66 +250,66 @@ const ParadaForm = () => {
                       />
                     </MuiPickersUtilsProvider>
                   </Grid>
-                  </Grid>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardTimePicker
-                          margin="normal"
-                          id="HoraF"
-                          label="Hora Fin"
-                          value={HoraFin}
-                          onChange={handleHFinChange}
-                          KeyboardButtonProps={{
-                            "aria-label": "Tiempo ha cambiado",
-                          }}
-                          className={classes.SelectStyle}
-                        />
-                      </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardTimePicker
+                        margin="normal"
+                        id="HoraF"
+                        label="Hora Fin"
+                        value={HoraFin}
+                        onChange={handleHFinChange}
+                        KeyboardButtonProps={{
+                          "aria-label": "Tiempo ha cambiado",
+                        }}
+                        className={classes.SelectStyle}
+                      />
+                    </MuiPickersUtilsProvider>
                   </Grid>
                 </Grid>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <InputLabel id="SCargo">Cargo</InputLabel>
-                      <Select
-                        native
-                        name="InCargo"
-                        label="SlCargo"
-                        className={classes.SelectStyle}
-                      >
-                        {cargos.map((cargo) => {
-                          return (
-                            <option key={cargo.Id} value={cargo.Id}>
-                              {cargo.Codigo} - {cargo.Descripcion}
-                            </option>
-                          );
-                        })}
-                      </Select>
-                    </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <InputLabel id="SCargo">Cargo</InputLabel>
+                    <Select
+                      native
+                      name="InCargo"
+                      label="SlCargo"
+                      className={classes.SelectStyle}
+                    >
+                      {cargos.map((cargo) => {
+                        return (
+                          <option key={cargo.Id} value={cargo.Id}>
+                            {cargo.Codigo} - {cargo.Descripcion}
+                          </option>
+                        );
+                      })}
+                    </Select>
                   </Grid>
-                  <Grid container spacing={1} alignItems="center">
-                      <Grid item>
-                        <InputLabel id="SlArea">Area</InputLabel>
-                        <Select
-                          native
-                          label="SlArea"
-                          id="SeArea"
-                          name="SeArea"
-                          className={classes.SelectStyle}
-                          onChange={onChangeArea}
-                        >
-                          <option value="0"></option>
-                          {fallaAreas.map((area) => {
-                            return (
-                              <option key={area.Id} value={area.Id}>
-                                {area.Denominacion}
-                              </option>
-                            );
-                          })}
-                        </Select>
-                    </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <InputLabel id="SlArea">Area</InputLabel>
+                    <Select
+                      native
+                      label="SlArea"
+                      id="SeArea"
+                      name="SeArea"
+                      className={classes.SelectStyle}
+                      onChange={onChangeArea}
+                    >
+                      <option value="0"></option>
+                      {fallaAreas.map((area) => {
+                        return (
+                          <option key={area.Id} value={area.Id}>
+                            {area.Denominacion}
+                          </option>
+                        );
+                      })}
+                    </Select>
                   </Grid>
-                  <Grid container spacing={1} alignItems="center">
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <InputLabel id="SlSubArea">SubArea</InputLabel>
                     <Select
@@ -320,74 +329,74 @@ const ParadaForm = () => {
                         );
                       })}
                     </Select>
-                    </Grid>
                   </Grid>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <InputLabel id="SLLugarF">Lugar Falla</InputLabel>
-                      <Select
-                        native
-                        label="SLLugarF"
-                        id="SELugarF"
-                        name="SELugarF"
-                        className={classes.SelectStyle}
-                        onChange={onChangeLugar}
-                      >
-                        <option value="0"></option>
-                        {lugarFalla.map((Lug) => {
-                          return (
-                            <option key={Lug.Id} value={Lug.Id}>
-                              {Lug.Denominacion}
-                            </option>
-                          );
-                        })}
-                      </Select>
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <InputLabel id="SLEquipo">Motivo Falla</InputLabel>
-                      <Select
-                        native
-                        label="SLEquipo"
-                        id="SEquipo"
-                        name="SEquipo"
-                        className={classes.SelectStyle}
-                      >
-                        <option value="0"></option>
-                        {equipos.map((eq) => {
-                          return (
-                            <option key={eq.Id} value={eq.Id}>
-                              {eq.Denominacion}
-                            </option>
-                          );
-                        })}
-                      </Select>
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <InputLabel id="SOrden">Orden Producción</InputLabel>
-                      <Select
-                        native
-                        label="Orden"
-                        id="SOrden"
-                        name="SOrden"
-                        className={classes.SelectStyle}
-                      >
-                        <option value="0"> </option>
-                        {ordenes.map((orden) => {
-                          return (
-                            <option key={orden.Id} value={orden.Id}>
-                              {orden.Orden}
-                            </option>
-                          );
-                        })}
-                      </Select>
-                    </Grid>
                 </Grid>
-                  {Lam}
-                  <Grid container spacing={1} alignItems="center">
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <InputLabel id="SLLugarF">Lugar Falla</InputLabel>
+                    <Select
+                      native
+                      label="SLLugarF"
+                      id="SELugarF"
+                      name="SELugarF"
+                      className={classes.SelectStyle}
+                      onChange={onChangeLugar}
+                    >
+                      <option value="0"></option>
+                      {lugarFalla.map((Lug) => {
+                        return (
+                          <option key={Lug.Id} value={Lug.Id}>
+                            {Lug.Denominacion}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <InputLabel id="SLEquipo">Motivo Falla</InputLabel>
+                    <Select
+                      native
+                      label="SLEquipo"
+                      id="SEquipo"
+                      name="SEquipo"
+                      className={classes.SelectStyle}
+                    >
+                      <option value="0"></option>
+                      {equipos.map((eq) => {
+                        return (
+                          <option key={eq.Id} value={eq.Id}>
+                            {eq.Denominacion}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <InputLabel id="SOrden">Orden Producción</InputLabel>
+                    <Select
+                      native
+                      label="Orden"
+                      id="SOrden"
+                      name="SOrden"
+                      className={classes.SelectStyle}
+                    >
+                      <option value="0"> </option>
+                      {ordenes.map((orden) => {
+                        return (
+                          <option key={orden.Id} value={orden.Id}>
+                            {orden.Orden}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </Grid>
+                </Grid>
+                {Lam}
+                <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <TextField
                       id="obs"
@@ -399,8 +408,8 @@ const ParadaForm = () => {
                     />
                   </Grid>
                 </Grid>
-                  <p></p>
-                  <Grid container spacing={1} alignItems="center">
+                <p></p>
+                <Grid container spacing={1} alignItems="center">
                   <Button
                     variant="contained"
                     className={classes.btnB}

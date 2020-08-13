@@ -114,7 +114,7 @@ class Routes {
         })
 
         this.app.get('/api/registro/getHeaderReg', (req, res) => {
-            res.db.getHeaderRegistro(req.body.header, (err, data)=>{
+            this.db.getHeaderRegistro(req.query.HeaderId, (err, data)=>{
                 if(err){
                     res.status(500).json({
                         error: true,
