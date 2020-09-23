@@ -105,7 +105,11 @@ const DataCompPanel = () => {
   useEffect(()=> {
     if(regprodcompdata != null) {
       rows = regprodcompdata
+      if(rowsPerPage == 25) {
+        setRowsPerPage(10);
+      } else {
       setRowsPerPage(25);
+      }
     }
   },[regprodcompdata])
 

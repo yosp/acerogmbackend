@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Button,
@@ -73,9 +73,11 @@ const DataCompForm = () => {
     let index = e.nativeEvent.target.selectedIndex;
     let label = e.nativeEvent.target[index].text;
 
+    console.log(label)
     getOdenenComp(label, (err, data) => {
       if (err) {
       } else {
+        console.log(data)
         setMprima(data);
       }
     });
@@ -118,6 +120,17 @@ const DataCompForm = () => {
     history.push("/registro");
   };
 
+  useEffect(()=>{
+    getOdenenComp(OrdenComp.Orden, (err, data) => {
+      if (err) {
+      } else {
+        console.log(data)
+        setMprima(data);
+      }
+    });
+    
+  },[OrdenComp])
+
   return (
     <>
       <HeaderPrincipal/>
@@ -147,7 +160,7 @@ const DataCompForm = () => {
                       native
                       label="Orden"
                       name="orden"
-                      value={OrdenComp}
+                      value={OrdenComp.OrdenProdId}
                       disabled
                       className={classes.SelectStyle}
                       onChange={onChangeOrden}

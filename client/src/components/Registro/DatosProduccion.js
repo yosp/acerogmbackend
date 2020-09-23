@@ -169,7 +169,7 @@ const DatosProduccion = () => {
     let registro = regproddata.filter(reg => {
       return reg.id == e.currentTarget.dataset.id
     })
-    let CompOrden = registro[0].OrdenProdId
+    let CompOrden = registro[0]
     console.log(CompOrden)
     SetOrdenComp(CompOrden)
     SetNumComp(e.currentTarget.dataset.id)
@@ -214,7 +214,6 @@ const DatosProduccion = () => {
 
   useEffect(() => {
     if (regproddata !== null && regproddata !== undefined) {
-      console.log(regproddata)
       regproddata.map((reg) => {
         reg.HoraEdit = moment(new Date(reg.Hora)).format("LT");
         

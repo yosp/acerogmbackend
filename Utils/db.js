@@ -309,9 +309,8 @@ class Db {
 
       request.execute('sp_updProdData', (err, result) => {
         if(err) {
-          console.log(err)
+          callback(err, null);
         } else {
-          console.log(result)
           callback(null, result.recordset)
         }
       })
@@ -809,7 +808,7 @@ class Db {
                                         n.[Centro Planif] as Centro,
                                         n.[UM PT] as UndMedida,
                                         sum(p.PT_UMB) as CantNot,
-                                        sum(p.TU) as HoraMaquina,
+                                        sum(h.TU) as HoraMaquina,
                                         n.[UM Actividad 1] as UndHM,
                                         sum(p.TC) as HoraHombre,
                                         n.[UM Actividad 2] as UnHH,

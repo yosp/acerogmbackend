@@ -69,6 +69,7 @@ const useStyle = makeStyles((theme) => ({
 
 const ProdFormEdit = () => {
   const classes = useStyle();
+  const [oldH, setOldH] = useState('')
   const [hora, setHora] = useState(new Date());
   const [mprima, setMprima] = useState([]);
   const [comb, setComb] = useState([]);
@@ -105,13 +106,17 @@ const ProdFormEdit = () => {
       return o.Id == orden.value;
     })[0];
     
-    console.log(torden)
+    let fecha = oldH.split("T")[0]
+    let tiempos = new Date(hora._d)
+    let horas = tiempos.getHours()>=10?tiempos.getHours():`0${tiempos.getHours()}`
+    let min = tiempos.getMinutes() >= 10 ? tiempos.getMinutes():`0${tiempos.getMinutes()}`
+    let sec =  tiempos.getSeconds() >= 10 ? tiempos.getSeconds():`0${tiempos.getSeconds()}`
 
     const data = {
       Id: RegId,
       HeaderRegId: headerReg.id,
       OrdenProdId: parseInt(orden.value),
-      Hora: hora,
+      Hora: `${fecha}T${horas}:${min}:${sec}`,
       MPrima: parseInt(mprima.value),
       PT_UME: parseInt(consacumulado.value),
       PT_UMB: parseFloat(prodacumulado.value),
@@ -210,6 +215,7 @@ const ProdFormEdit = () => {
 
   useEffect(()=>{
     setHora(activeproddata.Hora)
+    setOldH(activeproddata.Hora)
     getOdenenComp(activeproddata.Orden, (err, data) => {
       if (err) {
       } else {

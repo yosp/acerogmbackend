@@ -102,6 +102,12 @@ const ChatarraPos = () => {
   useEffect(() => {
     if (chatarraPos !== null && chatarraPos !== undefined) {
       rows = chatarraPos
+      if(rowsPerPage == 25) {
+        setRowsPerPage(10)
+      }
+      else {
+        setRowsPerPage(25)
+      }
     } else {
       rows = []
     }
