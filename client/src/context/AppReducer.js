@@ -32,6 +32,8 @@ import {
     SET_ACTIVE_PTR,
     SET_FECHA_NOTIF,
     SET_ORDENCOMP,
+    SET_EDIT_REGPROD,
+    SET_EDIT_REGPARADA
 } from './Actions'
 
 export default (state, action) => {
@@ -205,6 +207,16 @@ export default (state, action) => {
             return {
                 ...state,
                 OrdenComp: action.payload
+            }
+        case SET_EDIT_REGPROD:
+            return {
+                ...state,
+                activeproddata: action.payload
+            }
+        case SET_EDIT_REGPARADA:
+            return {
+                ...state,
+                ActiveParadaData: action.payload
             }
         default:
             return state

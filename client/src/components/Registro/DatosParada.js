@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import {
   makeStyles,
   Paper,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -12,10 +13,10 @@ import {
   Fab,
 } from "@material-ui/core";
 import moment from "moment";
-import { Link } from 'react-router-dom'
-import { Add } from "@material-ui/icons";
+import { Link, useHistory } from 'react-router-dom'
+import { Add, Edit, DeleteForever } from "@material-ui/icons";
 import { GlobalContex } from "../../context/GlobalState";
-import { getMotivoFallaArea } from "../../context/Api";
+import { getMotivoFallaArea, delParadaRegProd, getRegParada } from "../../context/Api";
 import { red } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,22 +57,24 @@ const DatosParada = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContext = useContext(GlobalContex);
-  
+  const history = useHistory()
   const {
     regparaddata,
     fallaAreas,
     LoadFallaArea,
     headerReg,
+    SetEditParadData,
+    loadRegPadadData,
   } = AceroContext;
 
   
 const columns = [
   {
     id: "idreg",
-    label: "Id",
+    label: "Eliminar",
     minWidth: "100",
     align: "left",
-    format: (value) => value.toLocaleString(), //toFixed(2),
+    format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>,
   },
   {
     id: "horaIn",
@@ -170,6 +173,12 @@ const columns = [
     minWidth: "170",
     align: "left",
     format: (value) => value.toLocaleString(),
+  },{
+    id: "idreg",
+    label: "Editar",
+    minWidth: "100",
+    align: "left",
+    format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>,
   },
 ];
   useEffect(() => {
@@ -181,7 +190,12 @@ const columns = [
         return reg;
       });
       rows = regparaddata;
-
+      if(rowsPerPage == 25) {
+        setRowsPerPage(10);
+      } else {
+        setRowsPerPage(25);
+      }
+      
     }
 
     if (fallaAreas === null || fallaAreas === undefined) {
@@ -192,7 +206,7 @@ const columns = [
         }
       });
     }
-    setRowsPerPage(25);
+    
   }, [regparaddata]);
 
   const handleChangePage = (event, newPage) => {
@@ -203,6 +217,32 @@ const columns = [
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const handlerEdit = (e) => {
+    let parada = regparaddata.filter(reg => {
+      return reg.idreg == e.currentTarget.dataset.id
+    })
+    console.log(parada)
+    SetEditParadData(parada[0])
+    history.push("/registro/paradreg/Edit")
+  }
+
+  const handleDelete = (e) => {
+    let id = e.currentTarget.dataset.id
+    
+    delParadaRegProd(id, (err, data) => {
+      if(err) {
+
+      }
+      else {
+        getRegParada(headerReg.id, (err, data) => {
+          loadRegPadadData(data)
+      })
+      }
+    })
+  }
+
+  
 
   return (
     <Paper className={classes.root}>

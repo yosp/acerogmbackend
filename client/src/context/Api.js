@@ -109,19 +109,46 @@ const getHeaderReg = (HeaderId, callback) => {
         })
 }
 
+const delPosRegProd = (PosRegId, callback) => {
+    axios.get(`${base}/registro/delProdData?PosRegId=${PosRegId}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    ).then(function (response) {
+        callback(null, response.data[0])
+    })
+        .catch(function (error) {
+            callback(error, null)
+        })
+}
+
+const updPosRegProd = (RegPosData, callback) => {
+    axios.post(`${base}/registro/updProdData`, {RegPosData}
+    ,  {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+).then(function (response) {
+    callback(null, response.data)
+}
+).catch(function (error) {
+    callback(error, null)
+})
+}
 const getRegProd = (headerid, callback) => {
     axios.get(`${base}/registro/getregproddata?headerid=${headerid}`
     )
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
-
 const getApiRegProdComp = (PosProdId, callback) => {
     axios.get(`${base}/registro/getregprodcompdata?PosProdId=${PosProdId}`)
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
-
 const InsertProdComp = (procompdat, callback) => {
     
     axios.post(`${base}/registro/insProdCompData`, {procompdat}
@@ -137,7 +164,6 @@ const InsertProdComp = (procompdat, callback) => {
                 callback(error, null)
             })
 }
-
 const DelProdComp = (PosProdId, callback) => {
     axios.post(`${base}/registro/delProdCompData`, {PosProdId}
     ,  {
@@ -152,7 +178,6 @@ const DelProdComp = (PosProdId, callback) => {
     callback(error, null)
 })
 }
-
 const getApiOdenenes = (callback) => {
     axios.get(`${base}/ordenes/getOrdenes`,
         {
@@ -228,7 +253,6 @@ const getMotivoFalla = (LugarAveriaId, callback) => {
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
-
 const getTipoComb = (callback) => {
     
     axios.get(`${base}/registro/getTipoComb`
@@ -236,14 +260,12 @@ const getTipoComb = (callback) => {
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
-
 const getRegParada = (headerid, callback) => {
     axios.get(`${base}/registro/getParadaData?headerid=${headerid}`
     )
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
-
 const insRegParada = (regParadaD, callback) => {
     axios.post(`${base}/registro/insPosRegParada`, {regParadaD},
     ).then(function (response) {
@@ -253,7 +275,35 @@ const insRegParada = (regParadaD, callback) => {
             callback(error, null)
         })
 }
+const updParadaReg = (paradadata, callback) => {
+    axios.post(`${base}/registro/updPosRegParada`, {paradadata}
+    ,  {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+).then(function (response) {
+    callback(null, response.data)
+}
+).catch(function (error) {
+    callback(error, null)
+})
+}
 
+const delParadaRegProd = (ParadaRegId, callback) => {
+    axios.get(`${base}/registro/delParadaData?ParadaRegId=${ParadaRegId}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    ).then(function (response) {
+        callback(null, response.data[0])
+    })
+        .catch(function (error) {
+            callback(error, null)
+        })
+}
 const insChatarraHeader = (ChatarraHeader, callback) => {
     axios.post(`${base}/Chatarra/InsHeader`, {ChatarraHeader}
     ).then(function (response) {
@@ -262,7 +312,6 @@ const insChatarraHeader = (ChatarraHeader, callback) => {
         callback(err, null)
     })
 }
-
 const insChatarraPos = (ChatarraPos, callback) => {
     axios.post(`${base}/Chatarra/InsPos`, {ChatarraPos}
     ).then(function (response) {
@@ -271,7 +320,6 @@ const insChatarraPos = (ChatarraPos, callback) => {
         callback(err, null)
     })
 }
-
 const getChatarraPos = (HeaderId, callback) => {
     axios.get(`${base}/Chatarra/getChatarra?HeaderId=${HeaderId}`
     )
@@ -431,6 +479,7 @@ export {
     getOdenenPartida,
     insRegProd,
     getRegParada,
+    updPosRegProd,
     insRegParada,
     getMotivoFallaArea,
     getMotivoFallaSubArea,
@@ -454,5 +503,8 @@ export {
     regHeaderNotif,
     regPosNotif,
     regHeaderNotifMfbf,
-    regPosNotifMfbf
+    regPosNotifMfbf,
+    delPosRegProd,
+    delParadaRegProd,
+    updParadaReg
 }

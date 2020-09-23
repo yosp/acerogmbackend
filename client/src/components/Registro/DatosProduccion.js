@@ -15,9 +15,9 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import moment from "moment";
 
-import { Add, Pageview, Edit } from "@material-ui/icons";
+import { Add, Pageview, Edit, DeleteForever } from "@material-ui/icons";
 import { GlobalContex } from "../../context/GlobalState";
-import { getApiRegProdComp } from "../../context/Api"
+import { getApiRegProdComp, delPosRegProd, getRegProd } from "../../context/Api"
 let rows = [];
 
 const useStyles = makeStyles((theme) => ({
@@ -42,15 +42,16 @@ const DatosProduccion = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex);
-  const { regproddata, LoadRegCompData, SetNumComp, SetOrdenComp } = aceroContext;
+  const { regproddata, LoadRegCompData, SetNumComp, SetOrdenComp, headerReg, loadRegProdData, SetEditProdData  } = aceroContext;
   const history = useHistory()
+  
   const columns = [
     {
       id: "id",
-      label: "Cod Reg",
+      label: "Eliminar",
       minWidth: "100",
       align: "left",
-      format: (value) => value.toLocaleString(), //toFixed(2),
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>,
     },
     {
       id: "Orden",
@@ -81,7 +82,7 @@ const DatosProduccion = () => {
       format: (value) => value.toLocaleString(),
     },
     {
-      id: "Hora",
+      id: "HoraEdit",
       label: "Hora",
       minWidth: "200",
       align: "left",
@@ -153,7 +154,13 @@ const DatosProduccion = () => {
       label: "Agregar Componente",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Edit/> </Button>,
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Add/> </Button>,
+    },{
+      id: "id",
+      label: "Editar",
+      minWidth: "100",
+      align: "left",
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>,
     },
   ]
   
@@ -182,13 +189,44 @@ const DatosProduccion = () => {
     })
   }
 
+  const handlerEdit = (e) => {
+    let registro = regproddata.filter(reg => {
+      return reg.id == e.currentTarget.dataset.id
+    })
+    SetEditProdData(registro[0])
+    history.push("/registro/prodreg/edit")
+  }
+
+  const handleDelete = (e) => {
+    let id = e.currentTarget.dataset.id
+    delPosRegProd(id, (err, data) => {
+      if(err) {
+
+      }
+      else {
+        getRegProd(headerReg.id, (err, data) => {
+          loadRegProdData(data)
+      })
+      }
+    })
+
+  }
+
   useEffect(() => {
     if (regproddata !== null && regproddata !== undefined) {
+      console.log(regproddata)
       regproddata.map((reg) => {
-        reg.Hora = moment(new Date(reg.Hora)).format("LT");
+        reg.HoraEdit = moment(new Date(reg.Hora)).format("LT");
+        
         return reg;
       });
       rows = regproddata;
+
+      if(rowsPerPage == 25) {
+        setRowsPerPage(10);
+      } else {
+        setRowsPerPage(25);
+      }
     }
   }, [regproddata]);
 

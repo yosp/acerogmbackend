@@ -170,6 +170,20 @@ class Routes {
             })
         })
 
+        this.app.get('/api/registro/delProdData', (req, res) => {
+
+            this.db.delPosRegProd(req.query.PosRegId, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
         this.app.post('/api/registro/insProdCompData', (req, res) => {
             this.db.insProdComp(req.body.procompdat, (err, data)=> {
                 if(err) {
@@ -197,14 +211,14 @@ class Routes {
         })
         
         this.app.post('/api/registro/updProdData', (req, res) => {
-            this.db.updProdData(req.body.proddat, (err, data)=>{
+            this.db.updProdData(req.body.RegPosData, (err, data)=>{
                 if(err) {
                     res.status(500).json({
                         error: true,
                         message: err
                     })
                 } else {
-                    res.status(200).json(data.recordset)
+                    res.status(200).json(data)
                 }
             })
         })
@@ -235,15 +249,28 @@ class Routes {
             })
         })
 
+        this.app.get('/api/registro/delParadaData', (req, res) => {
+            this.db.delPosRegParada(req.query.ParadaRegId, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data)
+                }
+            })
+        })
+
         this.app.post('/api/registro/updPosRegParada', (req, res) => {
-            this.db.updPosRegParada(req.body.regParadaD, (err, data) =>{
+            this.db.updPosRegParada(req.body.paradadata, (err, data) =>{
                 if(err){
                     res.status(500).json({
                         error: true,
                         message: err
                     })
                 } else {
-                    res.status(200).json(data.recordset)
+                    res.status(200).json(data)
                 }
             })
         })
@@ -394,6 +421,7 @@ class Routes {
                 }
             })
         })
+        
         this.app.get('/api/chatarra/gettipo', (req, res) => {
             this.db.getChatarraTipo((err, data)=>{
                 if(err){
@@ -458,6 +486,7 @@ class Routes {
                 }
             })
         })
+
         this.app.post('/api/regheadernotifmbfb', (req, res) => {
             this.db.RegHeaderNotifMFBF(req.body.header,(err, data)=>{
                 if(err) {
@@ -484,7 +513,6 @@ class Routes {
             })
         })
 
-
         this.app.post('/api/notifHead', (req, res) => {
             this.db.getNotifHeader(req.body.header, (err, data) => {
                 if(err) {
@@ -497,6 +525,7 @@ class Routes {
                 }
             })
         })
+
         this.app.post('/api/notifPos', (req, res) => {
             this.db.getNotifPos(req.body.pos, (err, data) => {
                 if(err) {

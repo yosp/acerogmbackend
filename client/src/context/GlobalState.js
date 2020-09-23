@@ -33,7 +33,9 @@ import {
     SET_ACTIVE_NOTIF_HEADER,
     SET_ACTIVE_PTR,
     SET_FECHA_NOTIF,
-    SET_ORDENCOMP
+    SET_ORDENCOMP,
+    SET_EDIT_REGPROD,
+    SET_EDIT_REGPARADA
 } from "./Actions";
 
 const InitialState = {
@@ -49,6 +51,7 @@ const InitialState = {
     userInfo: [],
     headerReg: null,
     regproddata: null,
+    activeproddata: null,
     regparaddata: null,
     regprodcompdata: null,
     ordenes: null,
@@ -65,7 +68,8 @@ const InitialState = {
     ActiveNotifId: null,
     ActivePtr: null,
     ActiveFechaN: null,
-    OrdenComp: null
+    OrdenComp: null,
+    ActiveParadaData: null
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -301,10 +305,24 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function SetEditProdData(proddata){
+      dispatch({
+        type: SET_EDIT_REGPROD,
+        payload: proddata
+      })
+    }
+
     function SetOrdenComp(OrdenId) {
       dispatch({
         type: SET_ORDENCOMP,
         payload: OrdenId
+      })
+    }
+
+    function SetEditParadData(paraddata){
+      dispatch({
+        type: SET_EDIT_REGPARADA,
+        payload: paraddata
       })
     }
 
@@ -343,6 +361,8 @@ export const GlobalProvider = ({ children }) => {
         SetActivePtr,
         SetActiveFechaN,
         SetOrdenComp,
+        SetEditProdData,
+        SetEditParadData,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -371,6 +391,8 @@ export const GlobalProvider = ({ children }) => {
         ActivePtr: state.ActivePtr,
         ActiveFechaN: state.ActiveFechaN,
         OrdenComp: state.OrdenComp,
+        activeproddata: state.activeproddata,
+        ActiveParadaData: state.ActiveParadaData,
           }}
     >
       {children}

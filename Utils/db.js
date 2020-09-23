@@ -172,21 +172,24 @@ class Db {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`select prod.id
-                    ,prod.OrdenProdId
-                    ,ord.Orden 
-                    ,comp.Componente as mprima
-                    ,par.Partida as lote
-                    ,ord.Material as producto
-                    ,prod.Hora
-                    ,ord.Eph
-                    ,comp.Un_Medida as umb
-                    ,prod.PT_UME as ume
-                    ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
-                    ,cb.Descripcion as comb
-                    ,prod.TotalComb as conscomb
-                    ,prod.Total_Potencia as conselect 
-                    ,prod.Notas
-                        from PosRegProd prod
+                        ,prod.HeaderRegId
+                        ,prod.OrdenProdId
+                        ,ord.Orden 
+                        ,comp.Id as mpid
+                        ,comp.Componente as mprima
+                        ,par.Partida as lote
+                        ,ord.Material as producto
+                        ,prod.Hora
+                        ,ord.Eph
+                        ,comp.Un_Medida as umb
+                        ,prod.PT_UME as ume
+                        ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
+                        ,cb.Id combId
+                        ,cb.Descripcion as comb
+                        ,prod.TotalComb as conscomb
+                        ,prod.Total_Potencia as conselect 
+                        ,prod.Notas
+                            from PosRegProd prod
                             inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
                             inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
                             inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
@@ -236,6 +239,18 @@ class Db {
     }
   }
 
+  async delPosRegProd(PosProdId, callback) {
+    try {
+        await sql.connect(this.setting)
+        await sql.query`delete from PosRegProd where Id = ${PosProdId}`
+        await sql.query`delete from PosRegProdComponente where PosProdId = ${PosProdId}`                                                
+        
+        callback(null, query)
+    } catch (e) { 
+        callback(e, null)
+    }
+  }
+
   async insProdData(proddat, callback) {
     try {
       await sql.connect(this.setting);
@@ -246,21 +261,24 @@ class Db {
                                                     getdate(), getDate())`; 
 
       const result = await sql.query`select prod.id
-                                        ,prod.OrdenProdId
-                                        ,ord.Orden 
-                                        ,comp.Componente as mprima
-                                        ,par.Partida as lote
-                                        ,ord.Material as producto
-                                        ,prod.Hora
-                                        ,ord.Eph
-                                        ,comp.Un_Medida as umb
-                                        ,prod.PT_UME as ume
-                                        ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
-                                        ,cb.Descripcion as comb
-                                        ,prod.TotalComb as conscomb
-                                        ,prod.Total_Potencia as conselect 
-                                        ,prod.Notas
-                                            from PosRegProd prod
+                                            ,prod.HeaderRegId
+                                            ,prod.OrdenProdId
+                                            ,ord.Orden 
+                                            ,comp.Id as mpid
+                                            ,comp.Componente as mprima
+                                            ,par.Partida as lote
+                                            ,ord.Material as producto
+                                            ,prod.Hora
+                                            ,ord.Eph
+                                            ,comp.Un_Medida as umb
+                                            ,prod.PT_UME as ume
+                                            ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
+                                            ,cb.Id combId
+                                            ,cb.Descripcion as comb
+                                            ,prod.TotalComb as conscomb
+                                            ,prod.Total_Potencia as conselect 
+                                            ,prod.Notas
+                                                from PosRegProd prod
                                                 inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
                                                 inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
                                                 inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
@@ -275,18 +293,29 @@ class Db {
 
   async updProdData(proddat, callback) {
     try {
+      const request = new sql.Request()
       await sql.connect(this.setting);
-      const result = await sql.query`update PosRegProd set 
-                                            OrdenProdId = ${proddat.OrdenProdId}, 
-                                            Hora = ${proddat.Hora}, 
-                                            PT_UME = ${proddat.PT_UME}, 
-                                            PT_UMB = ${proddat.PT_UMB}, 
-                                            Notas = ${proddat.Notas}, 
-                                            TotalComb = ${proddat.TotalComb}, 
-                                            Total_Potencia = ${proddat.Total_Potencia}, 
-                                            UsrReg = ${proddat.UsrReg}, 
-                                            UpdDate = getDate()
-                                            where id = ${proddat.id}`;
+      
+      request.input('Id', sql.Int, proddat.Id)
+      request.input('OrdenProdId', sql.Int, proddat.OrdenProdId)
+      request.input('PT_UME', sql.Int, proddat.PT_UME)
+      request.input('PT_UMB', sql.Float, proddat.PT_UMB)
+      request.input('Hora', sql.DateTime, proddat.Hora)
+      request.input('Notas', sql.Text, proddat.Notas)
+      request.input('TotalComb', sql.Int, proddat.TotalComb)
+      request.input('UsrReg', sql.NVarChar, proddat.UsrReg)
+      request.input('EPH', sql.Float, proddat.EPH)
+      request.input('TipoCombId', sql.Int, proddat.TipoCombId)
+
+      request.execute('sp_updProdData', (err, result) => {
+        if(err) {
+          console.log(err)
+        } else {
+          console.log(result)
+          callback(null, result.recordset)
+        }
+      })
+
     } catch (e) {
       callback(e, null);
     }
@@ -297,62 +326,75 @@ class Db {
       await sql.connect(this.setting);
       const result = await sql.query`insert into PosRegParada
                                                 (HeaderRegId, HoraInicio, HoraFin, Cargo, MP_Perd, MP_Desc,
-                                                    OrdenProdId, MotivoFallaId, MotivoFallaSubAreaId, MotivoFallaLugarAveriaId, 
+                                                    OrdenProdId, MotivoFallaId, MotivoFallaAreaId, MotivoFallaSubAreaId, MotivoFallaLugarAveriaId 
                                                     ,Notas, TipoGatillo, UsrReg, RegDate, UpdDate)
-                                                values (${paradadata.HeaderRegId}, ${paradadata.HoraInicio},
-                                                    ${paradadata.HoraFin}, ${paradadata.Cargo}, ${paradadata.MP_Perd},
-                                                    ${paradadata.MP_Desc}, ${paradadata.OrdenProdId}, ${paradadata.MotivoFallaId},
-                                                    ${paradadata.MotivoFallaSubAreaId}, ${paradadata.MotivoFallaLugarAveriaId}, 
-                                                    '${paradadata.Notas}', 1 ,${paradadata.UsrReg}, getDate(), getDate())`;
+                                                values (${paradadata.HeaderRegId}, ${paradadata.HoraI},
+                                                    ${paradadata.HoraF}, ${paradadata.Cargo}, ${paradadata.MpPerd},
+                                                    ${paradadata.MpDesc}, ${paradadata.OrdenProdId}, ${paradadata.Motivo},
+                                                    ${paradadata.AreaFallaId}, ${paradadata.subArea}, ${paradadata.LugarAveriaId},
+                                                    ${paradadata.Notas}, 1 ,${paradadata.UsrReg}, getDate(), getDate())`;
       callback(null, result);
     } catch (err) {
       callback(err, null);
     }
   }
-
   async updPosRegParada(paradadata, callback) {
     try {
+      const request = new sql.Request()
       await sql.connect(this.setting);
-      const result = await sql.query`update PosRegParada set
-                                                HoraInicio = ${paradadata.HoraInicio}, 
-                                                HoraFin = ${paradadata.HoraFin}, 
-                                                Cargo = ${paradadata.Cargo}, 
-                                                MP_Perd = ${paradadata.MP_Perd}, 
-                                                MP_Desc = ${paradadata.MP_Desc},
-                                                OrdenProdId = ${paradadata.OrdenProdId}, 
-                                                MotivoFallaId = ${paradadata.MotivoFallaId},
-                                                MotivoFallaSubAreaId = ${paradadata.MotivoFallaSubAreaId},
-                                                MotivoFallaLugarAveriaId = ${paradadata.MotivoFallaLugarAveriaId},
-                                                Notas = '${paradadata.Notas}', 
-                                                UsrReg = ${paradadata.UsrReg},
-                                                UpdDate = getDate()
-                                                where id = ${paradadata.id}
-                                                `;
-      callback(null, result);
+      
+      request.input('Id', sql.Int, paradadata.Id)
+      request.input('Header', sql.Int, paradadata.HeaderRegId)
+      request.input('HoraInicio', sql.DateTime, paradadata.HoraI)
+      request.input('HoraFin', sql.DateTime, paradadata.HoraF)
+      request.input('Cargo', sql.NVarChar, paradadata.Cargo)
+      request.input('MP_Perd', sql.Int, paradadata.MpPerd)
+      request.input('MP_Desc', sql.Int, paradadata.MpDesc)
+      request.input('OrdenProdId', sql.Int, paradadata.OrdenProdId)
+      request.input('MotivoFallaId', sql.Int, paradadata.Motivo)
+      request.input('MotivoFallaSubAreaId', sql.Int, paradadata.subArea)
+      request.input('MotivoFallaLugarAveriaId', sql.Int, paradadata.LugarAveriaId)
+      request.input('MotivoFallaAreaId', sql.Int, paradadata.AreaFallaId)
+      request.input('Notas', sql.Text, paradadata.Notas)
+      request.input('UsrReg', sql.NVarChar, paradadata.UsrReg)
+
+      request.execute('sp_updParadaData', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result.recordset)
+        }
+      })
+
     } catch (err) {
       callback(err, null);
     }
   }
-
   async getPosRegParada(headerid, callback) {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`select par.Id as idreg
-            ,par.HoraInicio as horaI
-            ,par.HoraFin as horaF
-            ,par.Tiempo
-            ,t.TiempoStandard as tprogramado
-            ,c.Codigo as cargo
-            ,ar.Denominacion as area
-            ,sub.Denominacion as lugar
-            ,lug.Denominacion as equipo
-            ,fa.Denominacion as causa
-            ,par.MP_Perd as plqp
-            ,par.MP_Desc as plqd
-            ,ord.Orden as ordennp
-            ,ord.Material as prod
-            ,'' as proda
-            ,par.Notas
+                ,par.HoraInicio as horaI
+                ,par.HoraFin as horaF
+                ,par.Tiempo
+                ,t.TiempoStandard as tprogramado
+                ,par.Cargo as cargoId
+                ,c.Codigo as cargo
+                ,ar.Id as areaId
+                ,ar.Denominacion as area
+                ,sub.Id as subAreaId
+                ,sub.Denominacion as lugar
+                ,lug.Id as lugarId
+                ,lug.Denominacion as equipo
+                ,fa.Id as vausaId
+                ,fa.Denominacion as causa
+                ,par.MP_Perd as plqp
+                ,par.MP_Desc as plqd
+                ,ord.Id as ordenId
+                ,ord.Orden as ordennp
+                ,ord.Material as prod
+                ,'' as proda
+                ,par.Notas
                 from PosRegParada par
                     inner join tbListaCargos c on c.id = par.Cargo
                     inner join tbMatrizTiempoEstandar t on t.Cargo = c.Codigo
@@ -367,68 +409,17 @@ class Db {
       callback(e, null);
     }
   }
-  async insPosRegParada(regParadaD, callback) {
+  async delPosRegParada(ParadaRegId, callback) {
     try {
-      await sql.connect(this.setting);
-      await sql.query`insert into PosRegParada (HeaderRegId, HoraInicio, HoraFin, Cargo, 
-                                    MotivoFallaId, MotivoFallaAreaId, MotivoFallaLugarAveriaId,
-                                    MotivoFallaSubAreaId,MP_Perd, MP_Desc, Notas, OrdenProdId, UsrReg, RegDate, UpdDate)
-                                    values (${regParadaD.HeaderRegId}, ${regParadaD.HoraI}, ${regParadaD.HoraF}, ${regParadaD.Cargo}, ${regParadaD.Motivo},
-                                        ${regParadaD.AreaFallaId}, ${regParadaD.LugarAveriaId},
-                                        ${regParadaD.subArea}, ${regParadaD.MpPerd}, ${regParadaD.MpDesc},${regParadaD.Notas}, ${regParadaD.OrdenProdId},
-                                        ${regParadaD.UsrReg}, getDate(), getDate())`;
-
-      const result = await sql.query`	select par.Id as idreg
-                                            ,par.HoraInicio as horaI
-                                            ,par.HoraFin as horaF
-                                            ,par.Tiempo
-                                            ,t.TiempoStandard as tprogramado
-                                            ,c.Codigo as cargo
-                                            ,ar.Denominacion as area
-                                            ,sub.Denominacion as lugar
-                                            ,lug.Denominacion as equipo
-                                            ,fa.Denominacion as causa
-                                            ,par.MP_Perd as plqp
-                                            ,par.MP_Desc as plqd
-                                            ,ord.Orden as ordennp
-                                            ,ord.Material as prod
-                                            ,'' as proda
-                                            ,par.Notas
-                                                from PosRegParada par
-                                                    inner join tbListaCargos c on c.id = par.Cargo
-                                                    inner join tbMatrizTiempoEstandar t on t.Cargo = c.Codigo
-                                                    inner join tbmotivoFallaArea ar on par.MotivoFallaAreaId = ar.Id
-                                                    inner join tbMotivoFallaSubArea  sub on par.MotivoFallaSubAreaId = sub.Id
-                                                    inner join tbMotivoFallaLugarAveria  lug on par.MotivoFallaLugarAveriaId = lug.id
-                                                    inner join tbMotivoFalla fa on fa.id = par.MotivoFallaId
-                                                    inner join tbOrdenProduccion ord on ord.Id = par.OrdenProdId
-                                                where par.HeaderRegId = ${regParadaD.HeaderRegId}`;
-
-      callback(null, result);
-    } catch (e) {
-      callback(e.info, null);
+      
+        await sql.connect(this.setting)
+        await sql.query`delete from PosRegParada where Id = ${ParadaRegId}`                                               
+        callback(null, 'Ok')
+    } catch (e) { 
+        callback(e, null)
     }
   }
-  async updPosRegParada(regParadaD, callback) {
-    try {
-      await sql.connect(this.setting);
-      await sql.query`update PosRegParada set HoraInicio = ${regParadaD.HoraI}
-                                                    ,HoraFin = ${regParadaD.HoraF}
-                                                    ,Cargo = ${regParadaD.Cargo}
-                                                    ,MotivoFallaId = ${regParadaD.Motivo}
-                                                    ,MotivoFallaSubAreaId = ${regParadaD.subArea}
-                                                    ,MP_Perd = ${regParadaD.MpPerd}
-                                                    ,MP_Desc =  ${regParadaD.MpDesc}
-                                                    ,Notas = '${regParadaD.Notas}'
-                                                    ,OrdenProdId = ${regParadaD.Orden}
-                                                    ,UsrReg = ${regParadaD.UsrReg}
-                                                    ,UpdDate = getDate()
-                                    where id = ${regParadaD.Id}`;
-      callback(null, result);
-    } catch (e) {
-      callback(e, null);
-    }
-  }
+
   async getOrdenes(callback) {
     try {
       await sql.connect(this.setting);
@@ -447,7 +438,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getEquipos(callback) {
     try {
       await sql.connect(this.setting);
