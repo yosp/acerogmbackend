@@ -102,27 +102,14 @@ const ParadaForm = () => {
       Observ,
     } = e.target.elements;
 
-    let fechaI = OldHI.split("T")[0]
-    let tiemposI = new Date(HoraInicio._d)
-    console.log(tiemposI)
-    let horasI = tiemposI.getHours()>=10?tiemposI.getHours():`0${tiemposI.getHours()}`
-    let minI = tiemposI.getMinutes() >= 10 ? tiemposI.getMinutes():`0${tiemposI.getMinutes()}`
-    let secI =  tiemposI.getSeconds() >= 10 ? tiemposI.getSeconds():`0${tiemposI.getSeconds()}`
-
-    let fechaF = OldHF.split("T")[0]
-    let tiemposF = new Date(HoraFin._d)
-    let horasF = tiemposF.getHours()>=10?tiemposF.getHours():`0${tiemposF.getHours()}`
-    let minF = tiemposF.getMinutes() >= 10 ? tiemposF.getMinutes():`0${tiemposF.getMinutes()}`
-    let secF =  tiemposF.getSeconds() >= 10 ? tiemposF.getSeconds():`0${tiemposF.getSeconds()}`
-
-    console.log(`${fechaI}T${horasI}:${minI}:${secI}`)
-    console.log(`${fechaF}T${horasF}:${minF}:${secF}`)
     const data = {
       Id: ActiveParadaData.idreg,
       HeaderRegId: headerReg.id,
       OrdenProdId: SOrden.value,
-      HoraI: `${fechaI}T${horasI}:${minI}:${secI}`,
-      HoraF: `${fechaF}T${horasF}:${minF}:${secF}`,
+      HoraI: HoraInicio,
+      OldHI: OldHI,
+      HoraF: HoraFin,
+      OldHF: OldHF,
       Cargo: InCargo.value,
       AreaFallaId: SeArea.value,
       LugarAveriaId: SELugarF.value,

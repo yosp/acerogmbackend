@@ -301,6 +301,7 @@ class Db {
       request.input('PT_UME', sql.Int, proddat.PT_UME)
       request.input('PT_UMB', sql.Float, proddat.PT_UMB)
       request.input('Hora', sql.DateTime, proddat.Hora)
+      request.input('OldH', sql.DateTime, proddat.OldH)
       request.input('Notas', sql.Text, proddat.Notas)
       request.input('TotalComb', sql.Int, proddat.TotalComb)
       request.input('UsrReg', sql.NVarChar, proddat.UsrReg)
@@ -345,7 +346,9 @@ class Db {
       request.input('Id', sql.Int, paradadata.Id)
       request.input('Header', sql.Int, paradadata.HeaderRegId)
       request.input('HoraInicio', sql.DateTime, paradadata.HoraI)
+      request.input('OldHI', sql.DateTime, paradadata.OldHI)
       request.input('HoraFin', sql.DateTime, paradadata.HoraF)
+      request.input('OldHF', sql.DateTime, paradadata.OldHF)
       request.input('Cargo', sql.NVarChar, paradadata.Cargo)
       request.input('MP_Perd', sql.Int, paradadata.MpPerd)
       request.input('MP_Desc', sql.Int, paradadata.MpDesc)
@@ -799,7 +802,8 @@ class Db {
   }
   async getNotifHeader (header, callback) {
     try {
-      await sql.connect(this.setting) //${header.Fecha} ${header.PtrId}
+      await sql.connect(this.setting) 
+      console.log(header)
       const result = await sql.query`select 
                                         h.Id,
                                         o.Orden,
@@ -847,7 +851,7 @@ class Db {
                                           '0' as hid 
                                             from HeaderNotificacion n inner join strListaTurnos t on t.Id = n.Turno 
                                             where convert(date,n.FechaCont,101) = CONVERT(date,${header.Fecha},101) and n.PuestoTrabajoId = ${header.PtrId}`
-
+      console.log(result)
       callback(null, result)
     } catch (error) {
       callback(error, null)

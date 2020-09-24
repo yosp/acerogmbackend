@@ -105,18 +105,13 @@ const ProdFormEdit = () => {
     let torden = ordenes.filter((o) => {
       return o.Id == orden.value;
     })[0];
-    
-    let fecha = oldH.split("T")[0]
-    let tiempos = new Date(hora._d)
-    let horas = tiempos.getHours()>=10?tiempos.getHours():`0${tiempos.getHours()}`
-    let min = tiempos.getMinutes() >= 10 ? tiempos.getMinutes():`0${tiempos.getMinutes()}`
-    let sec =  tiempos.getSeconds() >= 10 ? tiempos.getSeconds():`0${tiempos.getSeconds()}`
 
     const data = {
       Id: RegId,
       HeaderRegId: headerReg.id,
       OrdenProdId: parseInt(orden.value),
-      Hora: `${fecha}T${horas}:${min}:${sec}`,
+      Hora: hora,
+      OldH: oldH,
       MPrima: parseInt(mprima.value),
       PT_UME: parseInt(consacumulado.value),
       PT_UMB: parseFloat(prodacumulado.value),
@@ -126,7 +121,7 @@ const ProdFormEdit = () => {
       TotalComb: conscombustible == undefined ? 0 : parseInt(conscombustible.value),
       UsrReg: user.CodigoEmp,
     };
-      
+
     updPosRegProd(data, (err, res) => {
       if(err) {
         console.log(err)

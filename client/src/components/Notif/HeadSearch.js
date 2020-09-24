@@ -149,7 +149,7 @@ const HeadSearch = () => {
   };
 
   const handleFechaCHange = (date) => {
-    SetFecha(date._d);
+    SetFecha(date);
   };
 
   return (
