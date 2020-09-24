@@ -327,6 +327,13 @@ const getChatarraPos = (HeaderId, callback) => {
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
+const delChatarraPos = (PosId, callback) => {
+    axios.get(`${base}/chatarra/DelPos?PosId=${PosId}`
+    )
+    .then(response => { callback(null, response.data)})
+    .catch(err => console.warn(err));
+}
+
 const GetTipoChatarra = (callback) => {
     axios.get(`${base}/chatarra/gettipo`
     )
@@ -490,6 +497,7 @@ export {
     insChatarraHeader,
     insChatarraPos,
     getChatarraPos,
+    delChatarraPos,
     GetTipoChatarra,
     GetMotivoChatarra,
     sapSendChatarra,

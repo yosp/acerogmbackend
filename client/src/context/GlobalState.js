@@ -35,7 +35,8 @@ import {
     SET_FECHA_NOTIF,
     SET_ORDENCOMP,
     SET_EDIT_REGPROD,
-    SET_EDIT_REGPARADA
+    SET_EDIT_REGPARADA,
+    SET_CHATARRA_HEADER_ID
 } from "./Actions";
 
 const InitialState = {
@@ -69,7 +70,8 @@ const InitialState = {
     ActivePtr: null,
     ActiveFechaN: null,
     OrdenComp: null,
-    ActiveParadaData: null
+    ActiveParadaData: null,
+    ChatarraHeaderId: null,
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -326,6 +328,13 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function SetChatarraHeaderId(HeaderId){
+      dispatch({
+        type: SET_CHATARRA_HEADER_ID,
+        payload: HeaderId
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -363,6 +372,7 @@ export const GlobalProvider = ({ children }) => {
         SetOrdenComp,
         SetEditProdData,
         SetEditParadData,
+        SetChatarraHeaderId,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -393,6 +403,7 @@ export const GlobalProvider = ({ children }) => {
         OrdenComp: state.OrdenComp,
         activeproddata: state.activeproddata,
         ActiveParadaData: state.ActiveParadaData,
+        ChatarraHeaderId: state.ChatarraHeaderId,
           }}
     >
       {children}

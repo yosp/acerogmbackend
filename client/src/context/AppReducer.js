@@ -33,7 +33,8 @@ import {
     SET_FECHA_NOTIF,
     SET_ORDENCOMP,
     SET_EDIT_REGPROD,
-    SET_EDIT_REGPARADA
+    SET_EDIT_REGPARADA,
+    SET_CHATARRA_HEADER_ID
 } from './Actions'
 
 export default (state, action) => {
@@ -217,6 +218,11 @@ export default (state, action) => {
             return {
                 ...state,
                 ActiveParadaData: action.payload
+            }
+        case SET_CHATARRA_HEADER_ID:
+            return {
+                ...state,
+                ChatarraHeaderId: action.payload
             }
         default:
             return state

@@ -83,7 +83,7 @@ const useStyle = makeStyles((theme) => ({
 const ChatarraHead = () => {
   const classes = useStyle();
   const AceroContex = useContext(GlobalContex);
-  const { SetChatarraPos, turnos, user, LoadChataraHeader } = AceroContex;
+  const { SetChatarraPos, turnos, user, LoadChataraHeader, SetChatarraHeaderId } = AceroContex;
   const [TodayDate, setTodayDate] = React.useState(new Date());
 
   const handlerSubmit = (event) => {
@@ -105,6 +105,7 @@ const ChatarraHead = () => {
         });
       }else {
         LoadChataraHeader(data)
+        SetChatarraHeaderId(data.Id)
         getChatarraPos(data.Id,(err, res)=> {
             if(err) {
               toast.error("Error al intentar cargar las posiciones", {

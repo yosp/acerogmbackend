@@ -409,6 +409,18 @@ class Routes {
             })
         })
 
+        this.app.get('/api/chatarra/DelPos', (req, res)=>{
+            this.db.delChatarraPos(req.query.PosId, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data)
+                }
+            })
+        })
         this.app.get('/api/Chatarra/getChatarra', (req, res)=>{
             this.db.getChatarraPos(req.query.HeaderId, (err, data)=>{
                 if(err){

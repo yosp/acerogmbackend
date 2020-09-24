@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   makeStyles,
   Paper,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -12,66 +13,12 @@ import {
   TablePagination,
   Fab,
 } from "@material-ui/core";
-import { Add } from '@material-ui/icons'
+import { Add, DeleteForever } from "@material-ui/icons";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import { GlobalContex } from "../../context/GlobalState";
-const columns = [
-  {
-    id: "Id",
-    label: "Posicion",
-    minWidth: "100",
-    align: "left",
-    format: (value) => value.toLocaleString(), //toFixed(2),
-  },
-  {
-    id: "puestoTr",
-    label: "Linea Producción",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "PesoEntrada",
-    label: "Peso Entrada",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "PesoSalida",
-    label: "Peso Salida",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "PesoChatarra",
-    label: "Peso Chatarra",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "motivo",
-    label: "Motivo Chatarra",
-    minWidth: "200",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "tipochatarra",
-    label: "Tipo Chatarra",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-  {
-    id: "Texto",
-    label: "Observación",
-    minWidth: "170",
-    align: "left",
-    format: (value) => value.toLocaleString(),
-  },
-];
+import { delChatarraPos, getChatarraPos } from "../../context/Api"
+
 
 let rows = []
 
@@ -97,9 +44,75 @@ const ChatarraPos = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex)
-  const { chatarraPos } = aceroContext
+  const { chatarraPos, ChatarraHeaderId, SetChatarraPos } = aceroContext
   
+  const columns = [
+    {
+      id: "Id",
+      label: "Posicion",
+      minWidth: "100",
+      align: "left",
+      format: (value) => value.toLocaleString(), //toFixed(2),
+    },
+    {
+      id: "puestoTr",
+      label: "Linea Producción",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "PesoEntrada",
+      label: "Peso Entrada",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "PesoSalida",
+      label: "Peso Salida",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "PesoChatarra",
+      label: "Peso Chatarra",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "motivo",
+      label: "Motivo Chatarra",
+      minWidth: "200",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "tipochatarra",
+      label: "Tipo Chatarra",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "Texto",
+      label: "Observación",
+      minWidth: "170",
+      align: "left",
+      format: (value) => value.toLocaleString(),
+    },
+    {
+      id: "Id",
+      label: "Eliminar",
+      minWidth: "100",
+      align: "left",
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>,
+    },
+  ];
   useEffect(() => {
+    console.log(chatarraPos)
     if (chatarraPos !== null && chatarraPos !== undefined) {
       rows = chatarraPos
       if(rowsPerPage == 25) {
@@ -121,6 +134,23 @@ const ChatarraPos = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const handleDelete = (e) => {
+    let id = e.currentTarget.dataset.id
+    delChatarraPos(id, (err, data) => {
+      if(err) {
+        toast.error("Error al intentar eliminar el registro", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      }
+      else {
+        getChatarraPos(ChatarraHeaderId, (err, data) => {
+          SetChatarraPos(data)
+      })
+      }
+    })
+
+  }
 
   return(
     <Paper className={classes.root}>
@@ -167,6 +197,7 @@ const ChatarraPos = () => {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+      <ToastContainer />
     </Paper>
   )
 

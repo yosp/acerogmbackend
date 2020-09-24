@@ -671,6 +671,17 @@ class Db {
     }
   }
 
+  async delChatarraPos(PosId, callback) {
+    try {
+      
+        await sql.connect(this.setting)
+        await sql.query`delete from PosChatarra where Id = ${PosId}`                                               
+        callback(null, 'Ok')
+    } catch (e) { 
+        callback(e, null)
+    }
+  }
+
   async getChatarraTipo(callback) {
     try {
       await sql.connect(this.setting);
