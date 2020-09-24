@@ -4,6 +4,7 @@ import ChatarraPos from './ChatarraPos'
 import HeaderPanel from './HeaderPanel'
 import NavigationBar from '../Util/NavBar'
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalContex } from '../../context/GlobalState'
 import { GetMotivoChatarra, GetTipoChatarra } from '../../context/Api'
@@ -51,6 +52,7 @@ const Chatarra = () => {
         children = <div>
                 <HeaderPanel/>
                 <ChatarraPos/>
+                
             </div>
     }
 
@@ -58,6 +60,7 @@ const Chatarra = () => {
         <div>
             <NavigationBar/>
             {children}
+            <ToastContainer />
         </div>
     )
 }

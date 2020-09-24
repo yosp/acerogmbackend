@@ -1,7 +1,7 @@
 ﻿import axios from 'axios'
 
-const base = "http://10.82.33.70:5000/api"
-//const base = "http://localhost:5000/api"
+//const base = "http://10.82.33.70:5000/api"
+const base = "http://localhost:5000/api"
 
 const LoginUser = (CodigoEmp, Password, callback) => {    
     axios.post(`${base}/agm/loginUser`, {CodigoEmp, Password}

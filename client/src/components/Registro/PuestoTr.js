@@ -15,6 +15,8 @@ import {
   KeyboardDatePicker
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import { GlobalContex } from '../../context/GlobalState'
 import { InsertHeaderRegistro, GetHeaderRegistro } from '../../context/Api'
 const useStyle = makeStyles(theme => ({
@@ -126,8 +128,15 @@ const PuestoTr = () => {
       }
       
       InsertHeaderRegistro(data, (err, res) => {
+          if(err){
+            toast.error("No es posible realizar la busqueda", {
+              position: toast.POSITION.BOTTOM_RIGHT
+            });
+            console.error(err)
+          } else {
+            setHeaderRegActive(res)
+          }
           
-          setHeaderRegActive(res)
           
       })
 
@@ -246,6 +255,7 @@ const PuestoTr = () => {
           </form>
         </Paper>
       </Grid>
+      <ToastContainer />
     </>
   );
 };

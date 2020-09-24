@@ -17,6 +17,8 @@ import {
     Delete
 } from '@material-ui/icons'
 import moment from 'moment'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import { getRegProd, getRegParada } from '../../context/Api' 
 
 const useStyles = makeStyles(theme => ({
@@ -92,10 +94,24 @@ const HeaderReg = ({ header }) => {
 
     useEffect(() => {
         getRegProd(header.id, (err, data) => {
+          if(err) {
+            toast.error("Ocurrio un error al cargar los registros de producción", {
+              position: toast.POSITION.BOTTOM_RIGHT
+            });
+            console.error(err)
+          } else {
             loadRegProdData(data)
+          }
         })
         getRegParada(header.id, (err, data) => {
+          if(err) {
+            toast.error("Ocurrio un error al cargar las paradas", {
+              position: toast.POSITION.BOTTOM_RIGHT
+            });
+            console.error(err)
+          } else {
             loadRegPadadData(data)
+          }
         })
     },[headerReg])
 
@@ -210,6 +226,7 @@ const HeaderReg = ({ header }) => {
           </Grid>
         </Grid>
       </Paper>
+      <ToastContainer />
     </>
   );
 };

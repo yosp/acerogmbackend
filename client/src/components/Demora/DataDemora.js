@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import { GlobalContex } from "../../context/GlobalState";
 import moment from "moment";
+
+
 const columns = [
   {
     id: "HoraInicio",
@@ -167,6 +169,12 @@ const DataDemora = () => {
         return reg;
       });
       rows = regDemora
+      console.log(rowsPerPage)
+      if(rowsPerPage == 25){
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(25)
+      }
     } else {
       rows = []
     }

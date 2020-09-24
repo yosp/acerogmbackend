@@ -17,6 +17,8 @@ import {
   KeyboardTimePicker,
 } from "@material-ui/pickers";
 import NumberFormat from 'react-number-format';
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalContex } from "../../context/GlobalState";
 import { getOdenenComp, updPosRegProd, getTipoComb, getHeaderReg } from "../../context/Api";
@@ -124,16 +126,20 @@ const ProdFormEdit = () => {
 
     updPosRegProd(data, (err, res) => {
       if(err) {
-        console.log(err)
+        toast.error("Error al intentar acctualizar los registros de producción", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+        console.error(err)
       } else {
-        console.log(res)
         loadRegProdData(res);
       }
     });
 
   getHeaderReg(headerReg.id, (err, data)=> {
       if(err){
-
+        toast.error("Error al cargar los datos de la cabezera", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
       setHeaderRegActive(data)
       history.push("/registro");
@@ -153,6 +159,9 @@ const ProdFormEdit = () => {
     setOrd(e.target.value)
     getOdenenComp(label, (err, data) => {
       if (err) {
+        toast.error("Se produjo un error al cargar la materia prima", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setMprima(data);
       }
@@ -213,6 +222,9 @@ const ProdFormEdit = () => {
     setOldH(activeproddata.Hora)
     getOdenenComp(activeproddata.Orden, (err, data) => {
       if (err) {
+        toast.error("Se produjo un error al cargar los tipos de combinacion", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setMprima(data);
         SetRegId(activeproddata.id)
@@ -231,6 +243,9 @@ const ProdFormEdit = () => {
     if (isLam) {
       getTipoComb((err, data) => {
         if (err) {
+          toast.error("Se produjo un error al cargar los tipos de combinacion", {
+            position: toast.POSITION.BOTTOM_RIGHT
+          });
         } else {
           setComb(data);
         }
@@ -394,6 +409,7 @@ const ProdFormEdit = () => {
           </Paper>
         </Grid>
       </Grid>
+      <ToastContainer />
     </>
   );
 };

@@ -15,6 +15,8 @@ import {
 import { Search } from "@material-ui/icons";
 import { GlobalContex } from "../../context/GlobalState";
 import MomentUtils from "@date-io/moment";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 import { getDemoras } from '../../context/Api'
 
@@ -105,8 +107,11 @@ const SearchDemora = () => {
     }
     getDemoras(demora,(err, res)=> {
       if(err) {
-
+        toast.error("Ocurrio un error al intentar generar la demora", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
+        console.log(res)
         LoadDemora(res)
       }
     } )
@@ -202,6 +207,7 @@ const SearchDemora = () => {
           </Grid>
         </form>
       </Paper>
+      <ToastContainer />
     </>
   );
 }

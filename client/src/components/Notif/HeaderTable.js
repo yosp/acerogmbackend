@@ -11,7 +11,8 @@ import {
   TableRow,
   TablePagination
 } from "@material-ui/core";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import moment from "moment";
 import { Check, Toc, Publish } from '@material-ui/icons'
 import { GlobalContex } from '../../context/GlobalState'

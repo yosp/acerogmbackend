@@ -14,6 +14,9 @@ import {
 } from "@material-ui/pickers";
 import { NewReleases } from "@material-ui/icons";
 import MomentUtils from "@date-io/moment";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 import { GlobalContex } from "../../context/GlobalState";
 import { getNotif, getNotifPos, getmfbf, getmfbfPos } from "../../context/Api";
 
@@ -113,11 +116,14 @@ const HeadSearch = () => {
       PtrId: ptr.value,
       Fecha: Fecha,
     };
-   
+
     if(Tipo == 1) {
       getNotif(data, (err, data) => {
         if (err) {
-  
+          toast.error("Ocurrio un error al intentar cargar las notificaciones CO11", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            autoClose: 3000
+          });
         } else {
           LoadNotif(data);
         }
@@ -125,22 +131,31 @@ const HeadSearch = () => {
   
       getNotifPos(data, (err, data) => {
         if (err) {
-          
+          toast.error("Ocurrio un error al intentar cargar las posiciones de CO11", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            autoClose: 3000
+          });
         } else {
           LoadNotifPos(data);
         }
       });
     } else {
       getmfbf(data, (err, data) => {
-        if (err) {
-  
+        if (err) {  
+          toast.error("Ocurrio un error al intentar cargar las notificaciones MFBF", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            autoClose: 3000
+          });
         } else {
           LoadNotif(data);
         }
       });
       getmfbfPos(data, (err, data) => {
         if (err) {
-          
+          toast.error("Ocurrio un error al intentar cargar las posiciones de MFBF", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            autoClose: 3000
+          });
         } else {
           LoadNotifPos(data);
         }

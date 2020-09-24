@@ -103,7 +103,7 @@ const Login = () => {
               toast.error("Error al intentar inicio", {
                   position: toast.POSITION.BOTTOM_RIGHT
               });
-              console.log(error.message)
+              console.error(error.message)
               return
           }
           if (logininfo !== "" && logininfo !== undefined && logininfo !== null || logininfo.length != 0) {
@@ -113,7 +113,7 @@ const Login = () => {
                       toast.error("Error al cargar roles de usuario", {
                           position: toast.POSITION.BOTTOM_RIGHT
                       });
-                      console.log(error.message)
+                      console.error(error.message)
                       return
                   }
                   if (info !== "" && info !== undefined && info !== null) {

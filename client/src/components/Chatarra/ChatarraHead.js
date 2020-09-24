@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import {
   Grid,
   Paper,
@@ -17,6 +17,8 @@ import {
 import MomentUtils from "@date-io/moment";
 import { GlobalContex } from "../../context/GlobalState";
 import { insChatarraHeader, getChatarraPos } from '../../context/Api'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyle = makeStyles((theme) => ({
   formControl: {
@@ -98,12 +100,16 @@ const ChatarraHead = () => {
     }
     insChatarraHeader(data, (err, data)=>{
       if(err){
-
+        toast.error("No fue posible validar este registro", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       }else {
         LoadChataraHeader(data)
         getChatarraPos(data.Id,(err, res)=> {
             if(err) {
-
+              toast.error("Error al intentar cargar las posiciones", {
+                position: toast.POSITION.BOTTOM_RIGHT
+              });
             } else {
               if(res.length>0){
                 SetChatarraPos(res)
@@ -192,6 +198,7 @@ const ChatarraHead = () => {
           </form>
         </Paper>
       </Grid>
+      <ToastContainer />
     </>
   );
 };

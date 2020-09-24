@@ -16,6 +16,9 @@ import {
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import { useHistory } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 import { GlobalContex } from "../../context/GlobalState";
 import {
   getMotivoFallaSubArea,
@@ -121,15 +124,20 @@ const ParadaForm = () => {
       UsrReg: user.CodigoEmp,
     };
   
-    console.log(data)
     updParadaReg(data, (err, res) => {
       if (err) {
+        toast.error("Error al intentar actualizar la parada", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         loadRegPadadData(res);
       }
     });
     getHeaderReg(headerReg.id, (err, data) => {
       if (err) {
+        toast.error("Error al cargar los datos de la cabezera", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setHeaderRegActive(data);
         history.push("/registro");
@@ -145,6 +153,9 @@ const ParadaForm = () => {
     setEEquiposS(0)
     getMotivoFallaSubArea(areaid, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar las sub-areas", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setSubArea(data);
       }
@@ -159,6 +170,9 @@ const ParadaForm = () => {
     setEEquiposS(0)
     getMotivoFallaLugarAveria(subAreaid, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar el lugar de averia", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setLugarFalla(data);
       }
@@ -177,6 +191,9 @@ const ParadaForm = () => {
     setEEquiposS(0)
     getMotivoFalla(lugarId, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar el equipo", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setEquipos(data);
       }
@@ -199,6 +216,9 @@ const ParadaForm = () => {
     setOldHF(ActiveParadaData.horaF)
     getMotivoFallaSubArea(ActiveParadaData.areaId, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar las sub-areas", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setSubArea(data);
       }
@@ -206,6 +226,9 @@ const ParadaForm = () => {
 
     getMotivoFallaLugarAveria(ActiveParadaData.subAreaId, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar el lugar de averia", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setLugarFalla(data);
       }
@@ -213,6 +236,9 @@ const ParadaForm = () => {
 
     getMotivoFalla(ActiveParadaData.lugarId, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar el equipo", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setEquipos(data);
       }
@@ -510,6 +536,7 @@ const ParadaForm = () => {
           </Paper>
         </Grid>
       </Grid>
+      <ToastContainer />
     </>
   );
 };

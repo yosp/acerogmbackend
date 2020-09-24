@@ -11,6 +11,9 @@ import {
   InputLabel,
   Tooltip,
 } from "@material-ui/core";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 import { GlobalContex } from "../../context/GlobalState";
 import { insChatarraPos } from "../../context/Api";
 
@@ -111,7 +114,9 @@ const ChatarraForm = () => {
 
     insChatarraPos(data, (err, data) => {
       if (err) {
-
+        toast.error("Error al intentar guardar el registro de chatarra", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         SetChatarraPos(data)
 
@@ -263,6 +268,7 @@ const ChatarraForm = () => {
           </Paper>
         </Grid>
       </Grid>
+      <ToastContainer />
     </>
   );
 };

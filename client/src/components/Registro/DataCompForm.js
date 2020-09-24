@@ -12,6 +12,8 @@ import {
 } from "@material-ui/core";
 import NumberFormat from 'react-number-format';
 import HeaderPrincipal from '../Util/NavBar'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalContex } from "../../context/GlobalState";
 import { getOdenenComp, InsertProdComp } from "../../context/Api";
@@ -110,8 +112,13 @@ const DataCompForm = () => {
     };
 
     InsertProdComp(data, (err, res) => {
-      
-      history.push("/registro");
+      if(err){
+        toast.error("Error al intentar guardar el componente", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      }else{
+        history.push("/registro");
+      }
     });
   };
 
@@ -123,8 +130,11 @@ const DataCompForm = () => {
   useEffect(()=>{
     getOdenenComp(OrdenComp.Orden, (err, data) => {
       if (err) {
+        toast.error("Ocurrio un error al cargar las ordenes de producción", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+        console.error(err)
       } else {
-        console.log(data)
         setMprima(data);
       }
     });
@@ -276,6 +286,7 @@ const DataCompForm = () => {
           </Paper>
         </Grid>
       </Grid>
+      <ToastContainer />
     </>
   );
 };

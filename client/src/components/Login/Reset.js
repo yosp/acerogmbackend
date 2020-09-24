@@ -13,7 +13,7 @@ import {
   CodeRounded,
 } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
-
+import 'react-toastify/dist/ReactToastify.css';
 //import logo from "../../assets/logo.png";
 
 const useStyle = makeStyles((theme) => ({

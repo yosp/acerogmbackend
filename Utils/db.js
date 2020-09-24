@@ -803,7 +803,7 @@ class Db {
   async getNotifHeader (header, callback) {
     try {
       await sql.connect(this.setting) 
-      console.log(header)
+      
       const result = await sql.query`select 
                                         h.Id,
                                         o.Orden,
@@ -851,7 +851,7 @@ class Db {
                                           '0' as hid 
                                             from HeaderNotificacion n inner join strListaTurnos t on t.Id = n.Turno 
                                             where convert(date,n.FechaCont,101) = CONVERT(date,${header.Fecha},101) and n.PuestoTrabajoId = ${header.PtrId}`
-      console.log(result)
+      
       callback(null, result)
     } catch (error) {
       callback(error, null)

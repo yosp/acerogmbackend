@@ -16,6 +16,8 @@ import {
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import { useHistory } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import { GlobalContex } from "../../context/GlobalState";
 import {
   getMotivoFallaSubArea,
@@ -108,6 +110,10 @@ const ParadaForm = () => {
 
     insRegParada(data, (err, res) => {
       if (err) {
+        toast.error("Error al intentar guardar la parada", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+        console.error(err)
       } else {
         loadRegPadadData(res);
       }
@@ -115,6 +121,9 @@ const ParadaForm = () => {
 
     getHeaderReg(headerReg.id, (err, data) => {
       if (err) {
+        toast.error("Error al cargar los datos de la cabezera", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setHeaderRegActive(data);
         history.push("/registro");
@@ -127,6 +136,9 @@ const ParadaForm = () => {
     let areaid = e.target.value;
     getMotivoFallaSubArea(areaid, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar las sub-areas", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setSubArea(data);
       }
@@ -138,6 +150,9 @@ const ParadaForm = () => {
     let subAreaid = e.target.value;
     getMotivoFallaLugarAveria(subAreaid, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar el lugar de averia", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setLugarFalla(data);
       }
@@ -154,6 +169,9 @@ const ParadaForm = () => {
     let lugarId = e.target.value;
     getMotivoFalla(lugarId, (err, data) => {
       if (err) {
+        toast.error("Error al intentar cargar el equipo", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
       } else {
         setEquipos(data);
       }
@@ -431,6 +449,7 @@ const ParadaForm = () => {
           </Paper>
         </Grid>
       </Grid>
+      <ToastContainer />
     </>
   );
 };
