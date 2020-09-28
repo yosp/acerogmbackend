@@ -244,7 +244,6 @@ const OrdenProduccion = () => {
     
     getOrdenList(data, (err, res) => {
       if(err) {
-        if(err){
           toast.error("Error al intentar obtener las ordenes", {
             position: toast.POSITION.BOTTOM_RIGHT
           });
@@ -353,6 +352,7 @@ const OrdenProduccion = () => {
         </Paper>
       </Grid>
       <Componentes/>
+      <ToastContainer/>
     </Grid>
   );
 };
