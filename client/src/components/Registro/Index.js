@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, } from 'react'
 import { GlobalContex } from '../../context/GlobalState'
 
 import NavigationBar from '../Util/NavBar'

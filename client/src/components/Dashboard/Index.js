@@ -13,11 +13,11 @@ const Dashboard = () => {
         , getIntegrantesGrupos
         , turnos
         , grupos
-        , cargos
+     //   , cargos
         , integrantesGrp
         , ordenes
         , getOrdenes
-        , LoadCargos
+      //  , LoadCargos
         
     } = AceroContext
 
@@ -33,15 +33,15 @@ const Dashboard = () => {
             })
         }
 
-        if(cargos === null || turnos === undefined) {
-            getCargos((err, data) => {
-                if(err) {
+        // if(cargos === null || turnos === undefined) {
+        //     getCargos((err, data) => {
+        //         if(err) {
 
-                } else {
-                    LoadCargos(data)
-                }
-            })
-        }
+        //         } else {
+        //             LoadCargos(data)
+        //         }
+        //     })
+        // }
 
         if (ordenes === null || ordenes === undefined) {
             getApiOdenenes((err, data) => {

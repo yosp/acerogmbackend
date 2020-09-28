@@ -70,7 +70,6 @@ const ParadaForm = () => {
   const {
     isLam,
     ordenes,
-    cargos,
     fallaAreas,
     user,
     headerReg,
@@ -83,7 +82,6 @@ const ParadaForm = () => {
     const {
       PlqPerd,
       PlqDesc,
-      InCargo,
       SeArea,
       SeSubArea,
       SELugarF,
@@ -97,7 +95,6 @@ const ParadaForm = () => {
       OrdenProdId: SOrden.value,
       HoraI: HoraInicio,
       HoraF: HoraFin,
-      Cargo: InCargo.value,
       AreaFallaId: SeArea.value,
       LugarAveriaId: SELugarF.value,
       subArea: SeSubArea.value,
@@ -286,7 +283,7 @@ const ParadaForm = () => {
                     </MuiPickersUtilsProvider>
                   </Grid>
                 </Grid>
-                <Grid container spacing={1} alignItems="center">
+                {/* <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <InputLabel id="SCargo">Cargo</InputLabel>
                     <Select
@@ -304,7 +301,7 @@ const ParadaForm = () => {
                       })}
                     </Select>
                   </Grid>
-                </Grid>
+                </Grid> */}
                 <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <InputLabel id="SlArea">Area</InputLabel>

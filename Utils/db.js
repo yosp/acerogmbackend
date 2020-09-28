@@ -325,11 +325,11 @@ class Db {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`insert into PosRegParada
-                                                (HeaderRegId, HoraInicio, HoraFin, Cargo, MP_Perd, MP_Desc,
+                                                (HeaderRegId, HoraInicio, HoraFin, MP_Perd, MP_Desc,
                                                     OrdenProdId, MotivoFallaId, MotivoFallaAreaId, MotivoFallaSubAreaId, MotivoFallaLugarAveriaId 
                                                     ,Notas, TipoGatillo, UsrReg, RegDate, UpdDate)
                                                 values (${paradadata.HeaderRegId}, ${paradadata.HoraI},
-                                                    ${paradadata.HoraF}, ${paradadata.Cargo}, ${paradadata.MpPerd},
+                                                    ${paradadata.HoraF}, ${paradadata.MpPerd},
                                                     ${paradadata.MpDesc}, ${paradadata.OrdenProdId}, ${paradadata.Motivo},
                                                     ${paradadata.AreaFallaId}, ${paradadata.subArea}, ${paradadata.LugarAveriaId},
                                                     ${paradadata.Notas}, 1 ,${paradadata.UsrReg}, getDate(), getDate())`;
@@ -349,7 +349,6 @@ class Db {
       request.input('OldHI', sql.DateTime, paradadata.OldHI)
       request.input('HoraFin', sql.DateTime, paradadata.HoraF)
       request.input('OldHF', sql.DateTime, paradadata.OldHF)
-      request.input('Cargo', sql.NVarChar, paradadata.Cargo)
       request.input('MP_Perd', sql.Int, paradadata.MpPerd)
       request.input('MP_Desc', sql.Int, paradadata.MpDesc)
       request.input('OrdenProdId', sql.Int, paradadata.OrdenProdId)
@@ -398,7 +397,7 @@ class Db {
                 ,'' as proda
                 ,par.Notas
                 from PosRegParada par
-                    inner join tbListaCargos c on c.id = par.Cargo
+                    inner join tbListaCargos c on c.Codigo = par.Cargo
                     inner join tbMatrizTiempoEstandar t on t.Cargo = c.Codigo
                     inner join tbmotivoFallaArea ar on par.MotivoFallaAreaId = ar.Id
                     inner join tbMotivoFallaSubArea  sub on par.MotivoFallaSubAreaId = sub.Id

@@ -198,14 +198,13 @@ const columns = [
       
     }
 
-    if (fallaAreas === null || fallaAreas === undefined) {
-      getMotivoFallaArea(headerReg.PuestoTrabajoId, (err, data) => {
+    getMotivoFallaArea(headerReg.PuestoTrabajoId, (err, data) => {
         if (err) {
         } else {
           LoadFallaArea(data);
         }
       });
-    }
+    
     
   }, [regparaddata]);
 

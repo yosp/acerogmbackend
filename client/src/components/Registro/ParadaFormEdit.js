@@ -73,7 +73,7 @@ const ParadaForm = () => {
   const [equipos, setEquipos] = useState([]);
   const [EequiposS, setEEquiposS] = useState(0);
   const [ENotas, setENotas] = useState('')
-  const [ECargo, setECargo] = useState(0)
+ 
   const [orden, setOrden] = useState(0)
   const [plqd, setPlqd] = useState(0)
   const [plqp, setPlqp] = useState(0)
@@ -82,7 +82,6 @@ const ParadaForm = () => {
   const {
     isLam,
     ordenes,
-    cargos,
     fallaAreas,
     user,
     headerReg,
@@ -96,7 +95,6 @@ const ParadaForm = () => {
     const {
       PlqPerd,
       PlqDesc,
-      InCargo,
       SeArea,
       SeSubArea,
       SELugarF,
@@ -113,7 +111,6 @@ const ParadaForm = () => {
       OldHI: OldHI,
       HoraF: HoraFin,
       OldHF: OldHF,
-      Cargo: InCargo.value,
       AreaFallaId: SeArea.value,
       LugarAveriaId: SELugarF.value,
       subArea: SeSubArea.value,
@@ -247,7 +244,7 @@ const ParadaForm = () => {
 
     setENotas(ActiveParadaData.Notas)
     setEAreaS(ActiveParadaData.areaId) // area
-    setECargo(ActiveParadaData.cargoId)
+    // setECargo(ActiveParadaData.cargoId)
     setEEquiposS(ActiveParadaData.lugarId)
     setELugarFallaS(ActiveParadaData.lugarId)
     setESubAreaS(ActiveParadaData.subAreaId)
@@ -362,7 +359,7 @@ const ParadaForm = () => {
                     </MuiPickersUtilsProvider>
                   </Grid>
                 </Grid>
-                <Grid container spacing={1} alignItems="center">
+                {/* <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <InputLabel id="SCargo">Cargo</InputLabel>
                     <Select
@@ -382,7 +379,7 @@ const ParadaForm = () => {
                       })}
                     </Select>
                   </Grid>
-                </Grid>
+                </Grid> */}
                 <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <InputLabel id="SlArea">Area</InputLabel>

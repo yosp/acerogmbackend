@@ -208,7 +208,6 @@ const OrdenProduccion = () => {
           position: toast.POSITION.BOTTOM_RIGHT
         });
       } else {
-        console.log(data)
         setOrdenCompList(data)
       }
     })
