@@ -36,7 +36,9 @@ import {
     SET_ORDENCOMP,
     SET_EDIT_REGPROD,
     SET_EDIT_REGPARADA,
-    SET_CHATARRA_HEADER_ID
+    SET_CHATARRA_HEADER_ID,
+    SET_ORDEN_LIST,
+    SET_ORDEN_COMP_LIST
 } from "./Actions";
 
 const InitialState = {
@@ -72,6 +74,8 @@ const InitialState = {
     OrdenComp: null,
     ActiveParadaData: null,
     ChatarraHeaderId: null,
+    OrdenList: null,
+    OrdenCompList: null,
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -335,6 +339,20 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setOrdenList(OrdenList) {
+      dispatch({
+        type: SET_ORDEN_LIST,
+        payload: OrdenList
+      })
+    }
+
+    function setOrdenCompList(OrdenCompList) {
+      dispatch({
+        type: SET_ORDEN_COMP_LIST,
+        payload: OrdenCompList
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -373,6 +391,8 @@ export const GlobalProvider = ({ children }) => {
         SetEditProdData,
         SetEditParadData,
         SetChatarraHeaderId,
+        setOrdenList,
+        setOrdenCompList,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -404,6 +424,8 @@ export const GlobalProvider = ({ children }) => {
         activeproddata: state.activeproddata,
         ActiveParadaData: state.ActiveParadaData,
         ChatarraHeaderId: state.ChatarraHeaderId,
+        OrdenList: state.OrdenList,
+        OrdenCompList: state.OrdenCompList,
           }}
     >
       {children}

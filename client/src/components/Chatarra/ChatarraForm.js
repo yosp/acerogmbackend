@@ -103,7 +103,7 @@ const ChatarraForm = () => {
       PuestoTr: puestotr.value,
       PesoEntrada: PesoEnt.value,
       PesoSalida: PesoSal.value,
-      PesoChatarra: parseInt(PesoEnt.value) - parseInt(PesoSal.value),
+      PesoChatarra:parseInt(PesoSal.value) - parseInt(PesoEnt.value) ,
       TipoChatarra: tipoChatarra.value,
       MotivoChatarra: motchatarra.value,
       Texto: Texto.value,

@@ -592,6 +592,52 @@ class Db {
     } catch (e) {}
   }
 
+  // Orden Produccion
+
+  async getOrdenesProdList(OrdenFilter, callback) {
+    try{
+    await sql.connect(this.setting);
+      const result = await sql.query`select Id
+                                            ,Orden
+                                            ,Material
+                                            ,PuestoTrabajo
+                                            ,Prog
+                                            ,UndMedida
+                                            ,FechaInicio
+                                            ,FechaFin
+                                            ,EPH
+                                            ,HojaRuta
+                                            ,NumOperacion
+                                            ,CantBase
+                                            ,[Valor prefijado]
+                                            ,VerFab
+                                            ,Centro
+                                            from tbOrdenProduccion
+                                              where FechaInicio between convert(datetime,${OrdenFilter.FechaI},101) and convert(datetime,${OrdenFilter.FechaF},101)
+                                                or FechaFin between convert(datetime,${OrdenFilter.FechaI},101) and convert(datetime,${OrdenFilter.FechaF},101) `;
+      callback(null, result);
+    }
+    catch (e) {
+      callback(e, null);
+    }
+  }
+
+  async getOrdenesCompList(Orden, callback) {
+    try {
+    await sql.connect(this.setting);
+      const result = await sql.query`select Id
+                                            ,Orden
+                                            ,Componente
+                                            ,Un_Medida
+                                            from tbOrdenProduccionComp 
+                                            where Orden = (select Orden from tbOrdenProduccion where Id =  ${Orden})`;
+      callback(null, result); 
+    }
+    catch (e) {
+      callback(e, null); 
+    }
+  }
+
   //Chatarra
 
   async insChatarraHeader(chatarraHeader, callback) {

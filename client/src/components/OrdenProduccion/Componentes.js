@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   makeStyles,
   Paper,
   Grid,
-  // TextField,
-  // Button,
   Table,
   TableBody,
   TableCell,
@@ -13,82 +11,11 @@ import {
   TableRow,
   TablePagination
 } from "@material-ui/core";
+import { GlobalContex } from "../../context/GlobalState";
 
-const columns = [
-  {
-    id: "id",
-    label: "id",
-    minWidth: "100",
-    align: "left",
-    format: value => value.toLocaleString() //toFixed(2),
-  },
-  {
-    id: "Aufnr",
-    label: "Aufnr",
-    minWidth: "100",
-    align: "left",
-    format: value => value.toLocaleString() //toFixed(2),
-  },
-  {
-    id: "Meins",
-    label: "Meins",
-    minWidth: "170",
-    align: "left",
-    format: value => value.toLocaleString()
-  },
-  {
-    id: "Idnrk",
-    label: "Idnrk",
-    minWidth: "170",
-    align: "left",
-    format: value => value.toLocaleString()
-  }
-]
 
-const rows = [
-  {
-    id: 1,
-    Idnrk: "PLQ-010",
-    Aufnr: "294633",
-    Meins: "TO"
-  },
-  {
-    id: 2,
-    Idnrk: "PLQ-011",
-    Aufnr: "294633",
-    Meins: "TO"
-  },
-  {
-    id: 3,
-    Idnrk: "PLQ-013",
-    Aufnr: "294633",
-    Meins: "TO"
-  },
-  {
-    id: 4,
-    Idnrk: "PLQ-045",
-    Aufnr: "294633",
-    Meins: "TO"
-  },
-  {
-    id: 5,
-    Idnrk: "AT-061",
-    Aufnr: "294633",
-    Meins: "QQ"
-  },
-  {
-    id: 6,
-    Idnrk: "CPC-002",
-    Aufnr: "294633",
-    Meins: "ST"
-  },
-  {
-    id: 7,
-    Idnrk: "PLQ-020",
-    Aufnr: "294633",
-    Meins: "TO"
-  }
-];
+
+let rows = [];
 
 const useStyles = makeStyles(theme => ({
   rootContainer: {},
@@ -119,6 +46,50 @@ const Componentes = () => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const aceroContext = useContext(GlobalContex);
+  const { OrdenCompList } = aceroContext
+
+  useEffect(() =>{
+    if(OrdenCompList != null || OrdenCompList != undefined) {
+      rows = OrdenCompList
+      if(rowsPerPage == 10) {
+        setRowsPerPage(25)
+      } else {
+        setRowsPerPage(10)
+      }
+    }
+  }, [OrdenCompList])
+
+  const columns = [
+    {
+      id: "Id",
+      label: "id",
+      minWidth: "100",
+      align: "left",
+      format: value => value.toLocaleString() //toFixed(2),
+    },
+    {
+      id: "Orden",
+      label: "Orden",
+      minWidth: "100",
+      align: "left",
+      format: value => value.toLocaleString() //toFixed(2),
+    },
+    {
+      id: "Componente",
+      label: "Componente",
+      minWidth: "170",
+      align: "left",
+      format: value => value.toLocaleString()
+    },
+    {
+      id: "Un_Medida",
+      label: "Un Medida",
+      minWidth: "170",
+      align: "left",
+      format: value => value.toLocaleString()
+    }
+  ]
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

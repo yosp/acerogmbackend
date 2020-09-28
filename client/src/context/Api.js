@@ -472,6 +472,21 @@ const regPosNotifMfbf = (PosData, callback) => {
         })
 }
 
+const getOrdenList = (OrdenFiltro, callback) => {
+    axios.get(`${base}/ordenes/getOrdenesList?FechaI=${OrdenFiltro.FechaI}&FechaF=${OrdenFiltro.FechaF}`
+    )
+    .then(response => { callback(null, response.data)})
+    .catch(err => console.warn(err));
+}
+
+const getOrdenCompList = (Orden, callback) => {
+    axios.get(`${base}/ordenes/getOrdenesCompList?Orden=${Orden}`
+    )
+    .then(response => { callback(null, response.data)})
+    .catch(err => console.warn(err));
+}
+
+
 export {
     LoginUser,
     UserInfo,
@@ -515,5 +530,7 @@ export {
     regPosNotifMfbf,
     delPosRegProd,
     delParadaRegProd,
-    updParadaReg
+    updParadaReg,
+    getOrdenList,
+    getOrdenCompList
 }

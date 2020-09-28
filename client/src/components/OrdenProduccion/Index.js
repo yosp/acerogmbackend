@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import "moment";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles, 
           Paper, 
           Grid, 
@@ -12,162 +13,29 @@ import { makeStyles,
           TableRow,
           TablePagination
         } from "@material-ui/core";
-import { Search } from "@material-ui/icons";
+import { Search, Pageview } from "@material-ui/icons";
+import MomentUtils from "@date-io/moment";
+import moment from "moment";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
+import { GlobalContex } from "../../context/GlobalState";
+import { getOrdenList, getOrdenCompList } from "../../context/Api"
 
 import NavigationBar from "../Util/NavBar";
 import Componentes from './Componentes'
-
-const columns = [
-  {
-    id: 'id',
-    label: "id",
-    minWidth: "100",
-    align: 'left',
-    format: value => value.toLocaleString() //toFixed(2),
-  },
-  {
-    id: 'Arbpl',
-    label: "Arbpl",
-    minWidth: "100",
-    align: 'left',
-    format: value => value.toLocaleString() //toFixed(2),
-  },
-  {
-    id: 'Aufnr',
-    label: "Aufnr",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Bmsch',
-    label: "Bmsch",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Eph',
-    label: "Eph",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Gamng',
-    label: "Gamng",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString(),
-  },
-  {
-    id: 'Gltrs',
-    label: "Gltrs",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Gmein',
-    label: "Gmein",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Gstrp',
-    label: "Gstrp",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Plnbez',
-    label: "Plnbez",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Plnnr',
-    label: "Plnnr",
-    minWidth: "170",
-    align: 'center',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Verid',
-    label: "Verid",
-    minWidth: "170",
-    align: 'center',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Vgw01',
-    label: "Vgw01",
-    minWidth: "170",
-    align: 'center',
-    format: value => value.toLocaleString()
-  },
-  {
-    id: 'Vornr',
-    label: "Vornr",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  },{
-    id: 'Werks',
-    label: "Werks",
-    minWidth: "170",
-    align: 'left',
-    format: value => value.toLocaleString()
-  }
-];
-
-const rows = [
-  {
-    id: 1,
-    Arbpl: "CLAV-004",
-    Aufnr: "294633",
-    Eph: "2.51",
-    Gamng: "120.0",
-    Gltrs: '2020-01-25',
-    Gmein: "QQ",
-    Gstrp: "2020-01-23",
-    Plnbez: 'CC001',
-    Plnnr: "50001654",
-    Verid: "0005",
-    Vgw01: "8.400",
-    Vornr: "0010",
-    Werks: "1001",
-    Bmsch: "1000.0"
-  },
-  {
-    id: 2,
-    Arbpl: "CLAV-009",
-    Aufnr: "294633",
-    Eph: "12.5",
-    Gamng: "120.0",
-    Gltrs: '2020-01-25',
-    Gmein: "QQ",
-    Gstrp: "2020-01-23",
-    Plnbez: 'CC001',
-    Plnnr: "50001654",
-    Verid: "0005",
-    Vgw01: "80000",
-    Vornr: "0020",
-    Werks: "1001",
-    Bmsch: "1000.0"
-  }
-];
-
+import { Int } from "mssql";
 
 const useStyles = makeStyles(theme => ({
   rootContainer: {},
   SearchPaper: {
     margin: "1rem 0 .5rem 0",
     padding: '.5rem',
-    width: "30rem"
+    width: "50rem"
   },
   SearchImput: {
     width: "20rem"
@@ -186,10 +54,170 @@ const useStyles = makeStyles(theme => ({
     width: '80rem'
   }
 }));
+let rows = [];
 const OrdenProduccion = () => {
   const classes = useStyles();
+  const [FechaInicio, setFechaInicio] = useState(new Date());
+  const [FechaFin, setFechaFin] = useState(new Date());
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const aceroContext = useContext(GlobalContex);
+  const { OrdenList, setOrdenList, setOrdenCompList } = aceroContext
+
+  const columns = [
+    {
+      id: 'Id',
+      label: "id",
+      minWidth: "100",
+      align: 'left',
+      format: value => value.toLocaleString() //toFixed(2),
+    },
+    {
+      id: 'Orden',
+      label: "Orden",
+      minWidth: "100",
+      align: 'left',
+      format: value => value.toLocaleString() //toFixed(2),
+    },
+    {
+      id: 'Material',
+      label: "Material",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'Centro',
+      label: "Centro",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'EPH',
+      label: "EPH",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'Prog',
+      label: "Prog",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString(),
+    },
+    {
+      id: 'UndMedida',
+      label: "Und Medida",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'FechaIn',
+      label: "Fecha Inicio",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'FechaFn',
+      label: "Fecha Fin",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'HojaRuta',
+      label: "Hoja Ruta",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'NumOperacion',
+      label: "Num Operacion",
+      minWidth: "170",
+      align: 'center',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'CantBase',
+      label: "Cant Base",
+      minWidth: "170",
+      align: 'center',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'Valor prefijado',
+      label: "Valor prefijado",
+      minWidth: "170",
+      align: 'center',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: 'VerFab',
+      label: "Ver Fab",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    }
+    ,{
+      id: 'PuestoTrabajo',
+      label: "Puesto Trabajo",
+      minWidth: "170",
+      align: 'left',
+      format: value => value.toLocaleString()
+    },
+    {
+      id: "Id",
+      label: "Componentes",
+      minWidth: "100",
+      align: "left",
+      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerViewComp}> <Pageview/> </Button>,
+    }
+  ];
+
+  useEffect(() => {
+    if(OrdenList != null || OrdenList != undefined) {
+      OrdenList.map(ord => {
+        ord.FechaIn = moment(ord.FechaInicio).format("L");
+        ord.FechaFn = moment(ord.FechaFin).format("L");
+      })
+      rows = OrdenList
+      if(rowsPerPage == 5) {
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(5)
+      }
+    }
+    
+  },[OrdenList])
+
+  const handleFInicioChange = (date) => {
+    setFechaInicio(date);
+    setFechaFin(date);
+  };
+
+  const handlerViewComp  =(e) => {
+    e.preventDefault()
+    getOrdenCompList(e.currentTarget.dataset.id, (err, data)=> {
+      if(err){
+        toast.error("Error al intentar obtener los componentes de la orden", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      } else {
+        console.log(data)
+        setOrdenCompList(data)
+      }
+    })
+
+  }
+
+  const handleHFinChange = (date) => {
+    setFechaFin(date);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -200,27 +228,87 @@ const OrdenProduccion = () => {
     setPage(0);
   };
 
+  const onFormSubmit = e => {
+    e.preventDefault()
+    
+    let fI = new Date(FechaInicio._d)
+    let ff = new Date(FechaFin._d)
+
+    let fidate = `${fI.getMonth()+1}/${fI.getDate()}/${fI.getFullYear()}`
+    let ffdate = `${ff.getMonth()+1}/${ff.getDate()}/${ff.getFullYear()}`
+
+    let data = {
+      FechaI: fidate,
+      FechaF: ffdate
+    }
+    
+    getOrdenList(data, (err, res) => {
+      if(err) {
+        if(err){
+          toast.error("Error al intentar obtener las ordenes", {
+            position: toast.POSITION.BOTTOM_RIGHT
+          });
+      } else {
+        
+        setOrdenList(res)
+      }
+    })
+    
+  }
+
   return (
     <Grid>
       <Grid container direction="column" justify="center" alignItems="center">
         <NavigationBar />
-        <Paper elevation={3} className={classes.SearchPaper}>
-          <TextField 
-            id="outlined-textarea"
-            label="Busqueda"
-            placeholder="Busqueda..."
-            variant="outlined"
-            className={classes.SearchImput}
-          />
-          <Button
-            variant="contained"
-            color="default"
-            className={classes.SearchButton}
-            startIcon={<Search />}
-          >
-            Buscar
-          </Button>
-        </Paper>
+        <form onSubmit={onFormSubmit}>
+          <Paper elevation={3} className={classes.SearchPaper}>
+            <Grid container spacing={3} alignItems="center">
+              <Grid item>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardDatePicker 
+                    margin="normal"
+                    id="time-picker"
+                    label="Fecha Inicio"
+                    value={FechaInicio}
+                    format="DD/MM/YYYY"
+                    onChange={handleFInicioChange}
+                    className={classes.InputTextStyle}
+                    KeyboardButtonProps={{
+                      "aria-label": "change time",
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+              <Grid item>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <KeyboardDatePicker 
+                      margin="normal"
+                      id="time-picker"
+                      label="Fecha Fin"
+                      value={FechaFin}
+                      format="DD/MM/YYYY"
+                      onChange={handleHFinChange}
+                      className={classes.InputTextStyle}
+                      KeyboardButtonProps={{
+                        "aria-label": "change time",
+                      }}
+                    />
+                </MuiPickersUtilsProvider>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="default"
+                  type="submit"
+                  className={classes.SearchButton}
+                  startIcon={<Search />}
+                >
+                  Buscar
+                </Button>
+              </Grid>
+            </Grid>
+          </Paper>
+          </form>
       </Grid>
       <Grid container direction="column" justify="center" alignItems="center">
         <Paper elevation={3} className={classes.ResultPaper}>
@@ -254,7 +342,7 @@ const OrdenProduccion = () => {
         </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
+          rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}

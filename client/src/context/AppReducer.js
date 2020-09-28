@@ -34,7 +34,8 @@ import {
     SET_ORDENCOMP,
     SET_EDIT_REGPROD,
     SET_EDIT_REGPARADA,
-    SET_CHATARRA_HEADER_ID
+    SET_CHATARRA_HEADER_ID, 
+    SET_ORDEN_LIST, SET_ORDEN_COMP_LIST
 } from './Actions'
 
 export default (state, action) => {
@@ -223,6 +224,16 @@ export default (state, action) => {
             return {
                 ...state,
                 ChatarraHeaderId: action.payload
+            }
+        case SET_ORDEN_LIST:
+            return {
+                ...state,
+                OrdenList: action.payload
+            }
+        case SET_ORDEN_COMP_LIST:
+            return {
+                ...state,
+                OrdenCompList: action.payload
             }
         default:
             return state

@@ -366,6 +366,32 @@ class Routes {
             })
         } )
 
+        this.app.get('/api/ordenes/getOrdenesList', (req, res) => {
+            this.db.getOrdenesProdList({FechaI: req.query.FechaI, FechaF: req.query.FechaF}, (err, data)=> {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.get('/api/ordenes/getOrdenesCompList', (req, res) => {
+            this.db.getOrdenesCompList(req.query.Orden, (err, data)=> {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
         this.app.post('/api/sap/ordenes', (req, res)=>{
             this.db.InsSapOrdenes(req.body.ordenesField, (err, data)=> {
             })
