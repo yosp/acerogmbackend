@@ -1,5 +1,5 @@
 import "moment";
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from 'react-router-dom'
 import {
   Button,
@@ -66,6 +66,7 @@ const ChatarraForm = () => {
   const classes = useStyle();
   const aceroContext = useContext(GlobalContex);
   const history = useHistory()
+  const [chatTipo, setChatTipo] = useState([])
   const {
     userInfo,
     chatarraHeader,
@@ -74,6 +75,7 @@ const ChatarraForm = () => {
     tipoChatarra,
     SetChatarraPos,
   } = aceroContext;
+
   const puestos = userInfo.map((puesto) => {
     return {
       id: puesto.PuestoTrId,
@@ -125,6 +127,16 @@ const ChatarraForm = () => {
     });
   };
 
+  const HandlerChangePuestoTr = (e) => {
+    e.preventDefault();
+    let Ptr = e.target.value;
+
+    let tchatarra = tipoChatarra.filter(ch => {
+      return ch.puestotrabajoid==Ptr
+    })
+    setChatTipo(tchatarra)
+  }
+
   return (
     <>
       <Grid
@@ -154,6 +166,7 @@ const ChatarraForm = () => {
                       label="Puesto de Trabajo"
                       name="puestotr"
                       className={classes.SelectStyle}
+                      onChange={HandlerChangePuestoTr}
                     >
                       <option value="0"> </option>
                       {puestos.map((p) => {
@@ -176,7 +189,7 @@ const ChatarraForm = () => {
                       className={classes.SelectStyle}
                     >
                       <option value="0"> </option>
-                      {tipoChatarra.map((t) => {
+                      {chatTipo.map((t) => {
                         return (
                           <option key={t.Id} value={t.Id}>
                             {t.Denominacion}
