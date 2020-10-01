@@ -245,7 +245,7 @@ class Db {
         await sql.query`delete from PosRegProd where Id = ${PosProdId}`
         await sql.query`delete from PosRegProdComponente where PosProdId = ${PosProdId}`                                                
         
-        callback(null, query)
+        callback(null, 'Ok')
     } catch (e) { 
         callback(e, null)
     }
@@ -771,7 +771,7 @@ class Db {
                                               from PosRegParada p
                                                 inner join HeaderReg h on p.HeaderRegId = h.Id
                                                 inner join tbMatrizTiempoEstandar stan on p.Tprog_Id = stan.Id
-                                                inner join tbListaCargos car on car.id = p.Cargo
+                                                inner join tbListaCargos car on car.Codigo = p.Cargo
                                                 inner join tbMotivoFallaArea area on area.Id = p.MotivoFallaAreaId
                                                 inner join tbMotivoFallaLugarAveria lug on lug.Id = p.MotivoFallaLugarAveriaId
                                                 inner join tbMotivoFalla fa on fa.Id = p.MotivoFallaId

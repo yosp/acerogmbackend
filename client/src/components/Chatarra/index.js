@@ -40,7 +40,12 @@ const Chatarra = () => {
                         autoClose: 3000
                     });
                 }else {
-                    ChatarraMotivo(data)
+                    if(data == undefined || data == null) {
+                        ChatarraMotivo([])    
+                    } else {
+                        ChatarraMotivo(data)
+                    }
+                    
                 }
             })
         }

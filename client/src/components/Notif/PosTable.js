@@ -115,9 +115,23 @@ const PosTable = () => {
           }
         
       });
+      if(rowsPerPage == 5) {
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(5)
+      }
     } else {
       rows = []
     }
+    return function cleanet() {
+      rows = []
+      if(rowsPerPage == 5) {
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(5)
+      }
+    }
+
   }, [ActiveNotifId, notifPos]);
 
   if (ActiveNotifId) {
@@ -168,7 +182,7 @@ const PosTable = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 50, 100]}
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

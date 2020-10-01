@@ -257,7 +257,21 @@ const HeaderTable = () => {
         return reg;
       });
       rows = headerNotif
+      if(rowsPerPage == 5) {
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(5)
+      }
     }
+    return function cleanet() {
+      rows = []
+      if(rowsPerPage == 5) {
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(5)
+      }
+    }
+  
 
   },[headerNotif])
 
@@ -301,7 +315,7 @@ const HeaderTable = () => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 50, 100]}
+        rowsPerPageOptions={[5,10, 25, 50, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}

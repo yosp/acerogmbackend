@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import NavigationBar from '../Util/NavBar'
 import HeaderSearch from './HeadSearch'
@@ -9,8 +9,18 @@ import { GlobalContex } from '../../context/GlobalState'
 
 const Index = () => {
     const AceroContext = useContext(GlobalContex)
-    const { ActiveTypeNotif } = AceroContext
+    const { ActiveTypeNotif, SetActiveNotif, LoadNotif, LoadNotifPos } = AceroContext
     let table = <></>
+
+    useEffect(()=>{
+      
+      return function cleanup() {
+        SetActiveNotif(null)
+        LoadNotif(null)
+        LoadNotifPos(null)
+      };
+    },[])
+
     if(ActiveTypeNotif == 1) {
       table = <HeaderTable/>
     } else {
