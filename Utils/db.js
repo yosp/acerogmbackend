@@ -702,8 +702,14 @@ class Db {
     try {
       await sql.connect(this.setting);
       const search = await sql.query`select p.*, t.Descripcion as puestoTr
-                                            , m.Denominacion as motivo  
-                                            , ti.Denominacion as tipochatarra
+                                        , ti.Almacen as StgeLoc
+                                        , ti.UM as EntryUom
+                                        , ti.CIMov as MoveType
+                                        , m.Denominacion as motivo  
+                                        , ti.Denominacion as tipochatarra
+                                        , ti.Centro as Plant
+                                        , ti.CeCo as Costcenter
+                                        , ti.Codigo as Material
                                             from PosChatarra p 
                                                 inner join strPuestosTrabajos t on t.Id = p.PuestoTrId
                                                 inner join tbChatarraMotivo m on m.Id = p.MotivoChatarraId

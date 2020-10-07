@@ -77,13 +77,13 @@ const HeaderPanel = () => {
 
     chatarraPos.map((p) => {
       Posiciones.push({
-        Material: "DCL001",
-        Plant: "1000",
-        StgeLoc: "0420",
-        MoveType: "913",
-        EntryQnt: 1360,
-        EntryUom: "KG",
-        Costcenter: "1000181080",
+        Material: p.Material,
+        Plant: p.Plant,
+        StgeLoc: p.StgeLoc,
+        MoveType: p.MoveType,
+        EntryQnt: p.PesoChatarra,
+        EntryUom: p.EntryUom,
+        Costcenter: p.Costcenter,
         MoveReas: 30
       })
     })
@@ -93,8 +93,14 @@ const HeaderPanel = () => {
       Posiciones
     }
 
+    console.log(ZgmAcerogmChatarra)
+
     sapSendChatarra(ZgmAcerogmChatarra, (err, data) =>{
-      
+      if(err) {
+        console.log(err)
+      } else {
+        console.log(data)
+      }
     })
   }
 
