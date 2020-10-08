@@ -350,7 +350,13 @@ const GetMotivoChatarra = (callback) => {
 }
 
 const sapSendChatarra = (ZgmAcerogmChatarra, callback) => {
-    axios.post('http://appincap01/AgmSapApi/api/setChatarra', {ZgmAcerogmChatarra})
+    axios.post('http://appincap01/AgmSapApi/api/setChatarra', {ZgmAcerogmChatarra}, 
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
             .then(function (response) {
                 callback(null, response.data)
             }).catch(function(err) {
