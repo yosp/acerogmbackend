@@ -28,7 +28,7 @@ import { getOrdenList, getOrdenCompList } from "../../context/Api"
 
 import NavigationBar from "../Util/NavBar";
 import Componentes from './Componentes'
-import { Int } from "mssql";
+import LogoutPopup from '../Util/LogoutPopup'
 
 const useStyles = makeStyles(theme => ({
   rootContainer: {},
@@ -63,6 +63,7 @@ const OrdenProduccion = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex);
   const { OrdenList, setOrdenList, setOrdenCompList } = aceroContext
+
 
   const columns = [
     {
@@ -352,6 +353,7 @@ const OrdenProduccion = () => {
       </Grid>
       <Componentes/>
       <ToastContainer/>
+      <LogoutPopup/>
     </Grid>
   );
 };

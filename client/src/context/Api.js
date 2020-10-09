@@ -328,6 +328,15 @@ const getChatarraPos = (HeaderId, callback) => {
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
 }
+
+const setChatarraRegSap = (Chatarra, callback) => {
+    axios.post(`${base}/Chatarra/RegSap`, {Chatarra}
+    ).then(function (response) {
+        callback(null, response.data)
+    }).catch(function(err) {
+        callback(err, null)
+    })
+}
 const delChatarraPos = (PosId, callback) => {
     axios.get(`${base}/chatarra/DelPos?PosId=${PosId}`
     )
@@ -350,16 +359,34 @@ const GetMotivoChatarra = (callback) => {
 }
 
 const sapSendChatarra = (ZgmAcerogmChatarra, callback) => {
-    axios.post('http://appincap01/AgmSapApi/api/setChatarra', {ZgmAcerogmChatarra}, 
-        {
+    // axios.post(`http://appincap01/AgmSapApi/api/setChatarra` , 
+    //     {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Access-Control-Allow-Origin': '*'
+    //         }
+    //     })
+    // axios({
+    //     method: 'post',
+    //     url: `http://appincap01/AgmSapApi/api/setChatarra`,
+    //     data: {Chatarra: {
+    //                     header: ZgmAcerogmChatarra.Header,
+    //                     pos: ZgmAcerogmChatarra.Posiciones}
+    //                 } 
+    //         })
+        fetch('http://appincap01/AgmSapApi/api/setChatarra', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
-            }
-        })
-            .then(function (response) {
-                callback(null, response.data)
-            }).catch(function(err) {
+            },
+            body: JSON.stringify(ZgmAcerogmChatarra)
+            })
+            .then(response => response.json())
+                .then(data => {
+                    callback(null, data)
+                })
+            .catch(function(err) {
                 callback(err, null)
             })
 }
@@ -539,5 +566,6 @@ export {
     delParadaRegProd,
     updParadaReg,
     getOrdenList,
-    getOrdenCompList
+    getOrdenCompList,
+    setChatarraRegSap
 }

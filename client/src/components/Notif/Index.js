@@ -6,6 +6,7 @@ import HeaderTable from './HeaderTable'
 import HeaderTableMfbf from './HeaderTableMfbf'
 import PosTable from './PosTable'
 import { GlobalContex } from '../../context/GlobalState'
+import LogoutPopup from '../Util/LogoutPopup'
 
 const Index = () => {
     const AceroContext = useContext(GlobalContex)
@@ -32,6 +33,7 @@ const Index = () => {
           <HeaderSearch/>  
           {table}
           <PosTable/>
+          <LogoutPopup/>
         </>
     )
 }

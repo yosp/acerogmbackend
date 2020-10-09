@@ -6,7 +6,7 @@ import PuestoTr from "./PuestoTr"
 import HeaderReg from './HeaderReg'
 import DataPanel from './DataPanel'
 import CompData from './DataCompPanel'
-
+import LogoutPopup from '../Util/LogoutPopup'
 const Registro = () => {
     const aceroContext = useContext(GlobalContex)
     const { headerReg, regprodcompdata } = aceroContext
@@ -33,6 +33,7 @@ const Registro = () => {
         <>
             <NavigationBar />
             {children}
+            <LogoutPopup/>
             
         </>
     )

@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { GlobalContex } from '../../context/GlobalState'
 
 const LogoutPopup = () => {
-    const signoutTime = 3660000;
+    const signoutTime =  3660000;
     const redirectTime = 3800;
     const warningTime = 3540000;
     const aceroContext = useContext(GlobalContex)

@@ -422,6 +422,19 @@ class Routes {
             })
         })
 
+        this.app.post('/api/Chatarra/RegSap', (req, res)=>{
+            this.db.setChatarraRegSap(req.body.Chatarra, (err, data)=>{
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                }else {
+                    res.status(200).json(data.recordset[0])
+                }
+            })
+        })
+
         this.app.post('/api/Chatarra/InsPos', (req, res)=>{
             this.db.insChatarraPos(req.body.ChatarraPos, (err, data)=>{
                 if(err){

@@ -5,9 +5,11 @@ import HeaderPanel from './HeaderPanel'
 import NavigationBar from '../Util/NavBar'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { CircularProgress }  from "@material-ui/core";
 
 import { GlobalContex } from '../../context/GlobalState'
 import { GetMotivoChatarra, GetTipoChatarra } from '../../context/Api'
+import LogoutPopup from '../Util/LogoutPopup'
 
 
 const Chatarra = () => {
@@ -15,7 +17,6 @@ const Chatarra = () => {
     const { chatarraHeader, motivoChatara, tipoChatarra, ChatarraMotivo, ChatarraTipo } = aceroContext
 
     let children 
-
     useEffect(() => {
         if(tipoChatarra === null) {
             GetTipoChatarra((err,data) => {
@@ -50,7 +51,7 @@ const Chatarra = () => {
             })
         }
     },[])
-    
+
     if(chatarraHeader == null){
         children = <ChatarraHead/>
     } else {
@@ -66,6 +67,7 @@ const Chatarra = () => {
             <NavigationBar/>
             {children}
             <ToastContainer />
+            <LogoutPopup/>
         </div>
     )
 }

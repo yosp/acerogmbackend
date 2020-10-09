@@ -38,7 +38,8 @@ import {
     SET_EDIT_REGPARADA,
     SET_CHATARRA_HEADER_ID,
     SET_ORDEN_LIST,
-    SET_ORDEN_COMP_LIST
+    SET_ORDEN_COMP_LIST,
+    SET_LOADING,
 } from "./Actions";
 
 const InitialState = {
@@ -76,6 +77,7 @@ const InitialState = {
     ChatarraHeaderId: null,
     OrdenList: null,
     OrdenCompList: null,
+    Loading: false,
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -353,6 +355,13 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setLoading(Load) {
+      dispatch({
+        type: SET_LOADING,
+        payload: Load
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -393,6 +402,7 @@ export const GlobalProvider = ({ children }) => {
         SetChatarraHeaderId,
         setOrdenList,
         setOrdenCompList,
+        setLoading,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -426,6 +436,7 @@ export const GlobalProvider = ({ children }) => {
         ChatarraHeaderId: state.ChatarraHeaderId,
         OrdenList: state.OrdenList,
         OrdenCompList: state.OrdenCompList,
+        Loading: state.setLoading,
           }}
     >
       {children}

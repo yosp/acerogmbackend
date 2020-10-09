@@ -684,13 +684,31 @@ class Db {
                                                 ${ChatarraPos.Texto}, ${ChatarraPos.UsrReg}, 
                                                 ${ChatarraPos.RegDate}, ${ChatarraPos.UpdDate})`;
 
-      const search = await sql.query`select p.*, t.Descripcion as puestoTr
-                                                        , m.Denominacion as motivo  
-                                                        , ti.Denominacion as tipochatarra
-                                                        from PosChatarra p 
-                                                            inner join strPuestosTrabajos t on t.Id = p.PuestoTrId
-                                                            inner join tbChatarraMotivo m on m.Id = p.MotivoChatarraId
-                                                            inner join tbChatarraTipo ti on ti.Id = p.tipoChatarraId
+      const search = await sql.query`select p.Id
+                                              , p.HeaderId
+                                              , p.PuestoTrId
+                                              , p.PesoEntrada
+                                              , p.PesoSalida
+                                              , p.PesoChatarra
+                                              , p.TipoChatarraId
+                                              , p.MotivoChatarraId
+                                              , p.Texto
+                                              , p.UsrReg
+                                              , p.RegDate
+                                              , p.UpdDate
+                                              , t.Descripcion as puestoTr
+                                              , RTRIM(ti.Almacen) as StgeLoc
+                                              , RTRIM(ti.UM) as EntryUom
+                                              , ti.CIMov as MoveType
+                                              , m.Denominacion as motivo  
+                                              , ti.Denominacion as tipochatarra
+                                              , ti.Centro as Plant
+                                              , ti.CeCo as Costcenter
+                                              , ti.Codigo as Material
+                                                from PosChatarra p 
+                                                  inner join strPuestosTrabajos t on t.Id = p.PuestoTrId
+                                                  inner join tbChatarraMotivo m on m.Id = p.MotivoChatarraId
+                                                  inner join tbChatarraTipo ti on ti.Id = p.tipoChatarraId
                                                         where HeaderId =${ChatarraPos.HeaderId}`;
       callback(null, search);
     } catch (e) {
@@ -701,24 +719,56 @@ class Db {
   async getChatarraPos(HeaderId, callback) {
     try {
       await sql.connect(this.setting);
-      const search = await sql.query`select p.*, t.Descripcion as puestoTr
-                                        , ti.Almacen as StgeLoc
-                                        , ti.UM as EntryUom
-                                        , ti.CIMov as MoveType
-                                        , m.Denominacion as motivo  
-                                        , ti.Denominacion as tipochatarra
-                                        , ti.Centro as Plant
-                                        , ti.CeCo as Costcenter
-                                        , ti.Codigo as Material
-                                            from PosChatarra p 
-                                                inner join strPuestosTrabajos t on t.Id = p.PuestoTrId
-                                                inner join tbChatarraMotivo m on m.Id = p.MotivoChatarraId
-                                                inner join tbChatarraTipo ti on ti.Id = p.tipoChatarraId
-                                                        where HeaderId =${HeaderId}`;
+      const search = await sql.query`select p.Id
+                                      , p.HeaderId
+                                      , p.PuestoTrId
+                                      , p.PesoEntrada
+                                      , p.PesoSalida
+                                      , p.PesoChatarra
+                                      , p.TipoChatarraId
+                                      , p.MotivoChatarraId
+                                      , p.Texto
+                                      , p.UsrReg
+                                      , p.RegDate
+                                      , p.UpdDate
+                                      , t.Descripcion as puestoTr
+                                      , RTRIM(ti.Almacen) as StgeLoc
+                                      , RTRIM(ti.UM) as EntryUom
+                                      , ti.CIMov as MoveType
+                                      , m.Denominacion as motivo  
+                                      , ti.Denominacion as tipochatarra
+                                      , ti.Centro as Plant
+                                      , ti.CeCo as Costcenter
+                                      , ti.Codigo as Material
+                                        from PosChatarra p 
+                                          inner join strPuestosTrabajos t on t.Id = p.PuestoTrId
+                                          inner join tbChatarraMotivo m on m.Id = p.MotivoChatarraId
+                                          inner join tbChatarraTipo ti on ti.Id = p.tipoChatarraId
+                                            where HeaderId =${HeaderId}`;
 
       callback(null, search);
     } catch (e) {
       callback(e, null);
+    }
+  }
+
+  async setChatarraRegSap(Chatarra, callback) {
+    try {
+      const request = new sql.Request()
+      await sql.connect(this.setting);
+      
+      request.input('headerId', sql.Int, Chatarra.HeaderId)
+      request.input('regSap', sql.NVarChar, Chatarra.RegSap)
+
+      request.execute('sp_SetChatarraRegSap', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+    } catch (e) {
+      callback(e, null)
     }
   }
 
