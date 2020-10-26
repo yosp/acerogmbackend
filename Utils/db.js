@@ -172,28 +172,28 @@ class Db {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`select prod.id
-                                        ,prod.HeaderRegId
-                                        ,prod.OrdenProdId
-                                        ,ord.Orden 
-                                        ,comp.Id as mpid
-                                        ,comp.Componente as mprima
-                                        ,par.Partida as lote
-                                        ,ord.Material as producto
-                                        ,prod.Hora
-                                        ,ord.Eph
-                                        ,comp.Un_Medida as umb
-                                        ,prod.PT_UME as ume
-                                        ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
-                                        ,isNull(cb.Id,0) combId
-                                        ,isNull(cb.Descripcion,'') as comb
-                                        ,isNull(prod.TotalComb,0) as conscomb
-                                        ,isNull(prod.Total_Potencia,0) as conselect 
-                                        ,prod.Notas
-                                            from PosRegProd prod
-                                            inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
-                                            inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
-                                            inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
-                                            left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
+                                          ,prod.HeaderRegId
+                                          ,prod.OrdenProdId
+                                          ,ord.Orden 
+                                          ,prod.mpid 
+                                          ,comp.Componente as mprima
+                                          ,par.Partida as lote
+                                          ,ord.Material as producto
+                                          ,prod.Hora
+                                          ,ord.Eph
+                                          ,comp.Un_Medida as umb
+                                          ,prod.PT_UME as ume
+                                          ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
+                                          ,isNull(cb.Id,0) combId
+                                          ,isNull(cb.Descripcion,'') as comb
+                                          ,isNull(prod.TotalComb,0) as conscomb
+                                          ,isNull(prod.Total_Potencia,0) as conselect 
+                                          ,prod.Notas
+                                              from PosRegProd prod
+                                              inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
+                                              inner join tbOrdenProduccionComp comp on comp.Id = prod.mpid
+                                              left join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
+                                              left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
                     where prod.HeaderRegId = ${headerid}`;
 
       callback(null, result);
@@ -255,16 +255,16 @@ class Db {
     try {
       await sql.connect(this.setting);
       const query = await sql.query`insert into PosRegProd 
-                                                (HeaderRegId, OrdenProdId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, UsrReg, RegDate, UpdDate)
-                                                values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.Hora}, ${proddat.PT_UME}, 
+                                                (HeaderRegId, OrdenProdId, mpId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, UsrReg, RegDate, UpdDate)
+                                                values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.MPrima}, ${proddat.Hora}, ${proddat.PT_UME}, 
                                                     ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TipoCombId}, ${proddat.TotalComb}, ${proddat.EPH}, ${proddat.UsrReg},
                                                     getdate(), getDate())`; 
 
-      const result = await sql.query`select prod.id
+      const result = await sql.query`select  prod.id
                                             ,prod.HeaderRegId
                                             ,prod.OrdenProdId
                                             ,ord.Orden 
-                                            ,comp.Id as mpid
+                                            ,prod.mpid 
                                             ,comp.Componente as mprima
                                             ,par.Partida as lote
                                             ,ord.Material as producto
@@ -280,8 +280,8 @@ class Db {
                                             ,prod.Notas
                                                 from PosRegProd prod
                                                 inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
-                                                inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
-                                                inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
+                                                inner join tbOrdenProduccionComp comp on comp.Id = prod.mpid
+                                                left join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
                                                 left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
                                           where prod.HeaderRegId = ${proddat.HeaderRegId}`;
 
@@ -298,6 +298,7 @@ class Db {
       
       request.input('Id', sql.Int, proddat.Id)
       request.input('OrdenProdId', sql.Int, proddat.OrdenProdId)
+      request.input('MpId', sql.Int, proddat.MPrima)
       request.input('PT_UME', sql.Int, proddat.PT_UME)
       request.input('PT_UMB', sql.Float, proddat.PT_UMB)
       request.input('Hora', sql.DateTime, proddat.Hora)
@@ -424,7 +425,7 @@ class Db {
   async getOrdenes(callback) {
     try {
       await sql.connect(this.setting);
-      const result = await sql.query`select * from TbOrdenProduccion where FechaFin > getDate()`;
+      const result = await sql.query`select * from TbOrdenProduccion where Estatus = 'A'`;
       callback(null, result);
     } catch (e) {
       callback(e, null);
@@ -612,8 +613,8 @@ class Db {
                                             ,VerFab
                                             ,Centro
                                             from tbOrdenProduccion
-                                              where FechaInicio between convert(datetime,${OrdenFilter.FechaI},101) and convert(datetime,${OrdenFilter.FechaF},101)
-                                                or FechaFin between convert(datetime,${OrdenFilter.FechaI},101) and convert(datetime,${OrdenFilter.FechaF},101) `;
+                                              where FechaInicio between convert(date,${OrdenFilter.FechaI},101) and convert(date,${OrdenFilter.FechaF},101)
+                                                or FechaFin between convert(date,${OrdenFilter.FechaI},101) and convert(date,${OrdenFilter.FechaF},101) `;
       callback(null, result);
     }
     catch (e) {

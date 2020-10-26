@@ -95,6 +95,7 @@ const ProdFrom = () => {
     let torden = ordenes.filter((o) => {
       return o.Id == orden.value;
     });
+    
     const data = {
       HeaderRegId: headerReg.id,
       OrdenProdId: orden.value,
@@ -108,7 +109,7 @@ const ProdFrom = () => {
       TotalComb: conscombustible == undefined ? 0 : conscombustible.value,
       UsrReg: user.CodigoEmp,
     };
-
+    console.log(data)
     insRegProd(data, (err, res) => {
       if(err){
         toast.error("Error al intentar guardar los registros de producción", {

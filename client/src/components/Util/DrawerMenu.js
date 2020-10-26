@@ -15,6 +15,7 @@ import { Note,
           AccountCircle, 
           PowerSettingsNew, 
           AccessTime, 
+          SaveAlt,
           NotificationsActive,
           LocalShipping } from "@material-ui/icons";
 import { GlobalContex } from '../../context/GlobalState'
@@ -92,6 +93,17 @@ const DrawerMenu = ({ draw, onToggle }) => {
         </Link>
       </List>
       <Divider />
+      <list>
+        <Link to='/recepcion' className={classes.linkStyle}>
+          <ListItem button>
+            <ListItemIcon>
+              <SaveAlt/>
+            </ListItemIcon>
+            <ListItemText primary="Recepcion"/>
+          </ListItem>
+        </Link>
+      </list>
+      <Divider/>
       <List>
               <Link to="/chatarra" className={classes.linkStyle}> 
             <ListItem button>
