@@ -17,7 +17,7 @@ import moment from "moment";
 import { Check, Toc, Publish } from '@material-ui/icons'
 import { GlobalContex } from '../../context/GlobalState'
 
-import { regHeaderNotifMfbf, regPosNotifMfbf, getmfbf, getmfbfPos} from '../../context/Api'
+import { regHeaderNotifMfbf, regPosNotifMfbf, getmfbf, getmfbfPos, sapSendMfbf} from '../../context/Api'
 
 let rows = [];
 
@@ -43,7 +43,7 @@ const HeaderTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContex = useContext(GlobalContex)
-  const {userInfo, headerNotif, SetActiveNotif, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos } = AceroContex
+  const {userInfo, headerNotif, SetActiveNotif, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos, notifPos } = AceroContex
 
   const columns = [{
     id: "Material",
@@ -132,7 +132,7 @@ const HeaderTable = () => {
           if(value.toLocaleString() == '0' ){
             m = <Button  disabled > <Check/> </Button>
         } else {
-          m = <Button  data-Id={value.toLocaleString()} onClick={handleValidMfbf}> <Check/> </Button>
+          m = <Button data-Id={value.toLocaleString()} onClick={handleValidMfbf}> <Check/> </Button>
         }
         return m},
   },
@@ -143,13 +143,16 @@ const HeaderTable = () => {
     align: "left",
     format: (value) => {
       let x 
-      if(value.toLocaleString() == '0' || value.toLocaleString() == null) {
-        x = <Button data-Id={value.toLocaleString()} onClick={handleSapPublish}> <Publish/> </Button>
-      } else {
-        x = value.toLocaleString()
-      }
-      return x
-    },
+        if(value.toLocaleString() == '0') {
+          x = <Button disabled > <Publish/> </Button>   
+        } else if(parseInt(value.toLocaleString()) < 0 || value.toLocaleString() == null) {
+          x = <Button data-Id={value.toLocaleString()} onClick={handleSapPublish}> <Publish/> </Button>
+        }
+        else {
+          x = value.toLocaleString()
+        }
+        return x
+      },
   },
   ]
 
@@ -164,6 +167,7 @@ const HeaderTable = () => {
 
   const handleValidMfbf = (e) => {
     e.preventDefault()
+    console.log(e.currentTarget.dataset)
     let header = {
       id: e.currentTarget.dataset.id,
       codigo: userInfo[0].CodigoEmp,
@@ -222,8 +226,85 @@ const HeaderTable = () => {
   
   }
 
+  const PrependZero = () => {
+    let NumZeros = 3
+    let ZeroResult = '0'
+    for (let i=0; i< NumZeros-1; i++) {
+      ZeroResult = `0${ZeroResult}`
+    }
+    return ZeroResult;
+  }
+
   const handleSapPublish = (e) => {
     e.preventDefault()
+    
+    let register = headerNotif.filter(head => {
+      return head.Id == (parseInt(e.currentTarget.dataset.id)* (-1)) //e.currentTarget.dataset.id
+    })
+
+    let pos = notifPos.filter(p => {
+      return p.HeaderId == (parseInt(e.currentTarget.dataset.id) * (-1))
+    })
+
+    let zeros = PrependZero()
+
+    let dareg = new Date(register[0].Fecha)
+    let day = dareg.getDate()
+    if(day < 10) {
+      day =`0${day}`
+    }  
+
+    let Docreg = new Date(register[0].docdate)
+    let Dday = Docreg.getDate()
+    if(Dday < 10) {
+      Dday =`0${Dday}`
+    } 
+    console.log(register)
+
+    let HeaderNotif = {
+      Materialnr: register[0].Material,//"EE100",
+      Planplant: register[0].centroPlanif,//"1001",
+      Prodplant: register[0].Centro,// "1001",
+      Storageloc: register[0].almacen,//"0400",
+      Prodversion: `${zeros}${register[0].VerFab.trim()}`,//"0001",
+      Prodline: register[0].PuestoTrabajo,//"ESTRGRU",
+      Postdate: `${dareg.getFullYear()}-${dareg.getMonth()+1}-${day}`,//"2020-10-08",
+      Docdate: `${Docreg.getFullYear()}-${Docreg.getMonth()+1}-${Dday}`,//"2020-10-08",
+      Backflquants: register[0].CantNot,//4000.00,
+      Textocab: "RETW2 2",
+      Unidad: register[0].UndMedida //"KG" 
+      
+  }
+
+  let MovNotif = []
+
+  pos.forEach(p => {
+    let d = {
+      Batch: p.Batch,//3163402658,
+      EntryQnt: p.cant,//200,
+      EntryUom: p.UndMed.trim(),
+      Material: p.Material,//"VC083",
+      MoveType: p.Clmv,//"261",
+      Plant: p.centro,//"1001",
+      StgeLoc: p.almacen.trim()//"0450"
+  }
+  MovNotif.push(d)
+  })
+
+  let NotifFinal = ""
+  
+  let mfbf = {
+    Header: HeaderNotif,
+    Posiciones: MovNotif,
+    NotifFinal
+  }
+  sapSendMfbf(mfbf, (err, data) => {
+    if(err){
+      console.log(err)
+    } else {
+      console.log(data)
+    }
+  })
   }
 
   const handleChangeRowsPerPage = (event) => {
@@ -239,6 +320,20 @@ const HeaderTable = () => {
         return reg;
       });
       rows = headerNotif
+      
+      if(rowsPerPage == 5) {
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(5)
+      }
+    }
+    return function cleanet() {
+      rows = []
+      if(rowsPerPage == 5) {
+        setRowsPerPage(10)
+      } else {
+        setRowsPerPage(5)
+      }
     }
 
   },[headerNotif])
@@ -283,7 +378,7 @@ const HeaderTable = () => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 50, 100]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}

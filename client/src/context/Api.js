@@ -1,8 +1,8 @@
 ﻿import axios from 'axios'
 
-//const base = "http://10.82.33.72:5000/api" // Quality Server
+const base = "http://10.82.33.72:5000/api" // Quality Server
 //const base = "http://10.82.33.70:5000/api" // production Server
-const base = "http://localhost:5000/api" // Development server
+//const base = "http://localhost:5000/api" // Development server
 
 const LoginUser = (CodigoEmp, Password, callback) => {    
     axios.post(`${base}/agm/loginUser`, {CodigoEmp, Password}
@@ -359,36 +359,21 @@ const GetMotivoChatarra = (callback) => {
 }
 
 const sapSendChatarra = (ZgmAcerogmChatarra, callback) => {
-    // axios.post(`http://appincap01/AgmSapApi/api/setChatarra` , 
-    //     {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Access-Control-Allow-Origin': '*'
-    //         }
-    //     })
-    // axios({
-    //     method: 'post',
-    //     url: `http://appincap01/AgmSapApi/api/setChatarra`,
-    //     data: {Chatarra: {
-    //                     header: ZgmAcerogmChatarra.Header,
-    //                     pos: ZgmAcerogmChatarra.Posiciones}
-    //                 } 
-    //         })
-        fetch('http://appincap01/AgmSapApi/api/setChatarra', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: JSON.stringify(ZgmAcerogmChatarra)
+    fetch('http://appincap01/AgmSapApi/api/setChatarra', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(ZgmAcerogmChatarra)
+        })
+        .then(response => response.json())
+            .then(data => {
+                callback(null, data)
             })
-            .then(response => response.json())
-                .then(data => {
-                    callback(null, data)
-                })
-            .catch(function(err) {
-                callback(err, null)
-            })
+        .catch(function(err) {
+            callback(err, null)
+        })
 }
 
 const regHeaderNotif = (header, callback) => {
@@ -454,6 +439,43 @@ const getNotifPos = (pos, callback) => {
             callback(err, null)
         })
 }
+
+const sapSendCo11 = (Co11, callback) => {
+    fetch('http://appincap01/AgmSapApi/api/setNotif', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(Co11)
+        })
+        .then(response => response.json())
+            .then(data => {
+                callback(null, data)
+            })
+        .catch(function(err) {
+            callback(err, null)
+        })
+}
+
+const sapSendMfbf = (mfbf, callback) => {
+    fetch('http://appincap01/AgmSapApi/api/setMfbf', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(mfbf)
+        })
+        .then(response => response.json())
+            .then(data => {
+                callback(null, data)
+            })
+        .catch(function(err) {
+            callback(err, null)
+        })
+}
+
 const getmfbf = (header, callback) => {
     axios.post(`${base}/mfbf`, {header}
     , {
@@ -550,6 +572,7 @@ export {
     GetTipoChatarra,
     GetMotivoChatarra,
     sapSendChatarra,
+    sapSendMfbf,
     getDemoras,
     getNotif,
     getNotifPos,
@@ -560,6 +583,7 @@ export {
     getmfbfPos,
     regHeaderNotif,
     regPosNotif,
+    sapSendCo11,
     regHeaderNotifMfbf,
     regPosNotifMfbf,
     delPosRegProd,

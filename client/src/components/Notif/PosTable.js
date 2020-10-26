@@ -103,10 +103,8 @@ const PosTable = () => {
   };
 
   useEffect(() => {
-    if (
-      notifPos !== null &&
-      notifPos !== undefined
-    ) {
+    console.log(notifPos)
+    if (notifPos !== null && notifPos !== undefined) {
       rows = notifPos.filter((pos) => {
           if(pos.hid != undefined || pos.hid != null){
             return pos.hid == parseInt(ActiveNotifId);

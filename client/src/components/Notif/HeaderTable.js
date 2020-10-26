@@ -17,7 +17,7 @@ import moment from "moment";
 import { Check, Toc, Publish } from '@material-ui/icons'
 import { GlobalContex } from '../../context/GlobalState'
 
-import { regHeaderNotif, regPosNotif, getNotif, getNotifPos} from '../../context/Api'
+import { regHeaderNotif, regPosNotif, getNotif, getNotifPos, sapSendCo11} from '../../context/Api'
 
 let rows = [];
 
@@ -43,7 +43,7 @@ const HeaderTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContex = useContext(GlobalContex)
-  const {userInfo, headerNotif, SetActiveNotif, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos } = AceroContex
+  const {userInfo, headerNotif, SetActiveNotif, notifPos, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos } = AceroContex
 
   const columns = [
     {
@@ -165,9 +165,12 @@ const HeaderTable = () => {
       align: "left",
       format: (value) => {
         let x 
-        if(value.toLocaleString() == '0' || value.toLocaleString() == null) {
+        if(value.toLocaleString() == '0') {
+          x = <Button disabled > <Publish/> </Button>   
+        } else if(parseInt(value.toLocaleString()) < 0 || value.toLocaleString() == null) {
           x = <Button data-Id={value.toLocaleString()} onClick={handleSapPublish}> <Publish/> </Button>
-        } else {
+        }
+        else {
           x = value.toLocaleString()
         }
         return x
@@ -175,6 +178,14 @@ const HeaderTable = () => {
     },
   ];
 
+  const PrependZero = (value) => {
+    let NumZeros = 12 - value
+    let ZeroResult = '0'
+    for (let i=0; i< NumZeros-1; i++) {
+      ZeroResult = `0${ZeroResult}`
+    }
+    return ZeroResult;
+  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -183,7 +194,6 @@ const HeaderTable = () => {
     e.preventDefault()
     SetActiveNotif(e.currentTarget.dataset.id)
   }
-
   const handleValid = (e) => {
     e.preventDefault()
     let header = {
@@ -243,6 +253,67 @@ const HeaderTable = () => {
   
   const handleSapPublish = (e) => {
     e.preventDefault()
+    let register = headerNotif.filter(head => {
+      return head.Id == (parseInt(e.currentTarget.dataset.id)* (-1)) //e.currentTarget.dataset.id
+    })
+    
+    let pos = notifPos.filter(p => {
+      return p.HeaderId == (parseInt(e.currentTarget.dataset.id) * (-1))
+    })
+    
+    let zeros = PrependZero(register[0].Orden.length)
+    
+    let dareg = new Date(register[0].FechaCount)
+    let day = dareg.getDate()
+    if(day < 10) {
+      day =`0${day}`
+    }  
+
+    let Movimientos = []
+
+    let sHeaderNotif = {
+      ConfActiUnit1: register[0].UndHM, //'STD',
+      ConfActiUnit2: register[0].UnHH, //'STD',
+      ConfActiUnit3: register[0].UnTurno, //'SHF',
+      ConfActivity1: register[0].HoraMaquina, //8,
+      ConfActivity2: register[0].HoraHombre, //6.5,
+      ConfActivity3: register[0].Turno , //1,
+      ConfQuanUnit: register[0].UndMedida, //'AT',
+      Operation: register[0].Operacion.trim(), //'0010',
+      Orderid: `${zeros}${register[0].Orden}`, //'000000294658',
+      Plant: register[0].Centro, //'1001',
+      PostgDate: `${dareg.getFullYear()}-${dareg.getMonth()+1}-${day}`, //'2020-10-15',
+      YieldCant: register[0].CantNot,//1,
+  }
+    pos.forEach(p => {
+      let d = {
+        Batch: p.Batch,//3163402659,
+        EntryQnt: p.cant,//1,
+        EntryUom: p.UndMed.trim(),
+        Material: p.Material,//"CPC-001",
+        MoveType: p.Clmv,//"261",
+        Plant: p.centro,//"1001",
+        StgeLoc: p.almacen.trim()//"0400"
+    }
+    Movimientos.push(d)
+    })
+
+    let Co11 = {
+      Header: sHeaderNotif,
+      Posiciones: Movimientos,
+      NotifFinal : ''
+    }
+
+    console.log(Co11)
+
+    sapSendCo11(Co11, (err, data) =>{
+      if(err){
+        console.error(err);
+      } else {
+        console.log(data)
+      }
+    })
+    
   }
 
   const handleChangeRowsPerPage = (event) => {

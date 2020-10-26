@@ -132,7 +132,7 @@ class Db {
       const result2 = await sql.query`select hea.id, hea.Fecha, hea.GrupoId,
             grp.Descripcion as Grupo, hea.TurnoId, trn.Descripcion as Turno,
             hea.PuestoTrabajoId, ptr.Descripcion as Puesto, hea.UsrReg,
-            info.Nombres as UserNombre, hea.RegDate,TC,TL,TE,TR,TI,TIM,TIO,TPP,
+            info.Nombres as UserNombre, hea.RegDate,hea.TC,TL,TE,TR,TI,TIM,TIO,TPP,
             TPPM,TPPO,TU,TPU,TOPR,TOMP
                 from HeaderReg hea
                     inner join StrListaGrupos grp on hea.GrupoId = grp.id
@@ -154,7 +154,7 @@ class Db {
       const result = await sql.query`select hea.id, hea.Fecha, hea.GrupoId,
                                                 grp.Descripcion as Grupo, hea.TurnoId, trn.Descripcion as Turno,
                                                 hea.PuestoTrabajoId, ptr.Descripcion as Puesto, hea.UsrReg,
-                                                info.Nombres as UserNombre, hea.RegDate,TC,TL,TE,TR,TI,TIM,TIO,TPP,
+                                                info.Nombres as UserNombre, hea.RegDate,hea.TC,TL,TE,TR,TI,TIM,TIO,TPP,
                                                 TPPM,TPPO,TU,TPU,TOPR,TOMP
                                                     from HeaderReg hea
                                                         inner join StrListaGrupos grp on hea.GrupoId = grp.id
@@ -172,28 +172,28 @@ class Db {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`select prod.id
-                        ,prod.HeaderRegId
-                        ,prod.OrdenProdId
-                        ,ord.Orden 
-                        ,comp.Id as mpid
-                        ,comp.Componente as mprima
-                        ,par.Partida as lote
-                        ,ord.Material as producto
-                        ,prod.Hora
-                        ,ord.Eph
-                        ,comp.Un_Medida as umb
-                        ,prod.PT_UME as ume
-                        ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
-                        ,cb.Id combId
-                        ,cb.Descripcion as comb
-                        ,prod.TotalComb as conscomb
-                        ,prod.Total_Potencia as conselect 
-                        ,prod.Notas
-                            from PosRegProd prod
-                            inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
-                            inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
-                            inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
-                            inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
+                                        ,prod.HeaderRegId
+                                        ,prod.OrdenProdId
+                                        ,ord.Orden 
+                                        ,comp.Id as mpid
+                                        ,comp.Componente as mprima
+                                        ,par.Partida as lote
+                                        ,ord.Material as producto
+                                        ,prod.Hora
+                                        ,ord.Eph
+                                        ,comp.Un_Medida as umb
+                                        ,prod.PT_UME as ume
+                                        ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
+                                        ,isNull(cb.Id,0) combId
+                                        ,isNull(cb.Descripcion,'') as comb
+                                        ,isNull(prod.TotalComb,0) as conscomb
+                                        ,isNull(prod.Total_Potencia,0) as conselect 
+                                        ,prod.Notas
+                                            from PosRegProd prod
+                                            inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
+                                            inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
+                                            inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
+                                            left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
                     where prod.HeaderRegId = ${headerid}`;
 
       callback(null, result);
@@ -273,16 +273,16 @@ class Db {
                                             ,comp.Un_Medida as umb
                                             ,prod.PT_UME as ume
                                             ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
-                                            ,cb.Id combId
-                                            ,cb.Descripcion as comb
-                                            ,prod.TotalComb as conscomb
-                                            ,prod.Total_Potencia as conselect 
+                                            ,isNull(cb.Id,0) combId
+                                            ,isNull(cb.Descripcion,'') as comb
+                                            ,isNull(prod.TotalComb,0) as conscomb
+                                            ,isNull(prod.Total_Potencia,0) as conselect 
                                             ,prod.Notas
                                                 from PosRegProd prod
                                                 inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
                                                 inner join tbOrdenProduccionComp comp on ord.Orden = comp.Orden
                                                 inner join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
-                                                inner join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
+                                                left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
                                           where prod.HeaderRegId = ${proddat.HeaderRegId}`;
 
       callback(null, result);
@@ -856,9 +856,9 @@ class Db {
                                         n.[Centro Planif],
                                         n.[UM PT],
                                         sum(p.PT_UMB),
-                                        sum(p.TU),
+                                        sum(h.TU),
                                         n.[UM Actividad 1],
-                                        sum(p.TC),
+                                        sum(h.TC),
                                         n.[UM Actividad 2],
                                         h.TurnoId,
                                         n.[UM Actividad 3],
@@ -917,27 +917,27 @@ class Db {
       await sql.connect(this.setting) 
       
       const result = await sql.query`select 
-                                        h.Id,
-                                        o.Orden,
-                                        o.NumOperacion as Operacion,
-                                        h.Fecha as FechaCount,
-                                        n.[Centro Planif] as Centro,
-                                        n.[UM PT] as UndMedida,
-                                        sum(p.PT_UMB) as CantNot,
-                                        sum(h.TU) as HoraMaquina,
-                                        n.[UM Actividad 1] as UndHM,
-                                        sum(p.TC) as HoraHombre,
-                                        n.[UM Actividad 2] as UnHH,
-                                        h.TurnoId as Turno,
-                                        t.Descripcion as TurnoDesc,
-                                        n.[UM Actividad 3] as UnTurno,
-                                        0 as RegSap,
-                                        h.Id as hid
-                                        from HeaderReg h
-                                        inner join PosRegProd p on p.HeaderRegId = h.Id
-                                        inner join tbOrdenProduccion o on o.Id = p.OrdenProdId
-                                        inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
-                                        inner join strListaTurnos t on t.Id = h.TurnoId
+                                          h.Id,
+                                          o.Orden,
+                                          LTRIM(RTRIM(o.NumOperacion)) as Operacion,
+                                          h.Fecha as FechaCount,
+                                          n.[Centro Planif] as Centro,
+                                          n.[UM PT] as UndMedida,
+                                          sum(p.PT_UMB) as CantNot,
+                                          sum(h.TU) as HoraMaquina,
+                                          n.[UM Actividad 1] as UndHM,
+                                          sum(h.TC) as HoraHombre,
+                                          n.[UM Actividad 2] as UnHH,
+                                          h.TurnoId as Turno,
+                                          t.Descripcion as TurnoDesc,
+                                          n.[UM Actividad 3] as UnTurno,
+                                          0 as RegSap,
+                                          h.Id as hid
+                                          from HeaderReg h
+                                          inner join PosRegProd p on p.HeaderRegId = h.Id
+                                          inner join tbOrdenProduccion o on o.Id = p.OrdenProdId
+                                          inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
+                                          inner join strListaTurnos t on t.Id = h.TurnoId
                                         where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} and
                                         h.Id not in (select RegHeaderId from HeaderNotificacion 
                                             where convert(date,FechaCont,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PtrId} )
@@ -946,21 +946,21 @@ class Db {
                                           h.TurnoId, t.Descripcion
                                     union all
                                       select n.Id,
-                                          n.Orden,
-                                          n.Operacion,
-                                          n.FechaCont,
-                                          n.Centro,
-                                          n.UndMedida,
-                                          n.CantNot,
-                                          n.HoraMaquina,
-                                          n.UndHM,
-                                          n.HoraHombre,
-                                          n.UnHH,
-                                          n.Turno,
-                                          t.Descripcion as TurnoDesc,
-                                          n.UnTurno,
-                                          n.RegSap,
-                                          '0' as hid 
+                                              n.Orden,
+                                              LTRIM(RTRIM(n.Operacion)) as Operacion,
+                                              n.FechaCont,
+                                              n.Centro,
+                                              n.UndMedida,
+                                              n.CantNot,
+                                              n.HoraMaquina,
+                                              n.UndHM,
+                                              n.HoraHombre,
+                                              n.UnHH,
+                                              n.Turno,
+                                              t.Descripcion as TurnoDesc,
+                                              n.UnTurno,
+                                              n.RegSap,
+                                              '0' as hid 
                                             from HeaderNotificacion n inner join strListaTurnos t on t.Id = n.Turno 
                                             where convert(date,n.FechaCont,101) = CONVERT(date,${header.Fecha},101) and n.PuestoTrabajoId = ${header.PtrId}`
       
@@ -973,11 +973,12 @@ class Db {
     try {
       await sql.connect(this.setting) //${pos.Fecha} ${pos.PtrId}
         const result = await sql.query`select  h.id  as hid,
+                          '0' as HeaderId,
                           o.Material,
                           n.[Centro Planif] as centro,
                           n.[Almacen PT] as almacen,
                           n.[CIMv PT] as Clmv,
-                          sum(c.MP_UMB) as cant,
+                          sum(p.PT_UMB) as cant,
                           n.[UM PT] as UndMed,
                           c.Batch
                           from HeaderReg h
@@ -988,15 +989,34 @@ class Db {
                               where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PtrId}
                       and h.id not in ( select RegHeaderId from PosNotificacion where PuestoTrabajoId = ${pos.PtrId} and RegHeaderId = h.Id) 
                               group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT], c.Batch
+                  union all 
+                  select  h.id  as hid,
+                                            '0' as HeaderId,
+                                            o.Material,
+                                            n.[Centro Planif] as centro,
+                                            n.[Almacen MP] as almacen,
+                                            n.[CIMv MP] as Clmv,
+                                            sum(p.PT_UMB) as cant,
+                                            n.[UM MP] as UndMed,
+                                            c.Batch
+                                            from HeaderReg h
+                                                inner join PosRegProd p on p.HeaderRegId = h.Id
+                                                inner join PosRegProdComponente c on c.PosProdId = p.id
+                                                inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                                                inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
+                                                where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PtrId}
+                                        and h.id not in ( select RegHeaderId from PosNotificacion where PuestoTrabajoId = ${pos.PtrId} and RegHeaderId = h.Id) 
+                                                group by h.Id,o.Material,n.[Centro Planif], n.[Almacen MP], n.[CIMv MP], n.[UM MP], c.Batch
                   union all
                   select p.RegHeaderId as hid, 
+                      p.HeaderId,
                       Material, 
                       p.Centro, 
                       Almacen, 
                       Clmv, 
                       Cant, 
                       UndMed, 
-                      Batch 
+                      nullif(0,Batch) as Batch
                       from PosNotificacion p 
                         inner join HeaderNotificacion h on h.Id = p.RegHeaderId	
                           where p.PuestoTrabajoId = ${pos.PtrId} and convert(date,h.FechaCont,101) = CONVERT(date,${pos.Fecha},101)`
@@ -1009,27 +1029,28 @@ class Db {
   async RegHeaderNotifMFBF (header, callback) {
     try {
       await sql.connect(this.setting)
+      
       await sql.query`insert into headernotifmfbf (Material, CentroPlanif, Centro, Almacen, VerFab, PuestoTrabajo, PuestoTrabajoId, Fecha, DocDate, UndMedida, CantNot, HeaderId, RegSap, UsrReg, RegDate, UpdDate)  
-                    select o.Material,
-                        n.[Centro Planif],
-                        n.Centro,
-                        n.[Almacen PT],
-                        o.VerFab,
-                        o.PuestoTrabajo,
-                        n.PuestoTrabajoid,
-                        CONVERT(date,h.Fecha,101) as Fecha,
-                        CONVERT(date,h.Fecha,101) as docdate,
-                        sum(p.PT_UMB) UndMedida,
-                        n.[UM PT] as CantNot,
-                        h.Id,
-                        0,
-                        ${header.codigo},
-                        GETDATE(),
-                        GETDATE()
-                        from HeaderReg h
-                        inner join PosRegProd p on h.Id = p.HeaderRegId
-                        inner join tbOrdenProduccion o on o.id = p.OrdenProdId
-                        inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
+                          select o.Material,
+                          n.[Centro Planif],
+                          n.Centro,
+                          n.[Almacen PT],
+                          o.VerFab,
+                          o.PuestoTrabajo,
+                          n.PuestoTrabajoid,
+                          CONVERT(date,h.Fecha,101) as Fecha,
+                          CONVERT(date,h.Fecha,101) as docdate,
+                          n.[UM PT] as UndMedida, 
+                          sum(p.PT_UMB) CantNot,
+                          h.id,
+                          0,
+                          ${header.codigo},
+                          GETDATE(),
+                          GETDATE()
+                          from HeaderReg h
+                          inner join PosRegProd p on h.Id = p.HeaderRegId
+                          inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                          inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
                         where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.ptr} and h.Id = ${header.id}
                         group by o.Material, n.[Centro Planif], n.Centro, n.[Almacen PT], o.VerFab, o.PuestoTrabajo, h.Fecha, n.[UM PT], h.Id, n.PuestoTrabajoid`
       const result = await sql.query`SELECT @@IDENTITY as headerId`
@@ -1041,15 +1062,16 @@ class Db {
   async regMfbfPos (PosData, callback) {
     try {
       await sql.connect(this.setting) 
-      await sql.query`insert into PosNotifMFBF (HeaderId, Material, Centro, Almacen, Batch, Clmv, Cant, UndMed, HeaderDate, PuestoTrabajoId, RegDate) 
-                      select ${PosData.hid},
+      await sql.query`insert into PosNotifMFBF (HeaderId, Material, Centro, Almacen, Batch, Clmv, Cant, UndMed, HeaderRegId, HeaderDate, PuestoTrabajoId, RegDate) 
+                      select ${PosData.id},
                           o.Material,
                           n.Centro as centro,
                           n.[Almacen PT] as almacen,
                           '' as batch,
                           n.[CIMv PT] as Clmv,
-                          sum(p.PT_UMB) as cant,
-                          n.[UM PT] as UndMed,
+                          sum(p.PT_UMB) ,
+                          n.[UM PT] ,
+                          h.Id,
                           h.Fecha,
                           h.PuestoTrabajoId,
                           GETDATE()
@@ -1059,7 +1081,27 @@ class Db {
                               inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
                               where convert(date,h.Fecha,101) = CONVERT(date,${PosData.Fecha},101) 
                                 and h.PuestoTrabajoId = ${PosData.ptr} and h.Id =  ${PosData.hid}
-                              group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.PuestoTrabajoId, h.Id, h.Fecha`
+                              group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.PuestoTrabajoId, h.Id, h.Fecha
+                      union all
+                      select ${PosData.id},
+                          o.Material,
+                          n.Centro as centro,
+                          n.[Almacen MP] as almacen,
+                          '' as batch,
+                          n.[CIMv MP] as Clmv,
+                          sum(p.PT_UMB) ,
+                          n.[UM MP] ,
+                          h.Id,
+                          h.Fecha,
+                          h.PuestoTrabajoId,
+                          GETDATE()
+                          from HeaderReg h
+                              inner join PosRegProd p on p.HeaderRegId = h.id
+                              inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                              inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
+                              where convert(date,h.Fecha,101) = CONVERT(date,${PosData.Fecha},101) 
+                                and h.PuestoTrabajoId = ${PosData.ptr} and h.Id =  ${PosData.hid}
+                              group by o.Material, n.Centro, n.[Almacen MP], n.[CIMv MP], n.[UM MP], h.PuestoTrabajoId, h.Id, h.Fecha`
       callback(null, 'OK')
     } catch (error) {
       callback(error, null)
@@ -1068,42 +1110,42 @@ class Db {
   async getMfbf (header, callback) {
     try {
       await sql.connect(this.setting) 
-      const result = await sql.query`select	h.Id,
-      o.Material,
-          n.[Centro Planif] as centroPlanif,
-          n.Centro,
-          n.[Almacen PT] as almacen,
-          o.VerFab,
-          o.PuestoTrabajo,
-          CONVERT(date,h.Fecha,101) as Fecha,
-          CONVERT(date,h.Fecha,101) as docdate,
-          sum(p.PT_UMB) UndMedida,
-          n.[UM PT] as cantnot,
-          h.Id as HeaderId,
-          0 as RegSap
-          from HeaderReg h
-          inner join PosRegProd p on h.Id = p.HeaderRegId
-          inner join tbOrdenProduccion o on o.id = p.OrdenProdId
-          inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
+      const result = await sql.query`select h.Id, 
+                                            o.Material,
+                                            n.[Centro Planif] as centroPlanif,
+                                            n.Centro,
+                                            n.[Almacen PT] as almacen,
+                                            o.VerFab,
+                                            o.PuestoTrabajo,
+                                            CONVERT(date,h.Fecha,101) as Fecha,
+                                            CONVERT(date,h.Fecha,101) as docdate,
+                                            n.[UM PT] as UndMedida, 
+                                            sum(p.PT_UMB) CantNot,
+                                            h.id as HeaderId,
+                                            0 as RegSap
+                                            from HeaderReg h
+                                            inner join PosRegProd p on h.Id = p.HeaderRegId
+                                            inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                                            inner join tbNotificacionAux n on h.PuestoTrabajoId = n.PuestoTrabajoid
           where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} 
       and h.Id not in (select HeaderId from HeaderNotifMFBF where convert(date,Fecha,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PtrId})
           group by o.Material, n.[Centro Planif], n.Centro, n.[Almacen PT], o.VerFab, o.PuestoTrabajo, h.Fecha, n.[UM PT],h.Id
-  union all 
-    select Id,
-        Material,
-        CentroPlanif,
-        Centro,
-        Almacen,
-        VerFab,
-        PuestoTrabajo,
-        Fecha,
-        DocDate,
-        UndMedida,
-        CantNot,
-        0,
-        RegSap
-        from HeaderNotifMFBF 
-        where convert(date,Fecha,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PtrId}`
+            union all 
+                select Id,
+                Material,
+                CentroPlanif,
+                Centro,
+                Almacen,
+                VerFab,
+                PuestoTrabajo,
+                Fecha,
+                DocDate,
+                UndMedida,
+                CantNot,
+                0 as HeaderId,
+                RegSap
+                from HeaderNotifMFBF 
+                  where convert(date,Fecha,101) = CONVERT(date,${header.Fecha},101) and PuestoTrabajoId = ${header.PtrId}`
       callback(null, result)
     } catch (error) {
       callback(error, null)
@@ -1112,30 +1154,54 @@ class Db {
 async getMfbfPos (header, callback) {
     try {
       await sql.connect(this.setting) 
-      const result = await sql.query`select  h.Id,
+      const result = await sql.query`select h.id, 
+                                            h.Id as hid,
+                                            0 as HeaderId,
                                             o.Material,
                                             n.Centro as centro,
                                             n.[Almacen PT] as almacen,
                                             '' as batch,
                                             n.[CIMv PT] as Clmv,
-                                            sum(p.PT_UMB) as cant,
-                                            n.[UM PT] as UndMed
+                                            n.[UM PT] as UndMed,
+                                            sum(p.PT_UMB) as cant
                                           from HeaderReg h
                                             inner join PosRegProd p on p.HeaderRegId = h.id
                                             inner join tbOrdenProduccion o on o.id = p.OrdenProdId
                                             inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
                                             where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} 
-                                            and h.id not in (select HeaderId from PosNotifMFBF where PuestoTrabajoId = ${header.PtrId} and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)  )
+                                            and h.id not in (select HeaderRegId from PosNotifMFBF where PuestoTrabajoId = ${header.PtrId} 
+                                            and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)  )
                                             group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.Id
                                         union all
+                                    select  h.id,
+                                            h.Id as hid,
+                                            0 as HeaderId,
+                                            o.Material,
+                                            n.Centro as centro,
+                                            n.[Almacen MP] as almacen,
+                                            '' as batch,
+                                            n.[CIMv MP] as Clmv,
+                                            n.[UM MP] as UndMed,
+                                            sum(p.PT_UMB) as cant
+                                            from HeaderReg h
+                                            inner join PosRegProd p on p.HeaderRegId = h.id
+                                            inner join tbOrdenProduccion o on o.id = p.OrdenProdId
+                                            inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
+                                        where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} 
+                                        and h.id not in (select HeaderRegId from PosNotifMFBF where PuestoTrabajoId = ${header.PtrId} 
+                                        and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)  )
+                                        group by o.Material, n.Centro, n.[Almacen MP], n.[CIMv MP], n.[UM MP], h.Id
+                                        union all
                                         select  id,
+                                            HeaderId as hid,
+                                            HeaderId,
                                             Material,
                                             Centro as centro,
                                             Almacen as almacen,
                                             Batch as batch,
                                             Clmv, 
-                                            Cant as cant, 
-                                            UndMed
+                                            UndMed,
+                                            Cant as cant
                                             from PosNotifMFBF
                                               where PuestoTrabajoId = ${header.PtrId} and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)`
       callback(null, result)
