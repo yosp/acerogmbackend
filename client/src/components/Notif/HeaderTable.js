@@ -304,8 +304,6 @@ const HeaderTable = () => {
       NotifFinal : ''
     }
 
-    console.log(Co11)
-
     sapSendCo11(Co11, (err, data) =>{
       if(err){
         console.error(err);

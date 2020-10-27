@@ -615,7 +615,61 @@ class Routes {
                 }
             })
         })
+        // Recepciones
+        this.app.post('/api/recepciones/insHeader', (req, res) => {
 
+            this.db.InsertRecepcionHeader(req.body.header, (err, data) => {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                }
+                else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/recepciones/insPosRecepciones', (req, res) => {
+            this.db.InsPosRecepcion(req.body.posicion, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.get('/api/recepciones/getPosRecepciones', (req, res) => {
+
+            this.db.GetPosRecepcion(req.query.headerId, (err, data)=> {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/recepciones/updPosRecepciones', (req, res) => {
+            this.db.UpdPosRecepcion(req.body.posicion, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
     }
     routesConfig() {
         this.appRoutes()

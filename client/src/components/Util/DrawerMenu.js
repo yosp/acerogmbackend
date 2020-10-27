@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Grid,
   Button,
@@ -16,6 +16,7 @@ import { Note,
           PowerSettingsNew, 
           AccessTime, 
           SaveAlt,
+          Dashboard,
           NotificationsActive,
           LocalShipping } from "@material-ui/icons";
 import { GlobalContex } from '../../context/GlobalState'
@@ -62,6 +63,10 @@ const DrawerMenu = ({ draw, onToggle }) => {
         LogoutUser()
     }
 
+    useEffect(()=>{
+      
+    },[])
+
   const sideList = () => (
     <div
       className={classes.list}
@@ -75,13 +80,24 @@ const DrawerMenu = ({ draw, onToggle }) => {
               </Grid>
               <Grid container direction="column" spacing={1} className={classes.userSection}>
                   <Grid item>
-                      Codigo: {user.codigoEmp}
+                      Codigo: {user.CodigoEmp}
                   </Grid>
                   <Grid item>
-                      Nombre: {user.nombres}
+                      Nombre: {user.Nombres}
                   </Grid>
               </Grid>
           </Grid>
+          <List>
+              <Link to='/dashboard' className={classes.linkStyle}>
+            <ListItem button>
+              <ListItemIcon>
+                <Dashboard />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+        </Link>
+      </List>
+      <Divider /> 
           <List>
               <Link to='/registro' className={classes.linkStyle}>
             <ListItem button>
@@ -92,7 +108,7 @@ const DrawerMenu = ({ draw, onToggle }) => {
             </ListItem>
         </Link>
       </List>
-      <Divider />
+      <Divider /> 
       <list>
         <Link to='/recepcion' className={classes.linkStyle}>
           <ListItem button>
