@@ -21,7 +21,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalContex } from "../../context/GlobalState";
-import { getOdenenComp, updPosRegProd, getTipoComb, getHeaderReg } from "../../context/Api";
+import { getOdenenComp, updPosRegProd, getTipoComb, getHeaderReg, GetLoteByMaterial } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -74,6 +74,9 @@ const ProdFormEdit = () => {
   const [oldH, setOldH] = useState('')
   const [hora, setHora] = useState(new Date());
   const [mprima, setMprima] = useState([]);
+  const [Lotes, setLote] = useState([])
+  const [Slote, setSlote] = useState('')
+  const [Restante, setRestante] = useState(0)
   const [comb, setComb] = useState([]);
   const [ord, setOrd] = useState('')
   const [prima, SetPrima] = useState('')
@@ -100,6 +103,7 @@ const ProdFormEdit = () => {
       consacumulado,
       prodacumulado,
       observ,
+      mLote,
       combustible,
       conscombustible,
     } = e.target.elements;
@@ -118,7 +122,8 @@ const ProdFormEdit = () => {
       PT_UME: parseInt(consacumulado.value),
       PT_UMB: parseFloat(prodacumulado.value),
       Notas: observ.value,
-      EPH: torden.EPH, 
+      EPH: torden.EPH,
+      Batch: mLote.value, 
       TipoCombId: combustible == undefined ? 0 : parseInt(combustible.value),
       TotalComb: conscombustible == undefined ? 0 : parseInt(conscombustible.value),
       UsrReg: user.CodigoEmp,
@@ -167,6 +172,35 @@ const ProdFormEdit = () => {
       }
     });
   };
+
+  
+  const HandlerMaterial = (e) => {
+    e.preventDefault();
+    
+    SetPrima(e.target.value)
+    let mtr = mprima.filter(m => {
+      return m.Id == e.target.value
+    })
+    GetLoteByMaterial(mtr[0].Componente, (err, data) => {
+      if(err) {
+        toast.error("Se produjo un error al cargar los lotes", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      } else {
+        setLote(data)
+      }
+    })
+  }
+
+  const handlerLote = (e) => {
+    e.preventDefault()
+    setSlote(e.target.value)
+    let lt = Lotes.filter(f => {
+      return f.Lote == e.target.value
+    })
+    console.log(lt)
+    setRestante(lt[0].Restante)
+  }
 
   const handleDateChange = (date) => {
     setHora(date);
@@ -235,8 +269,24 @@ const ProdFormEdit = () => {
         SetNotas(activeproddata.Notas)
         SetCombs(activeproddata.combId)
         SetConsComb(activeproddata.conscomb)
+
+        GetLoteByMaterial(activeproddata.mprima, (err, data) => {
+          if(err) {
+            toast.error("Se produjo un error al cargar los lotes", {
+              position: toast.POSITION.BOTTOM_RIGHT
+            });
+          } else {
+            setLote(data)
+            setSlote(activeproddata.Batch)
+            let rest = data.filter(d => { return d.Lote == activeproddata.Batch})
+            setRestante(rest[0].Restante)
+            console.log(rest[0].Restante)
+          }
+        })
       }
     });
+    
+    
   }, [activeproddata])
 
   useEffect(()=>{
@@ -307,7 +357,7 @@ const ProdFormEdit = () => {
                       name="mprima"
                       className={classes.SelectStyle}
                       value={prima}
-                      onChange={e=> SetPrima(e.target.value)}
+                      onChange={HandlerMaterial}
                     >
                       <option value="0"> </option>
                       {mprima.map((prima) => {
@@ -318,6 +368,44 @@ const ProdFormEdit = () => {
                         );
                       })}
                     </Select>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <InputLabel id="SLote">Lote</InputLabel>
+                    <Select
+                      native
+                      label="Lote"
+                      name="mLote"
+                      className={classes.SelectStyle}
+                      value={Slote}
+                      onChange={handlerLote}
+                    >
+                      <option value="0"> </option>
+                      {Lotes.map((l) => {
+                        return (
+                          <option key={l.Lote} value={l.Lote} data-Id={l.Restante}>
+                            {l.Lote} 
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <Tooltip title="Solo Numeros" placement="right">
+                    <NumberFormat
+                      id="PRestante"
+                      name="PRestante"
+                      label="Restante"
+                      disabled
+                      customInput={TextField}
+                      type="text"
+                      value={Restante}
+                      className={classes.InputTextStyle}
+                    />
+                    </Tooltip>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1} alignItems="center">

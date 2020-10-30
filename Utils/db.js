@@ -179,6 +179,7 @@ class Db {
                                           ,ord.Material as producto
                                           ,prod.Hora
                                           ,ord.Eph
+                                          ,prod.Batch
                                           ,comp.Un_Medida as umb
                                           ,prod.PT_UME as ume
                                           ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
@@ -253,10 +254,10 @@ class Db {
     try {
       await sql.connect(this.setting);
       const query = await sql.query`insert into PosRegProd 
-                                                (HeaderRegId, OrdenProdId, mpId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, UsrReg, RegDate, UpdDate)
+                                                (HeaderRegId, OrdenProdId, mpId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, Batch, UsrReg, RegDate, UpdDate)
                                                 values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.MPrima}, ${proddat.Hora}, ${proddat.PT_UME}, 
-                                                    ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TipoCombId}, ${proddat.TotalComb}, ${proddat.EPH}, ${proddat.UsrReg},
-                                                    getdate(), getDate())`; 
+                                                    ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TipoCombId}, ${proddat.TotalComb}, ${proddat.EPH}, ${proddat.Batch}, 
+                                                    ${proddat.UsrReg}, getdate(), getDate())`; 
 
       const result = await sql.query`select  prod.id
                                             ,prod.HeaderRegId
@@ -268,6 +269,7 @@ class Db {
                                             ,ord.Material as producto
                                             ,prod.Hora
                                             ,ord.Eph
+                                            ,prod.Batch 
                                             ,comp.Un_Medida as umb
                                             ,prod.PT_UME as ume
                                             ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
@@ -305,6 +307,7 @@ class Db {
       request.input('TotalComb', sql.Int, proddat.TotalComb)
       request.input('UsrReg', sql.NVarChar, proddat.UsrReg)
       request.input('EPH', sql.Float, proddat.EPH)
+      request.input('Batch', sql.NVarChar, proddat.Batch)
       request.input('TipoCombId', sql.Int, proddat.TipoCombId)
 
       request.execute('sp_updProdData', (err, result) => {
@@ -1366,10 +1369,9 @@ async UpdPosRecepcion(pos, callback) {
       callback(e, null)
   }
 }
-
 async DelPosRecepcion(PosId, callback) {
   try {
-    console.log(PosId)
+    
     await sql.connect(this.setting);
     let result = await sql.query`delete 
                                         from PosRecepcion 
@@ -1377,6 +1379,40 @@ async DelPosRecepcion(PosId, callback) {
     callback(null, result)
   } catch (e) {
     callback(e, null)
+  }
+}
+async GetLoteByMaterial(Material, callback) {
+  try {
+    await sql.connect(this.setting)
+    let result = await sql.query`select p.Lote ,p.Peso - isNull((select sum(PesoRegistrado) from PosRecepcionTrans where PosRecId = r.Id and Lote = p.Lote),0) as Restante
+                                          from HeaderRecepcion r 
+                                              inner join PosRecepcion p on p.HeaderRecId = r.Id
+                                              where  r.Estado = 'A' and p.Material = ${Material}`
+    callback(null, result)
+  } catch (e) {
+    callback(e, null)
+  }
+}
+
+async getPosRecTrans(PosRecId, callback){
+  try {
+    await sql.connect(this.setting)
+    let result = await sql.query`select t.Id
+                                      , t.PosRecId
+                                      , t.PosRegId
+                                      , t.Material
+                                      , t.Lote
+                                      , t.PesoRegistrado
+                                      , p.Hora
+                                      , l.Nombres  
+                                        from PosRecepcion r
+                                          inner join PosRecepcionTrans t on t.PosRecId = r.Id
+                                          inner join PosRegProd p on p.Id = t.PosRegId
+                                          inner join loginUsuarios l on l.CodigoEmp = t.UsrReg
+                                          where t.PosRecId = ${PosRecId}`
+    callback(null, result)
+  } catch (err) {
+    callback(err, null)
   }
 }
 

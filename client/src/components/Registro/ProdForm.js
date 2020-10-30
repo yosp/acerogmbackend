@@ -21,7 +21,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalContex } from "../../context/GlobalState";
-import { getOdenenComp, insRegProd, getTipoComb, getHeaderReg } from "../../context/Api";
+import { getOdenenComp, insRegProd, getTipoComb, getHeaderReg, GetLoteByMaterial } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -73,7 +73,9 @@ const ProdFrom = () => {
   const classes = useStyle();
   const [hora, setHora] = useState(new Date());
   const [mprima, setMprima] = useState([]);
+  const [Lotes, setLote] = useState([])
   const [comb, setComb] = useState([]);
+  const [Restante, setRestante] = useState(0)
   const aceroContext = useContext(GlobalContex);
   const { isLam, ordenes, headerReg, user, loadRegProdData, setHeaderRegActive } = aceroContext;
   const history = useHistory();
@@ -88,6 +90,7 @@ const ProdFrom = () => {
       consacumulado,
       prodacumulado,
       observ,
+      mLote,
       combustible,
       conscombustible,
     } = e.target.elements;
@@ -105,11 +108,12 @@ const ProdFrom = () => {
       PT_UMB: prodacumulado.value,
       Notas: observ.value,
       EPH: torden.EPH, 
+      Batch: mLote.value,
       TipoCombId: combustible == undefined ? 0 : combustible.value,
       TotalComb: conscombustible == undefined ? 0 : conscombustible.value,
       UsrReg: user.CodigoEmp,
     };
-    console.log(data)
+  
     insRegProd(data, (err, res) => {
       if(err){
         toast.error("Error al intentar guardar los registros de producción", {
@@ -137,6 +141,30 @@ const ProdFrom = () => {
     e.preventDefault();
     history.push("/registro");
   };
+
+  const HandlerMaterial = (e) => {
+    e.preventDefault();
+    let mtr = mprima.filter(m => {
+      return m.Id == e.target.value
+    })
+    GetLoteByMaterial(mtr[0].Componente, (err, data) => {
+      if(err) {
+        toast.error("Se produjo un error al cargar los lotes", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      } else {
+        setLote(data)
+      }
+    })
+  }
+
+  const handlerLote = (e) => {
+    e.preventDefault()
+    let lt = Lotes.filter(f => {
+      return f.Lote == e.target.value
+    })
+    setRestante(lt[0].Restante)
+  }
 
   const onChangeOrden = (e) => {
     e.preventDefault();
@@ -247,7 +275,7 @@ const ProdFrom = () => {
                       <option value="0"> </option>
                       {ordenes.map((orden) => {
                         return (
-                          <option key={orden.Id} value={orden.Id}>
+                          <option key={orden.Id} value={orden.Id} >
                             {orden.Orden}
                           </option>
                         );
@@ -263,16 +291,54 @@ const ProdFrom = () => {
                       label="Materia Prima"
                       name="mprima"
                       className={classes.SelectStyle}
+                      onChange={HandlerMaterial}
                     >
                       <option value="0"> </option>
                       {mprima.map((prima) => {
                         return (
-                          <option key={prima.Id} value={prima.Id}>
+                          <option key={prima.Id} value={prima.Id} data-Id={prima.Componente}>
                             {prima.Componente}
                           </option>
                         );
                       })}
                     </Select>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <InputLabel id="SLote">Lote</InputLabel>
+                    <Select
+                      native
+                      label="Lote"
+                      name="mLote"
+                      className={classes.SelectStyle}
+                      onChange={handlerLote}
+                    >
+                      <option value="0"> </option>
+                      {Lotes.map((l) => {
+                        return (
+                          <option key={l.Lote} value={l.Lote} data-Id={l.Restante}>
+                            {l.Lote}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item>
+                    <Tooltip title="Solo Numeros" placement="right">
+                    <NumberFormat
+                      id="PRestante"
+                      name="PRestante"
+                      label="Restante"
+                      disabled
+                      customInput={TextField}
+                      type="text"
+                      value={Restante}
+                      className={classes.InputTextStyle}
+                    />
+                    </Tooltip>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1} alignItems="center">

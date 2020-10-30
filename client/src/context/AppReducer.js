@@ -43,7 +43,8 @@ import {
     GET_GRUPO_RECEP,
     GET_SUPPLY,
     SET_POS_RECEPCION,
-    SET_EDIT_POS_RECEPCION
+    SET_EDIT_POS_RECEPCION,
+    SET_POS_RECEPCION_TRANS
 } from './Actions'
 
 export default (state, action) => {
@@ -257,7 +258,9 @@ export default (state, action) => {
         case RESET_RECEPTION: {
             return {
                 ...state,
-                RecepcionHeader: null
+                RecepcionHeader: null,
+                PosRecepcion: null,
+                PosRecepcionTrans: null
             }
         }
         case GET_GRUPO_RECEP: {
@@ -285,6 +288,13 @@ export default (state, action) => {
             return {
                 ...state,
                 ActivePosReception: action.payload
+            }
+        }
+
+        case SET_POS_RECEPCION_TRANS: {
+            return {
+                ...state,
+                PosRecepcionTrans: action.payload
             }
         }
         default:

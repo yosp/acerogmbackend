@@ -658,6 +658,19 @@ class Routes {
             })
         })
 
+        this.app.get('/api/recepciones/getPosRecTrans', (req, res) => {
+            this.db.getPosRecTrans(req.query.TransId, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
         this.app.post('/api/recepciones/updPosRecepciones', (req, res) => {
             this.db.UpdPosRecepcion(req.body.posicion, (err, data) => {
                 if(err) {
@@ -711,6 +724,19 @@ class Routes {
 
         this.app.get('/api/GetSuplidores', (req, res) => {
             this.db.GetSuplidores(req.query.GrupoId, (err, data) => {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        
+        this.app.get('/api/registro/getLote', (req, res) => {
+            this.db.GetLoteByMaterial(req.query.Material, (err, data) => {
                 if(err){
                     res.status(500).json({
                         error: true,

@@ -646,6 +646,32 @@ const DelPosRecepcion = (PosId, callback) => {
         })
 }
 
+const GetLoteByMaterial = (Material, callback) => {
+    axios.get(`${base}/registro/getLote?Material=${Material}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const GetPosRecTrans = (TransId, callback) => {
+    axios.get(`${base}/recepciones/getPosRecTrans?TransId=${TransId}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
 export {
     LoginUser,
     UserInfo,
@@ -702,5 +728,7 @@ export {
     InsPosRecepcion,
     GetPosRecepcion,
     DelPosRecepcion,
-    UpdPosRecepcion
+    UpdPosRecepcion,
+    GetLoteByMaterial,
+    GetPosRecTrans
 }

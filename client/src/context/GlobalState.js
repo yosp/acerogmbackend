@@ -45,7 +45,8 @@ import {
     GET_GRUPO_RECEP,
     GET_SUPPLY,
     SET_POS_RECEPCION,
-    SET_EDIT_POS_RECEPCION
+    SET_EDIT_POS_RECEPCION,
+    SET_POS_RECEPCION_TRANS
 } from "./Actions";
 
 const InitialState = {
@@ -86,6 +87,7 @@ const InitialState = {
     Loading: false,
     RecepcionHeader: null,
     PosRecepcion: null,
+    PosRecepcionTrans: null,
     Suplidores: null,
     GrupoRecepcion: null,
     ActivePosReception: null
@@ -414,6 +416,13 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setPosRecTrans(transData) {
+      dispatch({
+        type: SET_POS_RECEPCION_TRANS,
+        payload: transData
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -461,6 +470,7 @@ export const GlobalProvider = ({ children }) => {
         setSuplidores,
         setPosRecepcion,
         setActivePosReception,
+        setPosRecTrans,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -499,7 +509,8 @@ export const GlobalProvider = ({ children }) => {
         Suplidores: state.Suplidores,
         GrupoRecepcion: state.GrupoRecepcion,
         PosRecepcion: state.PosRecepcion,
-        ActivePosReception: state.ActivePosReception
+        ActivePosReception: state.ActivePosReception,
+        PosRecepcionTrans: state.PosRecepcionTrans
           }}
     >
       {children}

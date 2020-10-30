@@ -18,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from "moment";
 import { Add, Pageview, Edit, DeleteForever } from "@material-ui/icons";
 import { GlobalContex } from "../../context/GlobalState";
-import { DelPosRecepcion, GetPosRecepcion } from "../../context/Api"
+import { DelPosRecepcion, GetPosRecepcion, GetPosRecTrans } from "../../context/Api"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,7 +43,7 @@ const PosRecepcion = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex)
-  const { PosRecepcion, RecepcionHeader, setPosRecepcion, setActivePosReception } = aceroContext
+  const { PosRecepcion, RecepcionHeader, setPosRecepcion, setPosRecTrans } = aceroContext
   const history = useHistory()
 
   const columns = [
@@ -84,7 +84,7 @@ const PosRecepcion = () => {
       format: (value) => value.toLocaleString(),
     },
     {
-      id: "Hora",
+      id: "Hora2",
       label: "Hora",
       minWidth: "170",
       align: "left",
@@ -185,12 +185,12 @@ const PosRecepcion = () => {
 useEffect(()=>{
   if(PosRecepcion != null || PosRecepcion != undefined){ 
     PosRecepcion.forEach(p => {
-      p.Hora = moment(p.Hora).format('LT')
+      p.Hora2 = moment(p.Hora).format('LT')
       p.unMedida = p.unMedida.trim()
       return p 
     })
     rows = PosRecepcion
-    console.log(rows)
+    
     if(rowsPerPage == 5) {
       setRowsPerPage(10)
     } else {
@@ -219,9 +219,19 @@ useEffect(()=>{
       }
     })
   }
-
   const handleTrans = (e) => {
+    e.preventDefault()
+    GetPosRecTrans(e.currentTarget.dataset.id, (err, data)=> {
+      if(err) {
 
+      } else {
+        data.forEach(e => {
+          e.Hora = moment(e.Hora).format('L'); 
+          return e
+        })
+        setPosRecTrans(data)
+      }
+    })
   }
 
   const handleChangePage = (event, newPage) => {
