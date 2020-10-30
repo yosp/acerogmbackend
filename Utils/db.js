@@ -1,3 +1,4 @@
+const { request } = require("express");
 const sql = require("mssql");
 
 class Db {
@@ -111,7 +112,6 @@ class Db {
     }
   }
   //Registro Produccion
-
   async insHeaderRegistro(header, callback) {
     try {
       await sql.connect(this.setting);
@@ -147,7 +147,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getHeaderRegistro(HeaderId, callback) {
     try {
       await sql.connect(this.setting);
@@ -167,7 +166,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getregproddata(headerid, callback) {
     try {
       await sql.connect(this.setting);
@@ -421,7 +419,6 @@ class Db {
         callback(e, null)
     }
   }
-
   async getOrdenes(callback) {
     try {
       await sql.connect(this.setting);
@@ -449,7 +446,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getCargos(callback) {
     try {
       await sql.connect(this.setting);
@@ -459,7 +455,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getMotivoFallaArea(PuestoTr, callback) {
     try {
       await sql.connect(this.setting);
@@ -471,7 +466,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getMotivoFallaSubArea(AreaId, callback) {
     try {
       await sql.connect(this.setting);
@@ -483,7 +477,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getMotivoFallaLugarAveria(SubArea, callback) {
     try {
       await sql.connect(this.setting);
@@ -495,7 +488,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getMotivoFalla(LugarAveriaId, callback) {
     try {
       await sql.connect(this.setting);
@@ -507,7 +499,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getTipoComb(callback) {
     try {
       await sql.connect(this.setting);
@@ -518,7 +509,6 @@ class Db {
       callback(e, null);
     }
   }
-
   //Ordenes Sap
   async InsSapOrdenes(ordenesField, callback) {
     try {
@@ -564,7 +554,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async InsSapOrdenesComp(componentesField, callback) {
     try {
       await sql.connect(this.setting);
@@ -583,7 +572,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async SpSapOrdenes() {
     try {
       await sql.connect(this.setting).then((pool) => {
@@ -591,9 +579,7 @@ class Db {
       });
     } catch (e) {}
   }
-
   // Orden Produccion
-
   async getOrdenesProdList(OrdenFilter, callback) {
     try{
     await sql.connect(this.setting);
@@ -621,7 +607,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getOrdenesCompList(Orden, callback) {
     try {
     await sql.connect(this.setting);
@@ -637,9 +622,7 @@ class Db {
       callback(e, null); 
     }
   }
-
   //Chatarra
-
   async insChatarraHeader(chatarraHeader, callback) {
     try {
       await sql.connect(this.setting);
@@ -672,7 +655,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async insChatarraPos(ChatarraPos, callback) {
     try {
       await sql.connect(this.setting);
@@ -716,7 +698,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getChatarraPos(HeaderId, callback) {
     try {
       await sql.connect(this.setting);
@@ -752,7 +733,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async setChatarraRegSap(Chatarra, callback) {
     try {
       const request = new sql.Request()
@@ -772,7 +752,6 @@ class Db {
       callback(e, null)
     }
   }
-
   async delChatarraPos(PosId, callback) {
     try {
       
@@ -783,7 +762,6 @@ class Db {
         callback(e, null)
     }
   }
-
   async getChatarraTipo(callback) {
     try {
       await sql.connect(this.setting);
@@ -793,7 +771,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getChatarraMotivo(callback) {
     try {
       await sql.connect(this.setting);
@@ -803,7 +780,6 @@ class Db {
       callback(e, null);
     }
   }
-
   /// Demora
   async getDemora(demora, callback) {
     try {
@@ -843,7 +819,6 @@ class Db {
       callback(error, null);
     }
   }
-
   //Notificaciones Co11
   async regHeaderNotif (header, callback) {
     try {
@@ -1210,8 +1185,47 @@ async getMfbfPos (header, callback) {
       callback(error, null)
     }
   }
-
 //Recepcion de materiales
+async GetEntradaGrupo(callback){
+  try {
+    await sql.connect(this.setting)
+    const search = await sql.query`select * from tbEntradaGrupo`
+
+    callback(null, search)
+  } catch (e) {
+    callback(e, null)
+  }
+}
+async GetMateriales(Material, callback) {
+  try {
+    await sql.connect(this.setting);
+    const request = new sql.Request()
+    request.input('Material', sql.NVarChar, Material)
+
+    request.execute('Sp_GetMaterialLike', (err, result) => {
+      if(err) {
+        callback(err, null);
+      } else {
+        callback(null, result)
+      }
+    })
+
+  } catch (err) {
+    callback(err, null);
+  }
+}
+
+async GetSuplidores(GrupoId, callback) {
+  try {
+    await sql.connect(this.setting)
+    const search = await sql.query`select * from strSuplidores where PuestoTrId in ( select PuestoTrId from strEntradaGrupo where EntradaGrupoId=${GrupoId} ) `
+
+    callback(null, search)
+  } catch (e) {
+    callback(e, null)
+  }
+}
+
 async InsertRecepcionHeader(header, callback) {
   try {
     await sql.connect(this.setting);
@@ -1227,7 +1241,7 @@ async InsertRecepcionHeader(header, callback) {
                                                   'A', ${header.UsrReg}, Getdate(), Getdate())`;
     }
 
-    const result = await sql.query`select r.Fecha, r.TurnoId, 
+    const result = await sql.query`select r.Id, r.Fecha, r.TurnoId, 
                                           t.Descripcion as turno, r.OperadorId, 
                                           l.Nombres as operador, r.Estado
                                             from HeaderRecepcion r
@@ -1325,6 +1339,7 @@ async UpdPosRecepcion(pos, callback) {
     await sql.connect(this.setting);
       
     request.input('Id', sql.Int, pos.Id)
+    request.input('HeaderId', sql.Int, pos.headerId)
     request.input('strEntradaId', sql.Int, pos.strEntrada)
     request.input('Material', sql.NVarChar, pos.Material)
     request.input('Hora', sql.DateTime, pos.Hora)
@@ -1340,7 +1355,7 @@ async UpdPosRecepcion(pos, callback) {
     request.input('Dim4', sql.Float, paradadata.Dim4)
     request.input('UsrReg', sql.NVarChar, pos.UsrReg)
 
-    request.execute('Sp_PosRecepcion', (err, result) => {
+    request.execute('Sp_UpdPosRecepcion', (err, result) => {
       if(err) {
         callback(err, null);
       } else {
@@ -1349,6 +1364,19 @@ async UpdPosRecepcion(pos, callback) {
     })
   } catch (e) {
       callback(e, null)
+  }
+}
+
+async DelPosRecepcion(PosId, callback) {
+  try {
+    console.log(PosId)
+    await sql.connect(this.setting);
+    let result = await sql.query`delete 
+                                        from PosRecepcion 
+                                          where Id = ${PosId}`;
+    callback(null, result)
+  } catch (e) {
+    callback(e, null)
   }
 }
 

@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import {
     Grid,
     makeStyles,
-    FormControl,
-    InputLabel,
-    Select,
     Paper,
-    TextField,
     Button
 } from "@material-ui/core";
+import {
+  ArrowBackIosRounded
+} from '@material-ui/icons'
+import moment from 'moment'
+import { GlobalContex } from '../../context/GlobalState'
+
 
 const useStyle = makeStyles(theme => ({
 
@@ -70,30 +72,32 @@ const useStyle = makeStyles(theme => ({
 
 const HeaderInfo = () => {
   const classes = useStyle();
+  const aceroContex = useContext(GlobalContex)
+  const { RecepcionHeader, resetReception } = aceroContex
+
+  const handlerBack = (e) => {
+    e.preventDefault()
+    resetReception()
+}
     return (
         <>
+          <Paper elevation={3} className={classes.PtContainer}>
             <Grid
+              spacing={3}
               container
-              spacing={1}
-              justify="center"
-              alignItems="center"
+              justify="flex-start"
+              alignContent="space-between"
+              wrap="wrap"
               direction="row"
-              wrap="nowrap"
-              className={classes.GridMain}>
-                <Paper elevation={3} className={classes.PtContainer}>
-                  <Grid spacing={3}>
-                    <Grid item>
-                      <b>Fecha</b>
-                    </Grid>
-                    <Grid item>
-                      <b>Turno</b>
-                    </Grid>
-                    <Grid item>
-                  <b>Operador</b>
-                    </Grid>
-                  </Grid>
-                </Paper>
+              >
+              <Grid item>
+                  <div><Button onClick={handlerBack}><ArrowBackIosRounded/></Button></div>
+                  <div><b>Fecha:</b> {moment(RecepcionHeader.Fecha).format('L')}</div>
+                  <div><b>Turno:</b> {RecepcionHeader.turno}</div>
+                  <div><b>Operador:</b> {RecepcionHeader.operador}</div>   
               </Grid>
+            </Grid>
+          </Paper>
         </>
     )
 }

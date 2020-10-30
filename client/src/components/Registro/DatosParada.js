@@ -221,7 +221,6 @@ const columns = [
     let parada = regparaddata.filter(reg => {
       return reg.idreg == e.currentTarget.dataset.id
     })
-    console.log(parada)
     SetEditParadData(parada[0])
     history.push("/registro/paradreg/Edit")
   }

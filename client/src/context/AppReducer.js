@@ -35,7 +35,15 @@ import {
     SET_EDIT_REGPROD,
     SET_EDIT_REGPARADA,
     SET_CHATARRA_HEADER_ID, 
-    SET_ORDEN_LIST, SET_ORDEN_COMP_LIST, SET_LOADING
+    SET_ORDEN_LIST, 
+    SET_ORDEN_COMP_LIST, 
+    SET_LOADING, 
+    SET_HEADER_RECEPTION,
+    RESET_RECEPTION,
+    GET_GRUPO_RECEP,
+    GET_SUPPLY,
+    SET_POS_RECEPCION,
+    SET_EDIT_POS_RECEPCION
 } from './Actions'
 
 export default (state, action) => {
@@ -240,6 +248,45 @@ export default (state, action) => {
                 ...state,
                 Loading: action.payload
             }
+        case SET_HEADER_RECEPTION: {
+            return {
+                ...state,
+                RecepcionHeader: action.payload
+            }
+        }
+        case RESET_RECEPTION: {
+            return {
+                ...state,
+                RecepcionHeader: null
+            }
+        }
+        case GET_GRUPO_RECEP: {
+            return {
+                ...state,
+                GrupoRecepcion: action.payload
+            }
+        }
+
+        case GET_SUPPLY: {
+            return {
+                ...state,
+                Suplidores: action.payload
+            }
+        }
+
+        case SET_POS_RECEPCION: {
+            return {
+                ...state,
+                PosRecepcion: action.payload
+            }
+        }
+
+        case SET_EDIT_POS_RECEPCION: {
+            return {
+                ...state,
+                ActivePosReception: action.payload
+            }
+        }
         default:
             return state
     }

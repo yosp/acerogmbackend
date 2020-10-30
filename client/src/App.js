@@ -20,6 +20,7 @@ import ChatarraForm from "./components/Chatarra/ChatarraForm"
 import Demora from "./components/Demora/Index"
 import Notif from "./components/Notif/Index"
 import Recepcion from './components/Recepcion/index'
+import FormPosRecepcion from './components/Recepcion/FormPosRecepcion'
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
                 <PrivateRoute component={Demora} exact path="/demora"/>
                 <PrivateRoute component={Notif} exact path="/notif" />
                 <PrivateRoute component={Recepcion} exact path="/Recepcion" />
+                <PrivateRoute component={FormPosRecepcion} exact path="/Recepcion/FormPosRecep" />
           </Switch>
         </div>
       </Router>

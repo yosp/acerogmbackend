@@ -542,6 +542,109 @@ const getOrdenCompList = (Orden, callback) => {
     .catch(err => console.warn(err));
 }
 
+const insRecepHeader = (header, callback) => {
+    axios.post(`${base}/recepciones/insHeader`, {header}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data[0])
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const getEntradaGrupo = (callback) => {
+    axios.get(`${base}/recepciones/EntradaGrupos`,
+    {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
+const getMateriales = (Material,callback) => {
+    axios.get(`${base}/GetMateriales?Material=${Material}`,
+    {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
+
+const getSuplidores = (GrupoId, callback) => {
+    axios.get(`${base}/GetSuplidores?GrupoId=${GrupoId}`,
+    {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
+
+const InsPosRecepcion = (posicion, callback) => {
+    axios.post(`${base}/recepciones/insPosRecepciones`, {posicion}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const UpdPosRecepcion = (posicion, callback) => {
+    axios.post(`${base}/recepciones/updPosRecepciones`, {posicion}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+
+const GetPosRecepcion = (headerId, callback) => {
+    axios.get(`${base}/recepciones/getPosRecepciones?headerId=${headerId}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const DelPosRecepcion = (PosId, callback) => {
+    axios.get(`${base}/recepciones/DelPosRecepciones?PosId=${PosId}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
 
 export {
     LoginUser,
@@ -591,5 +694,13 @@ export {
     updParadaReg,
     getOrdenList,
     getOrdenCompList,
-    setChatarraRegSap
+    setChatarraRegSap,
+    insRecepHeader,
+    getEntradaGrupo,
+    getMateriales,
+    getSuplidores,
+    InsPosRecepcion,
+    GetPosRecepcion,
+    DelPosRecepcion,
+    UpdPosRecepcion
 }

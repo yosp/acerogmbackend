@@ -1,10 +1,11 @@
 ﻿import React, { useContext, useEffect } from 'react'
 
 import { GlobalContex } from '../../context/GlobalState'
-import { getApiTurnos, getApiGrupos, getApiIntegrantesGrp, getApiOdenenes, getCargos, getMotivoFallaArea } from '../../context/Api'
+import { getApiTurnos, getApiGrupos, getApiIntegrantesGrp, getApiOdenenes, getEntradaGrupo } from '../../context/Api'
 import NavigationBar from '../Util/NavBar'
 import LogoutPopup from '../Util/LogoutPopup'
-
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const Dashboard = () => {
     const AceroContext = useContext(GlobalContex)
@@ -13,11 +14,13 @@ const Dashboard = () => {
         , getIntegrantesGrupos
         , turnos
         , grupos
-     //   , cargos
+        , setGrupoRecep
         , integrantesGrp
         , ordenes
         , getOrdenes
-      //  , LoadCargos
+        // , setSuplidores
+        // , Suplidores
+        , GrupoRecepcion
         
     } = AceroContext
 
@@ -33,20 +36,34 @@ const Dashboard = () => {
             })
         }
 
-        // if(cargos === null || turnos === undefined) {
-        //     getCargos((err, data) => {
+        // if(Suplidores === null || Suplidores === undefined) {
+        //     getSuplidores((err, data) => {
         //         if(err) {
-
+                    
         //         } else {
-        //             LoadCargos(data)
+        //             setSuplidores(data)
         //         }
         //     })
         // }
 
+        if(GrupoRecepcion === null || GrupoRecepcion === undefined) {
+            getEntradaGrupo((err, data) => {
+                if(err) {
+                  toast.error("Se produjo un error al cargar los grupos de Recepcion", {
+                      position: toast.POSITION.BOTTOM_RIGHT
+                  });
+                } else {
+                    setGrupoRecep(data)
+                }
+            })
+        }
+
         if (ordenes === null || ordenes === undefined) {
             getApiOdenenes((err, data) => {
                 if (err) {
-
+                    toast.error("Se produjo un error al cargar los suplidores", {
+                        position: toast.POSITION.BOTTOM_RIGHT
+                    });
                 }
                 else {
                     getOrdenes(data)
@@ -78,6 +95,7 @@ const Dashboard = () => {
         <>
             <NavigationBar/>
             Dashboard
+            <ToastContainer/>
             <LogoutPopup/>
         </>
     )

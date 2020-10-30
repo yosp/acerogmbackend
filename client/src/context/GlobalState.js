@@ -40,6 +40,12 @@ import {
     SET_ORDEN_LIST,
     SET_ORDEN_COMP_LIST,
     SET_LOADING,
+    SET_HEADER_RECEPTION,
+    RESET_RECEPTION,
+    GET_GRUPO_RECEP,
+    GET_SUPPLY,
+    SET_POS_RECEPCION,
+    SET_EDIT_POS_RECEPCION
 } from "./Actions";
 
 const InitialState = {
@@ -78,6 +84,11 @@ const InitialState = {
     OrdenList: null,
     OrdenCompList: null,
     Loading: false,
+    RecepcionHeader: null,
+    PosRecepcion: null,
+    Suplidores: null,
+    GrupoRecepcion: null,
+    ActivePosReception: null
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -362,6 +373,47 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setReceptionHeader(recHeader){
+      dispatch({
+        type: SET_HEADER_RECEPTION,
+        payload: recHeader
+      })
+    }
+
+    function resetReception(){
+      dispatch({
+        type: RESET_RECEPTION
+      })
+    }
+
+    function setSuplidores(sups){
+      dispatch({
+        type: GET_SUPPLY,
+        payload: sups
+      })
+    }
+
+    function setGrupoRecep(GRecep){
+      dispatch({
+        type: GET_GRUPO_RECEP,
+        payload: GRecep
+      })
+    }
+
+    function setPosRecepcion(position) {
+      dispatch({
+        type: SET_POS_RECEPCION,
+        payload: position
+      })
+    }
+
+    function setActivePosReception(Id) {
+      dispatch({
+        type: SET_EDIT_POS_RECEPCION,
+        payload: Id
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -403,6 +455,12 @@ export const GlobalProvider = ({ children }) => {
         setOrdenList,
         setOrdenCompList,
         setLoading,
+        setReceptionHeader,
+        resetReception,
+        setGrupoRecep,
+        setSuplidores,
+        setPosRecepcion,
+        setActivePosReception,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -437,6 +495,11 @@ export const GlobalProvider = ({ children }) => {
         OrdenList: state.OrdenList,
         OrdenCompList: state.OrdenCompList,
         Loading: state.setLoading,
+        RecepcionHeader: state.RecepcionHeader,
+        Suplidores: state.Suplidores,
+        GrupoRecepcion: state.GrupoRecepcion,
+        PosRecepcion: state.PosRecepcion,
+        ActivePosReception: state.ActivePosReception
           }}
     >
       {children}

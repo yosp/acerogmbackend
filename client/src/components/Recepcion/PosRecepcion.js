@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
     makeStyles,
     Button,
@@ -17,6 +17,8 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import moment from "moment";
 import { Add, Pageview, Edit, DeleteForever } from "@material-ui/icons";
+import { GlobalContex } from "../../context/GlobalState";
+import { DelPosRecepcion, GetPosRecepcion } from "../../context/Api"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -34,11 +36,14 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   }));
-  
+let rows = []
+
 const PosRecepcion = () => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const aceroContext = useContext(GlobalContex)
+  const { PosRecepcion, RecepcionHeader, setPosRecepcion, setActivePosReception } = aceroContext
   const history = useHistory()
 
   const columns = [
@@ -175,66 +180,47 @@ const PosRecepcion = () => {
       minWidth: "100",
       align: "left",
       format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleTrans}> <Pageview/> </Button>,
-    },{
-      id: "Id",
-      label: "Edit",
-      minWidth: "100",
-      align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleEdit}> <Edit/> </Button>,
     },
   ]
-
-  let rows = [{
-    Id: 1,
-    transactions: 0,
-    Grupo: 'Laminador 2',
-    Material: 'VC003',
-    MaterialDescr: 'El nombre del producto',
-    Hora: '8:20:00 Am',
-    Lote: '31652468',
-    Peso: 12.5,
-    PesoR: 9.25,
-    unMedida: 'KG',
-    nomSuplidor: 'Divinopolis',
-    CantRecibida: 10,
-    CantCargada: 8,
-    CantRestante: 2,
-    Dim1: 10.2,
-    Dim2: 8.5,
-    Dim3: 9.25,
-    Dim4: 6.22
-  },
-  {
-    Id: 2,
-    transactions: 2,
-    Grupo: 'Laminador 2',
-    Material: 'VC015',
-    MaterialDescr: 'El nombre de otro producto',
-    Hora: '9:00:00 Am',
-    Lote: '31652445',
-    Peso: 20.22,
-    PesoR: 11.86,
-    unMedida: 'KG',
-    nomSuplidor: 'Divinopolis',
-    CantRecibida: 15,
-    CantCargada: 15,
-    CantRestante: 0,
-    Dim1: 9.2,
-    Dim2: 6.21,
-    Dim3: 12.3,
-    Dim4: 4.21
+useEffect(()=>{
+  if(PosRecepcion != null || PosRecepcion != undefined){ 
+    PosRecepcion.forEach(p => {
+      p.Hora = moment(p.Hora).format('LT')
+      p.unMedida = p.unMedida.trim()
+      return p 
+    })
+    rows = PosRecepcion
+    console.log(rows)
+    if(rowsPerPage == 5) {
+      setRowsPerPage(10)
+    } else {
+      setRowsPerPage(5)
+    }
   }
-]
+  
+},[PosRecepcion])
 
   const handleDelete = (e) => {
-
+    DelPosRecepcion(e.currentTarget.dataset.id, (err, data)=>{
+      if(err) {
+        toast.error("Error al intentar eliminar el registro", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      }else {
+        GetPosRecepcion(RecepcionHeader.Id, (err, res) => {
+          if(err) {
+            toast.error("Error al intentar cargar los datos de las recepciones", {
+              position: toast.POSITION.BOTTOM_RIGHT
+            });
+          } else {
+            setPosRecepcion(res)
+          }
+        })
+      }
+    })
   }
 
   const handleTrans = (e) => {
-
-  }
-
-  const handleEdit = (e) => {
 
   }
 

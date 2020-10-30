@@ -670,6 +670,57 @@ class Routes {
                 }
             })
         })
+
+        this.app.get('/api/recepciones/EntradaGrupos', (req, res) => {
+            this.db.GetEntradaGrupo((err,data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        }) 
+
+        this.app.get('/api/recepciones/DelPosRecepciones', (req, res) => {
+            this.db.DelPosRecepcion(req.query.PosId, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data)
+                }
+            })
+        })
+        this.app.get('/api/GetMateriales', (req, res) => {
+            this.db.GetMateriales(req.query.Material, (err,data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.get('/api/GetSuplidores', (req, res) => {
+            this.db.GetSuplidores(req.query.GrupoId, (err, data) => {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
     }
     routesConfig() {
         this.appRoutes()

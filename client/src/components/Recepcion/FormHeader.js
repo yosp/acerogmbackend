@@ -13,13 +13,13 @@ import {
 
 import {
   MuiPickersUtilsProvider,
-  TimePicker 
+  DatePicker 
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { GlobalContex } from '../../context/GlobalState'
-import {  } from '../../context/Api'
+import { insRecepHeader, GetPosRecepcion } from '../../context/Api'
 
 const useStyle = makeStyles(theme => ({
 
@@ -81,43 +81,38 @@ const useStyle = makeStyles(theme => ({
 const FormHeader = () => {
   const classes = useStyle();
   const AceroContex = useContext(GlobalContex) 
-  const { userInfo, turnos, grupos, user, setHeaderRegActive } = AceroContex
+  const { turnos, setReceptionHeader, user, setPosRecepcion } = AceroContex
   const [TodayDate, setTodayDate] = React.useState(new Date());
-  const puestos = userInfo.map(puesto => {
-        return {
-            id: puesto.PuestoTrId,
-            Descrit: puesto.PuestoTr,
-            TypeNot: puesto.TipoNotif
-        }
-    })
-  let listaGrupos = null
-  let grp = grupos.map(grupo => {
-      return { id: grupo.Id, grupo: grupo.grupo }
-  })
-
-    grp = [... new Set(grp)]
-    
-
-  const eliminarObjetosDuplicados = (arr, prop) => {
-        var nuevoArray = [];
-        var lookup = {};
-
-        for (var i in arr) {
-            lookup[arr[i][prop]] = arr[i];
-        }
-
-        for (i in lookup) {
-            nuevoArray.push(lookup[i]);
-        }
-
-        return nuevoArray;
-    }
-
-  listaGrupos = eliminarObjetosDuplicados(grp, "id")
-
   const handlerSubmit = event => {
     event.preventDefault();
+    const { TOperador, Turno } = event.target.elements
 
+    const data = {
+      Fecha: TodayDate,
+      Operador: TOperador.value,
+      TurnoId: Turno.value,
+      UsrReg: user.CodigoEmp
+    }
+
+    insRecepHeader(data, (err, resp) => {
+      if(err) {
+        toast.error("Error al intentar cargar los datos del header", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      }
+      else {
+        setReceptionHeader(resp)
+        GetPosRecepcion(resp.Id, (err, res) => {
+          if(err) {
+            toast.error("Error al intentar cargar los datos de las recepciones", {
+              position: toast.POSITION.BOTTOM_RIGHT
+            });
+          } else {
+            setPosRecepcion(res)
+          }
+        })
+      }
+    })
   };
 
   const handleDateChange = date => {
@@ -139,17 +134,17 @@ const FormHeader = () => {
           <form onSubmit={handlerSubmit} className={classes.formStyle}>
             <Grid item xs={10} sm={10} md={8} lg={6}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
-                <TimePicker 
+                <DatePicker 
                   autoOk
-                  name="Hora"
+                  name="Fecha"
                   variant="inline"
                   inputVariant="outlined"
-                  label="Seleccione Hora"
-                  format="MM/DD/YYYY"
+                  label="Seleccione Fecha"
                   className={classes.DatePick}
                   value={TodayDate}
                   InputAdornmentProps={{ position: "end" }}
                   onChange={handleDateChange}
+                  format='DD/MM/YYYY'
                 />
               </MuiPickersUtilsProvider>
             </Grid>
@@ -178,7 +173,6 @@ const FormHeader = () => {
                 variant="outlined"
                 className={classes.grupoContainer}
               >
-                <InputLabel id="LOperador">Operador</InputLabel>
                 <TextField id="TOperador" label="Operador" variant="outlined" className={classes.SelectStyle} />
               </FormControl>
             </Grid>
