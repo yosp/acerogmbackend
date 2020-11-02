@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import {
     Grid,
@@ -79,6 +79,16 @@ const HeaderInfo = () => {
     e.preventDefault()
     resetReception()
 }
+
+
+useEffect(()=>{
+  console.log("Recepcion init")
+  return function clean() {
+    console.log("Bye Bye")
+    resetReception()
+  }
+}, [])
+
     return (
         <>
           <Paper elevation={3} className={classes.PtContainer}>

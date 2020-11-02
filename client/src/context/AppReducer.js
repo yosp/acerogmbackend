@@ -44,7 +44,8 @@ import {
     GET_SUPPLY,
     SET_POS_RECEPCION,
     SET_EDIT_POS_RECEPCION,
-    SET_POS_RECEPCION_TRANS
+    SET_POS_RECEPCION_TRANS,
+    RESET_REGISTRO_PROD
 } from './Actions'
 
 export default (state, action) => {
@@ -295,6 +296,17 @@ export default (state, action) => {
             return {
                 ...state,
                 PosRecepcionTrans: action.payload
+            }
+        }
+
+        case RESET_REGISTRO_PROD: {
+            return {
+                ...state,
+                headerReg: null,
+                regproddata: null,
+                activeproddata: null,
+                regparaddata: null,
+                regprodcompdata: null
             }
         }
         default:

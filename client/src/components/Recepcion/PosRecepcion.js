@@ -63,13 +63,6 @@ const PosRecepcion = () => {
       },
     },
     {
-      id: "Grupo",
-      label: "Grupo Entrada",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
       id: "Material",
       label: "Material",
       minWidth: "170",
@@ -105,13 +98,6 @@ const PosRecepcion = () => {
       format: (value) => value.toLocaleString(),
     },
     {
-      id: "PesoR",
-      label: "Consumo Restante",
-      minWidth: "170",
-      align: "left",
-      format: (value) => value.toLocaleString(),
-    },
-    {
       id: "unMedida",
       label: "Unidad de Medida",
       minWidth: "170",
@@ -133,7 +119,7 @@ const PosRecepcion = () => {
       format: (value) => value.toLocaleString(),
     },
     {
-      id: "CantCargada",
+      id: "CantConsumida",
       label: "Cant Cargada",
       minWidth: "170",
       align: "center",

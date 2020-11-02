@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
 const HeaderReg = ({ header }) => {
     const classes = useStyles();
     const aceroContext = useContext(GlobalContex)
-    const { integrantesGrp, clearHeaderRegActive, loadRegProdData, loadRegPadadData, headerReg  } = aceroContext
+    const { integrantesGrp, clearHeaderRegActive, loadRegProdData, loadRegPadadData, headerReg, resetRegProd  } = aceroContext
 
     let listaGrp = integrantesGrp.map(grp => {
         return {
@@ -113,6 +113,11 @@ const HeaderReg = ({ header }) => {
             loadRegPadadData(data)
           }
         })
+        return function clean() {
+          resetRegProd()
+        }
+
+
     },[headerReg])
 
     const handlerBack = (e) => {

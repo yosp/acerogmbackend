@@ -30,13 +30,6 @@ const Recepcion = () => {
     </>
   }
 
-  useEffect(()=>{
-    console.log("Recepcion init")
-    return function clean() {
-      console.log("Bye Bye")
-      resetReception()
-    }
-  }, [])
 
   return (
       <>

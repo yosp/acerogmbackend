@@ -81,15 +81,16 @@ const useStyle = makeStyles(theme => ({
 const FormHeader = () => {
   const classes = useStyle();
   const AceroContex = useContext(GlobalContex) 
-  const { turnos, setReceptionHeader, user, setPosRecepcion } = AceroContex
+  const { turnos, setReceptionHeader, user, setPosRecepcion, GrupoRecepcion } = AceroContex
   const [TodayDate, setTodayDate] = React.useState(new Date());
   const handlerSubmit = event => {
     event.preventDefault();
-    const { TOperador, Turno } = event.target.elements
+    const { TOperador, Turno, GrupoR } = event.target.elements
 
     const data = {
       Fecha: TodayDate,
       Operador: TOperador.value,
+      StrEntrada: GrupoR.value,
       TurnoId: Turno.value,
       UsrReg: user.CodigoEmp
     }
@@ -168,6 +169,29 @@ const FormHeader = () => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={10} sm={10} md={8} lg={6}>
+              <FormControl
+                  variant="outlined"
+                  className={classes.grupoContainer}
+                >
+                <InputLabel id="SGrupoR">Grupo Recepción</InputLabel>
+                <Select
+                  native
+                  label="Grupo Recepción"
+                  name="GrupoR"
+                  className={classes.SelectStyle}
+                >
+                  <option value="0"> </option>
+                  {GrupoRecepcion.map((gr) => {
+                    return (
+                      <option key={gr.GrupoId} value={gr.GrupoId}>
+                        {gr.Titulo}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>           
             <Grid item xs={10} sm={10} md={8} lg={6}>
               <FormControl
                 variant="outlined"

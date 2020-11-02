@@ -18,7 +18,7 @@ import MomentUtils from "@date-io/moment";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { GlobalContex } from '../../context/GlobalState'
-import { InsertHeaderRegistro, GetHeaderRegistro } from '../../context/Api'
+import { InsertHeaderRegistro } from '../../context/Api'
 
 const useStyle = makeStyles(theme => ({
 

@@ -1235,24 +1235,24 @@ async InsertRecepcionHeader(header, callback) {
     const search = await sql.query`select count(*) as existe from HeaderRecepcion  
                                               where Estado ='A' and TurnoId = ${header.TurnoId} 
                                                     and convert(date,Fecha,101) = convert(date,${header.Fecha},101)
-                                                    and OperadorId = ${header.Operador}`;
+                                                    and OperadorId = ${header.Operador} and strEntradaId = ${header.StrEntrada}`;
     if (search.recordset[0].existe == 0) {
       await sql.query`insert into HeaderRecepcion 
-                                              (Fecha, TurnoId, OperadorId, Estado, UsrReg, RegDate, UpdDate)
+                                              (Fecha, TurnoId, OperadorId, strEntradaId, Estado, UsrReg, RegDate, UpdDate)
                                               values (${header.Fecha}, ${header.TurnoId}, 
-                                                  ${header.Operador}, 
+                                                  ${header.Operador}, ${header.StrEntrada},
                                                   'A', ${header.UsrReg}, Getdate(), Getdate())`;
     }
 
     const result = await sql.query`select r.Id, r.Fecha, r.TurnoId, 
-                                          t.Descripcion as turno, r.OperadorId, 
+                                          t.Descripcion as turno, r.OperadorId, r.strEntradaId,
                                           l.Nombres as operador, r.Estado
                                             from HeaderRecepcion r
                                               inner join strListaTurnos t on t.Id = r.TurnoId
                                               inner join loginUsuarios l on l.CodigoEmp = r.OperadorId
                                               where Estado ='A' and TurnoId = ${header.TurnoId} 
                                               and convert(date,Fecha,101) = convert(date,${header.Fecha},101)
-                                              and OperadorId = ${header.Operador}`;
+                                              and OperadorId = ${header.Operador} and strEntradaId = ${header.StrEntrada}`;
     callback(null, result)
   }
   catch (e) {
@@ -1264,20 +1264,17 @@ async GetPosRecepcion(headerRecId, callback) {
     await sql.connect(this.setting);
     let result = await sql.query`select r.Id, 
                                         r.HeaderRecId, 
-                                        r.strEntradaId, 
-                                        e.Titulo as Grupo,
                                         r.Material,
                                         m.Descripcion as MaterialDescr,
                                         r.Hora, 
                                         r.Lote, 
                                         r.Peso, 
-                                        r.Peso - isNull((select sum(PesoRegistrado) from PosRecepcionTrans where PosRecId = r.Id),0) as PesoR,
                                         m.UndBase as unMedida,
                                         r.Suplidor, 
                                         s.Descripcion as nomSuplidor,
                                         r.CantRecibida, 
-                                        r.CantCargada, 
-                                        r.CantRestante, 
+                                        isNull((select sum(CantRegistrado) from PosRecepcionTrans where PosRecId = r.Id),0) as CantConsumida,
+                                        r.CantRecibida - isNull((select sum(CantRegistrado) from PosRecepcionTrans where PosRecId = r.Id),0) as CantRestante,
                                         r.Dim1, 
                                         r.Dim2, 
                                         r.Dim3, 
@@ -1285,7 +1282,6 @@ async GetPosRecepcion(headerRecId, callback) {
                                         case when (select count(*) from PosRecepcionTrans where PosRecId = r.Id ) > 0 then 0 else r.Id end as transactions
                                         from PosRecepcion r
                                           inner join tbMateriales m on m.Material = r.Material
-                                          inner join tbEntradaGrupo e on e.GrupoId = r.strEntradaId
                                           inner join strSuplidores s on s.Id = r.Suplidor
                                           where r.HeaderRecId = ${headerRecId}`;
     callback(null, result)
@@ -1296,31 +1292,27 @@ async GetPosRecepcion(headerRecId, callback) {
 async InsPosRecepcion(Pos, callback) {
   try {
     await sql.connect(this.setting);
-    await sql.query`insert into PosRecepcion (HeaderRecId, strEntradaId, Material, Hora, 
-                                              Lote, Peso, Suplidor, CantRecibida, CantCargada, 
-                                              CantRestante, Dim1, Dim2, Dim3, Dim4, 
+    await sql.query`insert into PosRecepcion (HeaderRecId, Material, Hora, 
+                                              Lote, Peso, Suplidor, CantRecibida, Dim1, Dim2, Dim3, Dim4, 
                                               UsrReg, RegDate, UpdDate)
-                                          values(${Pos.headerId}, ${Pos.StrEntrada}, ${Pos.Material}, ${Pos.Hora},
-                                              ${Pos.Lote}, ${Pos.Peso}, ${Pos.Suplidor}, ${Pos.Recibida}, ${Pos.Cargada},
-                                              ${Pos.Restante}, ${Pos.Dim1}, ${Pos.Dim2}, ${Pos.Dim3}, ${Pos.Dim4},
+                                          values(${Pos.headerId}, ${Pos.Material}, ${Pos.Hora},
+                                              ${Pos.Lote}, ${Pos.Peso}, ${Pos.Suplidor}, ${Pos.Recibida}, 
+                                              ${Pos.Dim1}, ${Pos.Dim2}, ${Pos.Dim3}, ${Pos.Dim4},
                                               ${Pos.UsrReg}, GetDate(), GetDate())`
 
     let result = await sql.query`select r.Id, 
                                         r.HeaderRecId, 
-                                        r.strEntradaId, 
-                                        e.Titulo as Grupo,
                                         r.Material,
                                         m.Descripcion as MaterialDescr,
                                         r.Hora, 
                                         r.Lote, 
                                         r.Peso, 
-                                        r.Peso - isNull((select sum(PesoRegistrado) from PosRecepcionTrans where PosRecId = r.Id),0) as PesoR,
                                         m.UndBase as unMedida,
                                         r.Suplidor, 
                                         s.Descripcion as nomSuplidor,
                                         r.CantRecibida, 
-                                        r.CantCargada, 
-                                        r.CantRestante, 
+                                        isNull((select sum(CantRegistrado) from PosRecepcionTrans where PosRecId = r.Id),0) as CantConsumida,
+                                        r.CantRecibida - isNull((select sum(CantRegistrado) from PosRecepcionTrans where PosRecId = r.Id),0) as CantRestante,
                                         r.Dim1, 
                                         r.Dim2, 
                                         r.Dim3, 
@@ -1328,7 +1320,6 @@ async InsPosRecepcion(Pos, callback) {
                                         case when (select count(*) from PosRecepcionTrans where PosRecId = r.Id ) > 0 then 0 else r.Id end as transactions
                                         from PosRecepcion r
                                           inner join tbMateriales m on m.Material = r.Material
-                                          inner join tbEntradaGrupo e on e.GrupoId = r.strEntradaId
                                           inner join strSuplidores s on s.Id = r.Suplidor
                                                 where r.HeaderRecId = ${Pos.headerId}`;
     callback(null, result)
@@ -1343,15 +1334,12 @@ async UpdPosRecepcion(pos, callback) {
       
     request.input('Id', sql.Int, pos.Id)
     request.input('HeaderId', sql.Int, pos.headerId)
-    request.input('strEntradaId', sql.Int, pos.strEntrada)
     request.input('Material', sql.NVarChar, pos.Material)
     request.input('Hora', sql.DateTime, pos.Hora)
     request.input('Lote', sql.NVarChar, pos.Lote)
     request.input('Peso', sql.Float, pos.Peso)
     request.input('Suplidor', sql.Int, pos.Suplidor)
     request.input('Recibida', sql.Int, pos.Recibida)
-    request.input('Cargada', sql.Int, pos.Cargada)
-    request.input('Restante', sql.Int, pos.Restante)
     request.input('Dim1', sql.Float, pos.Dim1)
     request.input('Dim2', sql.Float, pos.Dim2)
     request.input('Dim3', sql.Float, pos.Dim3)
@@ -1384,7 +1372,7 @@ async DelPosRecepcion(PosId, callback) {
 async GetLoteByMaterial(Material, callback) {
   try {
     await sql.connect(this.setting)
-    let result = await sql.query`select p.Lote ,p.Peso - isNull((select sum(PesoRegistrado) from PosRecepcionTrans where PosRecId = r.Id and Lote = p.Lote),0) as Restante
+    let result = await sql.query`select p.Lote ,p.CantRecibida - isNull((select sum(CantRegistrado) from PosRecepcionTrans where PosRecId = p.Id and Lote = p.Lote),0) as Restante
                                           from HeaderRecepcion r 
                                               inner join PosRecepcion p on p.HeaderRecId = r.Id
                                               where  r.Estado = 'A' and p.Material = ${Material}`
@@ -1402,7 +1390,7 @@ async getPosRecTrans(PosRecId, callback){
                                       , t.PosRegId
                                       , t.Material
                                       , t.Lote
-                                      , t.PesoRegistrado
+                                      , t.CantRegistrado
                                       , p.Hora
                                       , l.Nombres  
                                         from PosRecepcion r

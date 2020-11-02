@@ -70,8 +70,8 @@ const PosRecepcionTrans = () => {
       format: (value) => value.toLocaleString(),
     },
     {
-      id: "PesoRegistrado",
-      label: "Peso Registrado",
+      id: "CantRegistrado",
+      label: "Cantidad Registrado",
       minWidth: "200",
       align: "left",
       format: (value) => value.toLocaleString(),

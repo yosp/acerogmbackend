@@ -76,7 +76,7 @@ const FormPosRecepcion = () => {
   const [Materiales, setMateriales] = useState([])
   const [Suplidores, setSuplidores] = useState([])
   const aceroContext = useContext(GlobalContex);
-  const { user, RecepcionHeader, GrupoRecepcion, setPosRecepcion } = aceroContext
+  const { user, RecepcionHeader, setPosRecepcion } = aceroContext
   const history = useHistory();
 
   const onFormSubmit = (e) => {
@@ -99,21 +99,19 @@ const FormPosRecepcion = () => {
 
     let PosRecepciones = {
       headerId: RecepcionHeader.Id,
-      StrEntrada: GrupoR.value,
       Material: AutoMaterial.value,
       Hora: new Date(hora._d),
       Lote: Lote.value,
       Peso: Peso.value,
       Suplidor: Suplidor.value,
       Recibida: CRecibida.value,
-      Cargada: CCargada.value,
-      Restante: CRestante.value,
       Dim1: Dim1.value,
       Dim2: Dim2.value,
       Dim3: Dim3.value,
       Dim4: Dim4.value,
       UsrReg: user.CodigoEmp
     }
+
     InsPosRecepcion(PosRecepciones, (err, res) => {
       if(err){
         toast.error("Se produjo un error al intentar guardar la recepcion", {
@@ -130,19 +128,6 @@ const FormPosRecepcion = () => {
     setHora(date)
   }
 
-  const HandlerGrupoRecepcion = (e) => {
-    e.preventDefault();
-    getSuplidores(e.target.value, (err, res) => {
-      if(err){
-        toast.error("Se produjo un error al intentar cargar los suplidores", {
-          position: toast.POSITION.BOTTOM_RIGHT
-        });
-      }else {
-        setSuplidores(res)
-      }
-    } )
-  }
-
   const HandlerClose = (e) => {
     e.preventDefault();
     history.push("/Recepcion");
@@ -157,6 +142,16 @@ const FormPosRecepcion = () => {
         setMateriales(data)
       }
     })
+    console.log(RecepcionHeader.strEntradaId)
+    getSuplidores(RecepcionHeader.strEntradaId, (err, res) => {
+      if(err){
+        toast.error("Se produjo un error al intentar cargar los suplidores", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      }else {
+        setSuplidores(res)
+      }
+    } )
   },[])
 
     return (
@@ -178,27 +173,6 @@ const FormPosRecepcion = () => {
                 alignItems="center"
                 className={classes.root}>
                   <form onSubmit={onFormSubmit}>
-                    <Grid container spacing={1} alignItems="center">
-                      <Grid item>
-                        <InputLabel id="SGrupoR">Grupo Recepción</InputLabel>
-                        <Select
-                          native
-                          label="Grupo Recepción"
-                          name="GrupoR"
-                          className={classes.SelectStyle}
-                          onChange={HandlerGrupoRecepcion}
-                        >
-                          <option value="0"> </option>
-                          {GrupoRecepcion.map((gr) => {
-                            return (
-                              <option key={gr.GrupoId} value={gr.GrupoId}>
-                                {gr.Titulo}
-                              </option>
-                            );
-                          })}
-                        </Select>
-                      </Grid>
-                    </Grid>
                     <Grid container spacing={1} alignItems="center">
                       <Grid item>
                       <Autocomplete
@@ -301,32 +275,6 @@ const FormPosRecepcion = () => {
                             id="Crecibida"
                             name="CRecibida"
                             label="Cant Recibida"
-                            type="number"
-                            className={classes.InputTextStyle}
-                          />
-                        </Tooltip>
-                      </Grid>
-                    </Grid>
-                    <Grid container spacing={1} alignItems="center">
-                      <Grid item>
-                        <Tooltip title="Solo Numeros" placement="right">
-                          <TextField
-                            id="CCargada"
-                            name="CCargada"
-                            label="Cant Cargada"
-                            type="number"
-                            className={classes.InputTextStyle}
-                          />
-                        </Tooltip>
-                      </Grid>
-                    </Grid>
-                    <Grid container spacing={1} alignItems="center">
-                      <Grid item>
-                        <Tooltip title="Solo Numeros" placement="right">
-                          <TextField
-                            id="CRestante"
-                            name="CRestante"
-                            label="Cant Restante"
                             type="number"
                             className={classes.InputTextStyle}
                           />

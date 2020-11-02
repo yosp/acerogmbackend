@@ -46,7 +46,8 @@ import {
     GET_SUPPLY,
     SET_POS_RECEPCION,
     SET_EDIT_POS_RECEPCION,
-    SET_POS_RECEPCION_TRANS
+    SET_POS_RECEPCION_TRANS,
+    RESET_REGISTRO_PROD
 } from "./Actions";
 
 const InitialState = {
@@ -423,6 +424,12 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function resetRegProd() {
+      dispatch({
+        type: RESET_REGISTRO_PROD
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -471,6 +478,7 @@ export const GlobalProvider = ({ children }) => {
         setPosRecepcion,
         setActivePosReception,
         setPosRecTrans,
+        resetRegProd,
 
         userInfo: state.userInfo,
         user: state.user,

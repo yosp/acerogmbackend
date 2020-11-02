@@ -163,7 +163,6 @@ const DatosProduccion = () => {
       format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>,
     },
   ]
-  
   const handleAddMPrima = (e) => {
     e.preventDefault()
     let registro = regproddata.filter(reg => {
