@@ -81,13 +81,13 @@ const HeaderInfo = () => {
 }
 
 
-useEffect(()=>{
-  console.log("Recepcion init")
-  return function clean() {
-    console.log("Bye Bye")
-    resetReception()
-  }
-}, [])
+// useEffect(()=>{
+//   console.log("Recepcion init")
+//   return function clean() {
+//     console.log("Bye Bye")
+//     resetReception()
+//   }
+// }, [])
 
     return (
         <>

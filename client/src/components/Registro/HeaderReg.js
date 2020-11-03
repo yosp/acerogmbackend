@@ -113,10 +113,6 @@ const HeaderReg = ({ header }) => {
             loadRegPadadData(data)
           }
         })
-        return function clean() {
-          resetRegProd()
-        }
-
 
     },[headerReg])
 

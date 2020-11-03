@@ -97,10 +97,18 @@ const FormPosRecepcion = () => {
       Dim4,
     } = e.target.elements;
 
+    let d 
+
+    if(hora._d == null || hora._d == undefined) {
+      d = new Date(hora)
+    } else {
+      d = new Date(hora._d) 
+    }
+
     let PosRecepciones = {
       headerId: RecepcionHeader.Id,
       Material: AutoMaterial.value,
-      Hora: new Date(hora._d),
+      Hora: d,
       Lote: Lote.value,
       Peso: Peso.value,
       Suplidor: Suplidor.value,
@@ -142,7 +150,6 @@ const FormPosRecepcion = () => {
         setMateriales(data)
       }
     })
-    console.log(RecepcionHeader.strEntradaId)
     getSuplidores(RecepcionHeader.strEntradaId, (err, res) => {
       if(err){
         toast.error("Se produjo un error al intentar cargar los suplidores", {
