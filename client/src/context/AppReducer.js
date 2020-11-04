@@ -45,7 +45,8 @@ import {
     SET_POS_RECEPCION,
     SET_EDIT_POS_RECEPCION,
     SET_POS_RECEPCION_TRANS,
-    RESET_REGISTRO_PROD
+    RESET_REGISTRO_PROD,
+    USER_ROLES,
 } from './Actions'
 
 export default (state, action) => {
@@ -66,6 +67,13 @@ export default (state, action) => {
                 ...state,
                 userInfo: action.payload
             }
+
+        case USER_ROLES:
+            return {
+                ...state,
+                userRol: action.payload
+            }
+            
         case LOGOUT: 
             return {
                 state: action.payload

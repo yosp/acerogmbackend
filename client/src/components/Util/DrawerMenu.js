@@ -1,12 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Grid,
   Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
   makeStyles,
   Drawer
 } from "@material-ui/core";
@@ -18,10 +13,13 @@ import { Note,
           SaveAlt,
           Dashboard,
           NotificationsActive,
-          LocalShipping } from "@material-ui/icons";
+          LocalShipping, 
+          Chat} from "@material-ui/icons";
 import { GlobalContex } from '../../context/GlobalState'
 
 import { Link } from 'react-router-dom'
+import DrawItem from './DrawItem'
+
 
 const useStyles = makeStyles({
   list: {
@@ -56,16 +54,109 @@ const useStyles = makeStyles({
 const DrawerMenu = ({ draw, onToggle }) => {
     const classes = useStyles();
     const AceroContext = useContext(GlobalContex)
-    const { user, LogoutUser } = AceroContext
+    const { user, LogoutUser, userRol } = AceroContext
+    const [Produccion, SetProduccion] = useState()
+    const [Recepcion, SetRecepcion] = useState()
+    const [Chatarra, SetChatarra] = useState()
+    const [Demora, SetDemora] = useState()
+    const [Ordenes, SetOrdenes] = useState()
+    const [Notif, SetNotif] = useState()
 
     const onHandlerLogout = (e) => {
         e.preventDefault()
         LogoutUser()
     }
 
-    useEffect(()=>{
+    let regProduccion
+    let regChatarra
+    let regRecepcion
+    let regDemora
+    let regNotif
+    let regOrden
+
+    if(Produccion != null || Produccion != undefined ) {
+      if( Produccion.length > 0) {
+        regProduccion =  <DrawItem ToLink="/registro" TextToShow="Registro" Icon={Note}/>
+      }
+      else {
+        regProduccion = null  
+      }
+    } else {
+      regProduccion = null
+    }
+
+    if(Recepcion != null || Recepcion != undefined ) {
+      if(Recepcion.length > 0) {
+        regRecepcion = <DrawItem ToLink="/recepcion" TextToShow="Recepcion" Icon={SaveAlt}/>
+      } else {
+        regRecepcion = null
+      }
       
-    },[])
+    } else {
+      regRecepcion = null
+    }
+
+    if(Chatarra != null || Chatarra != undefined) {
+      if(Chatarra.length > 0) {
+        regChatarra = <DrawItem ToLink="/chatarra" TextToShow="Chatarra" Icon={LocalShipping}/>
+      }
+      else {
+        regChatarra = null
+      }
+    } else {
+      regChatarra = null
+    }
+
+    if(Demora != null || Demora != undefined) {
+      if(Demora.length > 0) {
+        regDemora = <DrawItem ToLink="/demora" TextToShow="Demora" Icon={AccessTime}/>
+      }
+      else {
+        regChatarra = null
+      }
+    } else {
+      regDemora = null
+    }
+
+    
+    if(Notif != null || Notif != undefined) {
+      if(Notif.length > 0) {
+        regNotif = <DrawItem ToLink="/notif" TextToShow="Notificaciones" Icon={NotificationsActive}/>
+      }
+      else {
+        regNotif = null
+      }
+    } else {
+      regNotif = null
+    }
+
+    if(Ordenes != null || Ordenes != undefined) {
+      if(Ordenes.length > 0) {
+        regOrden = <DrawItem ToLink="/ordenprod" TextToShow="Ordenes de Produccion" Icon={NextWeek}/>
+      }
+      else {
+        regOrden = null
+      }
+    } else {
+      regOrden = null
+    }
+
+    useEffect(()=>{
+      if(userRol != null) {
+        let prod = userRol.filter(r => {return r.IdRol === 1})
+        let rec = userRol.filter(r => {return r.IdRol === 2})
+        let chat = userRol.filter(r => {return r.IdRol === 3})
+        let dem = userRol.filter(r => {return r.IdRol === 4})
+        let notif = userRol.filter(r => {return r.IdRol === 5})
+        let ord = userRol.filter(r => {return r.IdRol === 6})
+        SetProduccion(prod)
+        SetRecepcion(rec)
+        SetChatarra(chat)
+        SetDemora(dem)
+        SetNotif(notif)
+        SetOrdenes(ord)
+      }
+    },[userRol])
 
   const sideList = () => (
     <div
@@ -74,111 +165,41 @@ const DrawerMenu = ({ draw, onToggle }) => {
       onClick={onToggle(false)}
       onKeyDown={onToggle(false)}
       >
-          <Grid container direction="row" justify="center" alignItems="center" spacing={2} className={classes.userPanel}>
+      <Grid container direction="row" justify="center" alignItems="center" spacing={2} className={classes.userPanel}>
+          <Grid item>
+              <AccountCircle/>
+          </Grid>
+          <Grid container direction="column" spacing={1} className={classes.userSection}>
               <Grid item>
-                  <AccountCircle/>
+                  Codigo: {user.CodigoEmp}
               </Grid>
-              <Grid container direction="column" spacing={1} className={classes.userSection}>
-                  <Grid item>
-                      Codigo: {user.CodigoEmp}
-                  </Grid>
-                  <Grid item>
-                      Nombre: {user.Nombres}
-                  </Grid>
+              <Grid item>
+                  Nombre: {user.Nombres}
               </Grid>
           </Grid>
-          <List>
-              <Link to='/dashboard' className={classes.linkStyle}>
-            <ListItem button>
-              <ListItemIcon>
-                <Dashboard />
-              </ListItemIcon>
-              <ListItemText primary="Dashboard" />
-            </ListItem>
-        </Link>
-      </List>
-      <Divider /> 
-          <List>
-              <Link to='/registro' className={classes.linkStyle}>
-            <ListItem button>
-              <ListItemIcon>
-                <Note />
-              </ListItemIcon>
-              <ListItemText primary="Registro" />
-            </ListItem>
-        </Link>
-      </List>
-      <Divider /> 
-      <list>
-        <Link to='/recepcion' className={classes.linkStyle}>
-          <ListItem button>
-            <ListItemIcon>
-              <SaveAlt/>
-            </ListItemIcon>
-            <ListItemText primary="Recepcion"/>
-          </ListItem>
-        </Link>
-      </list>
-      <Divider/>
-      <List>
-              <Link to="/chatarra" className={classes.linkStyle}> 
-            <ListItem button>
-              <ListItemIcon>
-                <LocalShipping />
-              </ListItemIcon>
-              <ListItemText primary="Chatarra" />
-            </ListItem>
-        </Link>
-          </List>
-      <Divider />
-      <List>
-              <Link to="/demora" className={classes.linkStyle}> 
-            <ListItem button>
-              <ListItemIcon>
-                <AccessTime />
-              </ListItemIcon>
-              <ListItemText primary="Demora" />
-            </ListItem>
-        </Link>
-          </List>
-      <Divider />
-      <List>
-              <Link to="/notif" className={classes.linkStyle}> 
-            <ListItem button>
-              <ListItemIcon>
-                <NotificationsActive />
-              </ListItemIcon>
-              <ListItemText primary="Notificaciones" />
-            </ListItem>
-        </Link>
-          </List>
-      <Divider />
-      <List>
-              <Link to="/ordenprod" className={classes.linkStyle}> 
-            <ListItem button>
-              <ListItemIcon>
-                <NextWeek />
-              </ListItemIcon>
-              <ListItemText primary="Ordenes de Produccion" />
-            </ListItem>
-        </Link>
-          </List>
-          <Grid container
-              direction="row"
-              justify="center"
-              alignItems="center"
-              spacing={1}>
-            <Grid item>
-                  
-                <Button
-                    variant="contained"
-                    onClick={onHandlerLogout}
-                    className={classes.BtnLogout}
-                    startIcon={<PowerSettingsNew />}
-                >
-                    Logout
-                </Button>
-            </Grid>
+      </Grid>
+      <DrawItem ToLink="/dashboard" TextToShow="Dashboard" Icon={Dashboard}/>
+      {regProduccion}
+      {regRecepcion}
+      {regChatarra}
+      {regDemora}
+      {regNotif}
+      {regOrden}
+      <br/>
+      <Grid container
+          direction="row"
+          justify="center"
+          alignItems="center"
+          spacing={1}>
+        <Grid item>
+          <Button
+              variant="contained"
+              onClick={onHandlerLogout}
+              className={classes.BtnLogout}
+              startIcon={<PowerSettingsNew />}>
+              Logout
+          </Button>
+        </Grid>
       </Grid>
     </div>
   );

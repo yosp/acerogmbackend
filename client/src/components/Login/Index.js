@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 import { GlobalContex } from '../../context/GlobalState'
-import { LoginUser, UserInfo } from '../../context/Api'
+import { LoginUser, UserInfo, LoginRol } from '../../context/Api'
 
 import Reset from "./Reset";
 
@@ -96,7 +96,7 @@ const Login = () => {
 
   function onFormSubmint(e) {
     e.preventDefault();
-      const { setUserLogin, setUserInfo } = AceroContext
+      const { setUserLogin, setUserInfo, SetLoginRol } = AceroContext
     const { user, password } = e.target.elements;
       LoginUser(parseInt(user.value), password.value, (error, logininfo) => {
           if (error) {
@@ -108,9 +108,19 @@ const Login = () => {
           }
           if (logininfo !== "" && logininfo !== undefined && logininfo !== null || logininfo.length != 0) {
               setUserLogin(logininfo)
+
+              LoginRol(parseInt(user.value), (err, rol) => {
+                if(err) {
+                  toast.error("Error al cargar roles de usuario", {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                });
+                } else {
+                  SetLoginRol(rol)
+                }
+              })
               UserInfo(parseInt(user.value), (error, info) => {
                   if (error) {
-                      toast.error("Error al cargar roles de usuario", {
+                      toast.error("Error al cargar la informacion del usuario", {
                           position: toast.POSITION.BOTTOM_RIGHT
                       });
                       console.error(error.message)

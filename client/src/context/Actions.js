@@ -1,6 +1,7 @@
 export const GET_PUESTOS_TRABAJO = 'GET_PUESTOS_TRABAJO'
 export const USER_LOGIN = 'USER_LOGIN'
 export const USER_INFO = 'USER_INFO'
+export const USER_ROLES = 'USER_ROLES'
 export const LOGOUT = 'LOGOUT'
 export const GET_TURNOS = 'GET_TURNOS'
 export const GET_GRUPOS = 'GET_GRUPOS'

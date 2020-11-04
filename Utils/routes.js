@@ -56,6 +56,19 @@ class Routes {
                 }
             })
         })
+
+        this.app.get('/api/agm/loginRol', (req, res) => {
+            this.db.LoginRoles(req.query.CodigoEmp, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
         
         this.app.post('/api/agm/getUserInfo', (req, res)=> {
             this.db.getUserInfo(req.body.CodigoEmp, (err, data)=> {

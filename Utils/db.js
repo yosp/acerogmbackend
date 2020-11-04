@@ -61,6 +61,24 @@ class Db {
     }
   }
 
+  async LoginRoles(CodigoEmp, callback) {
+    try {
+      await sql.connect(this.setting);
+      const result = await sql.query`select CodigoEmp, r.Id as IdRol, 
+                                            r.Titulo as rol, 
+                                            p.Id as IdPerfil, p.Titulo as Perfil 
+                                              from loginStrRole l 
+                                                inner join StrRoles sr on sr.Id = l.StrRolid
+                                                inner join loginRoles r on r.Id = sr.RolId
+                                                inner join loginPerfiles p on p.Id = sr.PerfilId 
+                                                where CodigoEmp = ${CodigoEmp}`;
+      
+      callback(null, result)
+    } catch (e) {
+        callback(e, null)
+    }
+  }
+
   async getUserInfo(codigoEmp, callback) {
     try {
       await sql.connect(this.setting);

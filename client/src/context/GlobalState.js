@@ -47,12 +47,14 @@ import {
     SET_POS_RECEPCION,
     SET_EDIT_POS_RECEPCION,
     SET_POS_RECEPCION_TRANS,
-    RESET_REGISTRO_PROD
+    RESET_REGISTRO_PROD,
+    USER_ROLES
 } from "./Actions";
 
 const InitialState = {
   puestosTrabajo: [],
     user: {},
+    userRol: null,
     turnos: null,
     isLam: false,
     grupos: null,
@@ -124,6 +126,13 @@ export const GlobalProvider = ({ children }) => {
             type: USER_INFO,
             payload: info
         })
+    }
+
+    function SetLoginRol(rol) {
+      dispatch({
+        type: USER_ROLES,
+        payload: rol
+      })
     }
 
     function LogoutUser() {
@@ -441,6 +450,7 @@ export const GlobalProvider = ({ children }) => {
         setHeaderRegActive,
         setUserInfo,
         LogoutUser,
+        SetLoginRol,
         clearHeaderRegActive,
         loadRegProdData,
         loadRegPadadData,
@@ -482,6 +492,7 @@ export const GlobalProvider = ({ children }) => {
 
         userInfo: state.userInfo,
         user: state.user,
+        userRol: state.userRol,
         isLogin: state.isLogin,
         turnos: state.turnos,
         grupos: state.grupos,

@@ -17,6 +17,20 @@ const LoginUser = (CodigoEmp, Password, callback) => {
             callback(error, null)
         })
 }
+
+const LoginRol = (CodigoEmp, callback) => {
+    axios.get(`${base}/agm/loginRol?CodigoEmp=${CodigoEmp}`
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((response)=> {
+        callback(null, response.data)
+    })
+        .catch((error)=>{
+            callback(error, null)
+        })
+}
 const UserInfo = (CodigoEmp, callback) => {
 
     axios.post(`${base}/agm/getUserInfo`, {CodigoEmp}
@@ -515,7 +529,6 @@ const regHeaderNotifMfbf = (header, callback) => {
         })
 }
 const regPosNotifMfbf = (PosData, callback) => {
-    debugger
     axios.post(`${base}/regposmfbf`, {PosData}
     , {
         headers: {
@@ -675,6 +688,7 @@ const GetPosRecTrans = (TransId, callback) => {
 export {
     LoginUser,
     UserInfo,
+    LoginRol,
     getCargos,
     getApiIntegrantesGrp,
     getApiTurnos,
