@@ -39,10 +39,13 @@ const useStyles = makeStyles((theme) => ({
 
 const DatosProduccion = () => {
   const classes = useStyles();
+  const [PerfLeer, setPerfLeer] = useState(false)
+  const [PerfEscr, setPerfEscr] = useState(false)
+  const [PerfBorr, setPerfBorr] = useState(false)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex);
-  const { regproddata, LoadRegCompData, SetNumComp, SetOrdenComp, headerReg, loadRegProdData, SetEditProdData  } = aceroContext;
+  const { regproddata, LoadRegCompData, SetNumComp, SetOrdenComp, headerReg, loadRegProdData, SetEditProdData, userRol  } = aceroContext;
   const history = useHistory()
   
   const columns = [
@@ -51,7 +54,13 @@ const DatosProduccion = () => {
       label: "Eliminar",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>,
+      format: (value) => {
+        if(PerfBorr){
+          return <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+        } else {
+          return <Button disabled data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+        }
+      },
     },
     {
       id: "Orden",
@@ -154,13 +163,25 @@ const DatosProduccion = () => {
       label: "Agregar Componente",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Add/> </Button>,
+      format: (value) =>{ 
+        if(PerfEscr) {
+          return <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Add/> </Button>
+        } else {
+          return <Button disabled data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Add/> </Button>
+        }
+      },
     },{
       id: "id",
       label: "Editar",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>,
+      format: (value) => {
+        if(PerfEscr) {
+          return <Button data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+        } else {
+          return <Button disabled data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+        }
+      },
     },
   ]
   const handleAddMPrima = (e) => {
@@ -211,6 +232,25 @@ const DatosProduccion = () => {
 
   }
 
+  useEffect(()=>{
+    let perf = userRol.filter(f => {
+      return f.IdRol == 3
+    })
+    perf.forEach(p => {
+      if(p.IdPerfil === 1) {
+        setPerfEscr(true)
+      } 
+
+      if(p.IdPerfil === 2) {
+        setPerfLeer(true)
+      } 
+
+      if(p.IdPerfil === 3) {
+        setPerfBorr(true)
+      } 
+      
+    })
+  },[])
   useEffect(() => {
     if (regproddata !== null && regproddata !== undefined) {
       regproddata.map((reg) => {
@@ -228,6 +268,20 @@ const DatosProduccion = () => {
     }
   }, [regproddata]);
 
+  let elFab = <div></div>
+
+  if(PerfEscr) {
+    elFab = <Link to="/registro/prodreg">
+              <Fab aria-label="add" className={classes.FabStyle}>
+                <Add />
+              </Fab>
+            </Link>
+  } else {
+    elFab =  <Fab aria-label="add" disabled className={classes.FabStyle}>
+                <Add />
+              </Fab>
+  }
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -239,11 +293,7 @@ const DatosProduccion = () => {
 
   return (
     <Paper className={classes.root}>
-      <Link to="/registro/prodreg">
-        <Fab aria-label="add" className={classes.FabStyle}>
-          <Add />
-        </Fab>
-      </Link>
+      {elFab}
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>

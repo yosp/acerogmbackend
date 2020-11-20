@@ -1,4 +1,4 @@
-import React, { useContext , useEffect } from "react";
+import React, { useContext , useEffect, useState } from "react";
 import {
   Grid,
   Paper,
@@ -80,8 +80,10 @@ const useStyles = makeStyles(theme => ({
 const HeaderReg = ({ header }) => {
     const classes = useStyles();
     const aceroContext = useContext(GlobalContex)
-    const { integrantesGrp, clearHeaderRegActive, loadRegProdData, loadRegPadadData, headerReg, resetRegProd  } = aceroContext
-
+    const { integrantesGrp, clearHeaderRegActive, loadRegProdData, loadRegPadadData, headerReg, userRol  } = aceroContext
+    const [PerfLeer, setPerfLeer] = useState(false)
+    const [PerfEscr, setPerfEscr] = useState(false)
+    const [PerfBorr, setPerfBorr] = useState(false)
     let listaGrp = integrantesGrp.map(grp => {
         return {
             nombre: grp.Nombres,
@@ -114,7 +116,44 @@ const HeaderReg = ({ header }) => {
           }
         })
 
+        let perf = userRol.filter(f => {
+          return f.IdRol == 1
+        })
+        perf.forEach(p => {
+          if(p.IdPerfil === 1) {
+            setPerfEscr(true)
+          } 
+
+          if(p.IdPerfil === 2) {
+            setPerfLeer(true)
+          } 
+
+          if(p.IdPerfil === 3) {
+            setPerfBorr(true)
+          } 
+
+        })
     },[headerReg])
+
+    let btnElim = <div>
+      <Button type="submit" className={classes.btnB} startIcon={<Delete />} >
+              Eliminar
+            </Button>
+    </div>
+
+    if(PerfBorr) {
+      btnElim = <div>
+                <Button type="submit" className={classes.btnB} startIcon={<Delete />} >
+                  Eliminar
+                </Button>
+              </div>
+    } else {
+      btnElim = <div>
+      <Button type="submit" disabled className={classes.btnB} startIcon={<Delete />} >
+        Eliminar
+      </Button>
+    </div>
+    }
 
     const handlerBack = (e) => {
         e.preventDefault()
@@ -221,9 +260,7 @@ const HeaderReg = ({ header }) => {
             </TableContainer>
           </Grid>
           <Grid item className={classes.GridSections}>
-            <Button type="submit" className={classes.btnB} startIcon={<Delete />}>
-              Eliminar
-            </Button>
+            {btnElim}
           </Grid>
         </Grid>
       </Paper>

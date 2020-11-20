@@ -760,6 +760,179 @@ class Routes {
                 }
             })
         })
+
+        this.app.get('/api/config/SearchUser', (req, res) => {
+            this.db.SearchUser(req.query.Usuario, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset[0])
+                }
+            })
+        })
+
+        this.app.get('/api/config/SearchUserSap', (req, res) => {
+            this.db.SearchUserSap(req.query.Usuario, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset[0])
+                }
+            })
+        })
+        this.app.get('/api/config/UserRoles', (req, res) => {
+            this.db.LoginRolesList(req.query.CodigoEmp, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.get('/api/config/RolNotUser',(req, res) => {
+            this.db.getRolListNotUser(req.query.CodigoEmp, (err, data) => {
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                }
+                else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.post('/api/config/getRolPerfil', (req, res) => {
+            this.db.getRolPerfil(req.body.CodPerf, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.post('/api/config/getRolNotPerfil', (req, res) => {
+            this.db.getRolNotPerfil(req.body.CodPerf, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.get('/api/config/UserRolList', (req, res) => {
+            this.db.getUserRolList(req.query.CodigoEmp, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.post('/api/config/AddUserRol', (req, res) => {
+            this.db.insRolPerfil(req.body.Roldata, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        }) 
+        this.app.post('/api/config/DelUserRol', (req, res) => {
+            this.db.delRolPerfil(req.body.Roldata, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.post('/api/config/addNewUser', (req, res) => {
+            this.db.setNewUser(req.body.User,(err,data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.post('/api/config/rolPtr', (req, res) => {
+            this.db.getRolPtr(req.body.RolPtr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.post('/api/config/rolNotPtr', (req, res) => {
+            this.db.getRolNotPtr(req.body.RolPtr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/config/addRolPtr', (req, res) => {
+            this.db.addRolPuestoTr(req.body.RolPtr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/config/delRolPtr', (req, res) => {
+            this.db.delRolPuestoTr(req.body.RolPtr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
     }
     routesConfig() {
         this.appRoutes()

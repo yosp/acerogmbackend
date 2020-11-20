@@ -16,7 +16,6 @@ class Db {
     };
     this.setting = `mssql://${this.config.user}:${this.config.password}@${this.config.server}/${this.config.options.database}`;
   }
-
   async getTurnos(callback) {
     try {
       await sql.connect(this.setting);
@@ -26,7 +25,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getGrupos(callback) {
     try {
       await sql.connect(this.setting);
@@ -48,7 +46,33 @@ class Db {
       callback(e, null);
     }
   }
-
+  async SearchUserSap(Usuario, callback){
+    try {
+      await sql.connect(this.setting);
+      const resutl = await sql.query`select Codigoemp
+                                            ,Nombres+' '+Apellidos as nombre
+                                            ,DesCodPosicion
+                                            ,DesCUniOrga
+                                            from SAP_Inteface..EMPLOYEE 
+                                            where estatus = 3 
+                                              and (Codigoemp = ${Usuario} 
+                                                        or Nombres+' '+Apellidos like'%${Usuario}%')`
+      callback(null, resutl)
+    } catch (e) {
+      callback(e, null)
+    }
+  }
+  async SearchUser(Usuario, callback){
+    try {
+      await sql.connect(this.setting);
+      const resutl = await sql.query`select CodigoEmp, Nombres, Estatus 
+                                                from loginUsuarios 
+                                                  where CodigoEmp = ${Usuario} or Nombres like'%${Usuario}%'`
+      callback(null, resutl)
+    } catch (e) {
+      callback(e, null)
+    }
+  }
   async LoginUser(CodigoEmp, Password, callback) {
     try {
       await sql.connect(this.setting);
@@ -60,7 +84,22 @@ class Db {
       callback(e, null);
     }
   }
-
+  async LoginRolesList(CodigoEmp, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result  = await sql.query`select lr.Id, u.CodigoEmp, u.Nombres, 
+                                              r.Titulo as Rol, p.Titulo as Perfil 
+                                                from loginStrRole lr 
+                                                  inner join StrRoles strl on strl.Id = lr.StrRolid
+                                                  inner join loginRoles r on strl.RolId = r.Id
+                                                  inner join loginPerfiles p on strl.PerfilId = p.Id
+                                                  inner join loginUsuarios u on u.CodigoEmp = lr.CodigoEmp
+                                                  where lr.CodigoEmp = ${CodigoEmp}`
+      callback(null, result)
+    } catch (e) { 
+      callback(e, null)
+    }
+  }
   async LoginRoles(CodigoEmp, callback) {
     try {
       await sql.connect(this.setting);
@@ -78,7 +117,27 @@ class Db {
         callback(e, null)
     }
   }
+  async setNewUser(user, callback) {
+    try {
+      await sql.connect(this.setting);
+      const request = new sql.Request()
+      
+      request.input('codigoEmp', sql.Int, user.codigoEmp)
+      request.input('password', sql.NVarChar, user.password)
 
+      request.execute('sp_addNewUser', (err, result) => {
+        if(err) {
+          console.log(err)
+          callback(err, null);
+        } else {
+          callback(null, result)
+        } 
+      })
+    } catch (err) {
+      console.log(err)
+      callback(null, result)
+    }
+  }
   async getUserInfo(codigoEmp, callback) {
     try {
       await sql.connect(this.setting);
@@ -107,7 +166,182 @@ class Db {
       callback(e, null);
     }
   }
+  async getUserRolList(codigoEmp, callback) {
+    try {
+      await sql.connect(this.setting);
+      const result = await sql.query`select distinct r.Id, 
+                                                    r.Titulo as rol 
+                                                      from loginStrRole s 
+                                                        inner join StrRoles rl on rl.Id = s.StrRolid
+                                                        inner join loginRoles r on r.Id = rl.RolId
+                                                        where CodigoEmp = ${codigoEmp}`;
+      callback(null, result);
+    } catch (e) {
+      callback(e, null);
+    }
+  }
+  async getRolListNotUser(codigoEmp, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select distinct r.Id, 
+                                                      r.Titulo as rol 
+                                                          from loginRoles r
+                                                            where r.Id not in ( select distinct r.Id
+                                                                        from loginStrRole s 
+                                                                        inner join StrRoles rl on rl.Id = s.StrRolid
+                                                                        inner join loginRoles r on r.Id = rl.RolId
+                                                                        where CodigoEmp = ${codigoEmp})`
+      callback(null,result)
+        } 
+    catch(e) {
+      callback(e, null)
+    }
+  }
+  async getRolPerfil(CodPerf, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select distinct p.Id, 
+                                      p.Titulo as perfil 
+                                          from loginStrRole s 
+                                          inner join StrRoles rl on rl.Id = s.StrRolid
+                                          inner join loginRoles r on r.Id = rl.RolId
+                                          inner join loginPerfiles p on p.Id = rl.PerfilId
+                                            where CodigoEmp = ${CodPerf.CodigoEmp} and r.Id = ${CodPerf.Perfil}`
+      callback(null,result)
+        } 
+    catch(e) {
+      callback(e, null)
+    }
+  }
+  async getRolPtr(CodRol, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select p.Id
+                                          , p.Descripcion as Puestotr  
+                                          from strPuestosTrabajos p 
+                                              inner join StrUsuario u on u.PuestoTrId = p.Id
+                                                where u.CodigoEmp = ${CodRol.CodigoEmp} and u.RolId = ${CodRol.RolId}`
+      callback(null,result)
+        } 
+    catch(e) {
+      callback(e, null)
+    }
+  }
+  async getRolNotPtr(CodRol, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select pt.Id
+                                          , pt.Descripcion as Puestotr 
+                                          from strPuestosTrabajos pt
+                                            where pt.Id not in (
+                                              select p.Id
+                                                  from strPuestosTrabajos p 
+                                                      inner join StrUsuario u on u.PuestoTrId = p.Id
+                                                      where u.CodigoEmp = ${CodRol.CodigoEmp} and u.RolId = ${CodRol.RolId}
+                                                        )`
+      callback(null,result)
+        } 
+    catch(e) {
+      callback(e, null)
+    }
+  }
+  async getRolNotPerfil(CodPerf, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select p.Id, p.Titulo as perfil 
+                                        from loginPerfiles p 
+                                          where Id not in(select distinct p.Id
+                                                        from loginStrRole s 
+                                                        inner join StrRoles rl on rl.Id = s.StrRolid
+                                                        inner join loginRoles r on r.Id = rl.RolId
+                                                        inner join loginPerfiles p on p.Id = rl.PerfilId
+                                                        where CodigoEmp = ${CodPerf.CodigoEmp} and r.Id = ${CodPerf.Perfil})`
+      callback(null,result)
+        } 
+    catch(e) {
+      callback(e, null)
+    }
+  }
+  async insRolPerfil(roldata, callback) {
+    try {
+      await sql.connect(this.setting);
+      const request = new sql.Request()
+      
+      request.input('CodigoEmp', sql.Int, roldata.CodigoEmp)
+      request.input('RolId', sql.Int, roldata.RolId)
+      request.input('PerfId', sql.Int, roldata.PerfId)
 
+      request.execute('Sp_addRolPerfilUser', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+
+    } catch (err) {
+      callback(err, null);
+    }
+  } 
+  async delRolPerfil(roldata, callback) {
+    try {
+      const request = new sql.Request()
+      await sql.connect(this.setting);
+      
+      request.input('CodigoEmp', sql.Int, roldata.CodigoEmp)
+      request.input('RolId', sql.Int, roldata.RolId)
+      request.input('PerfId', sql.Int, roldata.PerfId)
+
+      request.execute('Sp_removeRolPerfilUser', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+
+    } catch (err) {
+      callback(err, null);
+    }
+  }
+  async addRolPuestoTr(RolPtr, callback) {
+    try {
+      const request = new sql.Request()
+      await sql.connect(this.setting);
+      
+      request.input('CodigoEmp', sql.Int, RolPtr.CodigoEmp)
+      request.input('Rol', sql.Int, RolPtr.RolId)
+      request.input('PuestoTr', sql.Int, RolPtr.PuestoTr)
+      request.execute('Sp_addRolPuestoTr', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+    } catch (error) {
+      
+    }
+  }
+  async delRolPuestoTr(RolPtr, callback) {
+    try {
+      const request = new sql.Request()
+      await sql.connect(this.setting);
+      
+      request.input('CodigoEmp', sql.Int, RolPtr.CodigoEmp)
+      request.input('Rol', sql.Int, RolPtr.RolId)
+      request.input('PuestoTr', sql.Int, RolPtr.PuestoTr)
+      request.execute('Sp_removeRolPuestoTr', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+    } catch (error) {
+      
+    }
+  }
   async getGruposIntegrantes(callback) {
     try {
       await sql.connect(this.setting);
@@ -218,7 +452,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async insProdComp(ProdComp, callback) {
     try {
       await sql.connect(this.setting);
@@ -231,7 +464,6 @@ class Db {
       callback(e, null)
     }
   }
-
   async getProdComp(PosProdId, callback) {
     try {
         await sql.connect(this.setting)
@@ -243,7 +475,6 @@ class Db {
         callback(e, null)
     }
   }
-
   async delProdComp(PosProdId, callback) {
     try {
         await sql.connect(this.setting)
@@ -255,7 +486,6 @@ class Db {
         callback(e, null)
     }
   }
-
   async delPosRegProd(PosProdId, callback) {
     try {
         await sql.connect(this.setting)
@@ -267,7 +497,6 @@ class Db {
         callback(e, null)
     }
   }
-
   async insProdData(proddat, callback) {
     try {
       await sql.connect(this.setting);
@@ -308,7 +537,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async updProdData(proddat, callback) {
     try {
       const request = new sql.Request()
@@ -340,7 +568,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async insPosRegParada(paradadata, callback) {
     try {
       await sql.connect(this.setting);
@@ -418,7 +645,7 @@ class Db {
                 ,par.Notas
                 from PosRegParada par
                     inner join tbListaCargos c on c.Codigo = par.Cargo
-                    inner join tbMatrizTiempoEstandar t on t.Cargo = c.Codigo
+                    left join tbMatrizTiempoEstandar t on t.Cargo = c.Codigo
                     inner join tbmotivoFallaArea ar on par.MotivoFallaAreaId = ar.Id
                     inner join tbMotivoFallaSubArea  sub on par.MotivoFallaSubAreaId = sub.Id
                     inner join tbMotivoFallaLugarAveria  lug on par.MotivoFallaLugarAveriaId = lug.id
@@ -824,7 +1051,7 @@ class Db {
                                               ,p.ComentarioDemora
                                               from PosRegParada p
                                                 inner join HeaderReg h on p.HeaderRegId = h.Id
-                                                inner join tbMatrizTiempoEstandar stan on p.Tprog_Id = stan.Id
+                                                left join tbMatrizTiempoEstandar stan on p.Tprog_Id = stan.Id
                                                 inner join tbListaCargos car on car.Codigo = p.Cargo
                                                 inner join tbMotivoFallaArea area on area.Id = p.MotivoFallaAreaId
                                                 inner join tbMotivoFallaLugarAveria lug on lug.Id = p.MotivoFallaLugarAveriaId
@@ -883,7 +1110,7 @@ class Db {
   }
   async regPosNotif (posData, callback) {
     try {
-      await sql.connect(this.setting) //${header.headerId}  ${header.id} 
+      await sql.connect(this.setting)  
       await sql.query`insert into PosNotificacion (HeaderId ,Material, Centro, Almacen, Clmv, Cant,UndMed, Batch, RegHeaderId, PuestoTrabajoId, RegDate)
       select  ${posData.headerId},
               o.Material,
@@ -1013,7 +1240,7 @@ class Db {
                       Clmv, 
                       Cant, 
                       UndMed, 
-                      nullif(0,Batch) as Batch
+                      Batch as Batch
                       from PosNotificacion p 
                         inner join HeaderNotificacion h on h.Id = p.RegHeaderId	
                           where p.PuestoTrabajoId = ${pos.PtrId} and convert(date,h.FechaCont,101) = CONVERT(date,${pos.Fecha},101)`
@@ -1235,7 +1462,6 @@ async GetMateriales(Material, callback) {
     callback(err, null);
   }
 }
-
 async GetSuplidores(GrupoId, callback) {
   try {
     await sql.connect(this.setting)
@@ -1246,7 +1472,6 @@ async GetSuplidores(GrupoId, callback) {
     callback(e, null)
   }
 }
-
 async InsertRecepcionHeader(header, callback) {
   try {
     await sql.connect(this.setting);
@@ -1399,7 +1624,6 @@ async GetLoteByMaterial(Material, callback) {
     callback(e, null)
   }
 }
-
 async getPosRecTrans(PosRecId, callback){
   try {
     await sql.connect(this.setting)

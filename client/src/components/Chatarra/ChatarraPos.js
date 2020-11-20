@@ -42,9 +42,12 @@ const useStyles = makeStyles(theme => ({
 const ChatarraPos = () => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
+  const [PerfLeer, setPerfLeer] = useState(false)
+  const [PerfEscr, setPerfEscr] = useState(false)
+  const [PerfBorr, setPerfBorr] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex)
-  const { chatarraPos, ChatarraHeaderId, SetChatarraPos } = aceroContext
+  const { chatarraPos, ChatarraHeaderId, SetChatarraPos, userRol } = aceroContext
   
   const columns = [
     {
@@ -108,9 +111,37 @@ const ChatarraPos = () => {
       label: "Eliminar",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>,
+      format: (value) => {
+        if(PerfBorr) {
+          return <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+        } else {
+          return <Button disabled data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+        }
+      },
     },
   ];
+  let elFab =  <Fab disabled aria-label="add" className={classes.FabStyle}>
+                <Add/>
+              </Fab>
+  useEffect(()=>{
+    let perf = userRol.filter(f => {
+      return f.IdRol == 3
+    })
+    perf.forEach(p => {
+      if(p.IdPerfil === 1) {
+        setPerfEscr(true)
+      } 
+
+      if(p.IdPerfil === 2) {
+        setPerfLeer(true)
+      } 
+
+      if(p.IdPerfil === 3) {
+        setPerfBorr(true)
+      } 
+      console.log(PerfEscr)
+    })
+  },[])
   useEffect(() => {
     if (chatarraPos !== null && chatarraPos !== undefined) {
       rows = chatarraPos
@@ -128,12 +159,10 @@ const ChatarraPos = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   const handleDelete = (e) => {
     let id = e.currentTarget.dataset.id
     delChatarraPos(id, (err, data) => {
@@ -151,12 +180,16 @@ const ChatarraPos = () => {
 
   }
 
-  return(
+  if(PerfEscr) {
+    elFab = <Fab aria-label="add" className={classes.FabStyle}>
+              <Add/>
+          </Fab>
+  }
+
+  return (
     <Paper className={classes.root}>
       <Link to="/chatarra/chatarForm">
-        <Fab aria-label="add" className={classes.FabStyle}>
-            <Add/>
-        </Fab>
+        {elFab}
       </Link>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
@@ -199,7 +232,6 @@ const ChatarraPos = () => {
       <ToastContainer />
     </Paper>
   )
-
 };
 
 export default ChatarraPos;

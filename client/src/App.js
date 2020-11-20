@@ -21,6 +21,7 @@ import Demora from "./components/Demora/Index"
 import Notif from "./components/Notif/Index"
 import Recepcion from './components/Recepcion/index'
 import FormPosRecepcion from './components/Recepcion/FormPosRecepcion'
+import Config from './components/Config'
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
                 <PrivateRoute component={Notif} exact path="/notif" />
                 <PrivateRoute component={Recepcion} exact path="/Recepcion" />
                 <PrivateRoute component={FormPosRecepcion} exact path="/Recepcion/FormPosRecep" />
+                <PrivateRoute component={Config} exact path="/config" />
           </Switch>
         </div>
       </Router>

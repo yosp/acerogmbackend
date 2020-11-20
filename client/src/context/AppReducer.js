@@ -47,6 +47,16 @@ import {
     SET_POS_RECEPCION_TRANS,
     RESET_REGISTRO_PROD,
     USER_ROLES,
+    USER_SEARCH,
+    USER_SEARCH_SAP,
+    USER_ROL_LIST,
+    TOGGLE_PERFIL,
+    TOGGLE_ROL,
+    SET_ACTIVE_ROL,
+    ACTIVE_CONF_USER,
+    NOT_USER_ROL_LIST,
+    TOGGLE_SAP_PASS,
+    TOGGLE_PUESTO_TR,
 } from './Actions'
 
 export default (state, action) => {
@@ -317,6 +327,72 @@ export default (state, action) => {
                 regprodcompdata: null
             }
         }
+
+        case USER_SEARCH: {
+            return {
+                ...state,
+                UserSearch: action.payload,
+            }
+        }
+
+        case USER_SEARCH_SAP: {
+            return {
+                ...state,
+                UserSearchSap: action.payload,
+            }
+        }
+        case USER_ROL_LIST: {
+            return {
+                ...state,
+                UserRolList: action.payload
+            }
+        }
+        case TOGGLE_PERFIL: {
+            return {
+                ...state,
+                TogglePerfil: action.payload
+            }
+        }
+        case TOGGLE_ROL: {
+            return {
+                ...state,
+                ToggleRol: action.payload
+            }
+        }
+        case SET_ACTIVE_ROL: {
+            return {
+                ...state,
+                ActiveRol: action.payload
+            }
+        }
+        case ACTIVE_CONF_USER: {
+            return {
+                ...state,
+                ActiveConfUser: action.payload
+            }
+        }
+
+        case NOT_USER_ROL_LIST: {
+            return {
+                ...state,
+                NotUserRolList: action.payload
+            }
+        }
+
+        case TOGGLE_SAP_PASS: {
+            return {
+                ...state,
+                ToggleSapPass: action.payload
+            }
+        }
+        
+        case TOGGLE_PUESTO_TR: {
+            return {
+                ...state,
+                TogglePuestoTr: action.payload
+            }
+        }
+
         default:
             return state
     }

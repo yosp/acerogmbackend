@@ -48,7 +48,17 @@ import {
     SET_EDIT_POS_RECEPCION,
     SET_POS_RECEPCION_TRANS,
     RESET_REGISTRO_PROD,
-    USER_ROLES
+    USER_ROLES,
+    USER_SEARCH_SAP,
+    USER_SEARCH,
+    USER_ROL_LIST,
+    TOGGLE_PERFIL,
+    TOGGLE_ROL,
+    SET_ACTIVE_ROL,
+    ACTIVE_CONF_USER,
+    NOT_USER_ROL_LIST,
+    TOGGLE_SAP_PASS,
+    TOGGLE_PUESTO_TR
 } from "./Actions";
 
 const InitialState = {
@@ -93,7 +103,17 @@ const InitialState = {
     PosRecepcionTrans: null,
     Suplidores: null,
     GrupoRecepcion: null,
-    ActivePosReception: null
+    ActivePosReception: null,
+    UserSearch: null,
+    UserSearchSap: null,
+    UserRolList: null,
+    NotUserRolList: null,
+    TogglePerfil: false,
+    ToggleRol: false,
+    ActiveRol: null,
+    ActiveConfUser: null,
+    ToggleSapPass: false,
+    TogglePuestoTr: false,
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -439,10 +459,84 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setUserSearch(user) {
+      dispatch({
+        type: USER_SEARCH,
+        payload: user
+      })
+    }
+
+    function setUserSearchSap(user) {
+      dispatch({
+        type: USER_SEARCH_SAP,
+        payload: user
+      })
+    }
+
+    function setUserRolList(rolList) {
+      dispatch({
+        type: USER_ROL_LIST,
+        payload: rolList
+      })
+    }
+
+    function setTogglePerfil(toggle) {
+      dispatch({
+        type: TOGGLE_PERFIL,
+        payload: toggle
+      })
+    }
+
+    function setToggleRol(toggle) {
+      dispatch({
+        type: TOGGLE_ROL,
+        payload: toggle
+      })
+    }
+
+    function setActiveRol(rolid) {
+      dispatch({
+        type: SET_ACTIVE_ROL,
+        payload: rolid
+      })
+    }
+
+    function setActiveUserConf(codUser) {
+      dispatch({
+        type: ACTIVE_CONF_USER,
+        payload: codUser
+      })
+    }
+
+    function setNotUserRolList(RolList) {
+      dispatch({
+        type: NOT_USER_ROL_LIST,
+        payload: RolList
+      })
+    }
+
+    function setToggleSapPass(toggle) {
+      dispatch({
+        type: TOGGLE_SAP_PASS,
+        payload: toggle
+      })
+    }
+
+    function setTogglePtr(toggle){
+      dispatch({
+        type: TOGGLE_PUESTO_TR,
+        payload: toggle
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
         getPuestoTrabajo,
+        setTogglePerfil,
+        setToggleRol,
+        setUserRolList,
+        setNotUserRolList,
         getTurnos,
         getGrupos,
         getIntegrantesGrupos,
@@ -489,6 +583,12 @@ export const GlobalProvider = ({ children }) => {
         setActivePosReception,
         setPosRecTrans,
         resetRegProd,
+        setUserSearch,
+        setUserSearchSap,
+        setActiveRol,
+        setActiveUserConf,
+        setToggleSapPass,
+        setTogglePtr,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -529,7 +629,17 @@ export const GlobalProvider = ({ children }) => {
         GrupoRecepcion: state.GrupoRecepcion,
         PosRecepcion: state.PosRecepcion,
         ActivePosReception: state.ActivePosReception,
-        PosRecepcionTrans: state.PosRecepcionTrans
+        PosRecepcionTrans: state.PosRecepcionTrans,
+        UserSearch: state.UserSearch,
+        UserSearchSap: state.UserSearchSap,
+        UserRolList: state.UserRolList,
+        TogglePerfil: state.TogglePerfil,
+        ToggleRol: state.ToggleRol,
+        ActiveRol: state.ActiveRol,
+        ActiveConfUser: state.ActiveConfUser,
+        NotUserRolList: state.NotUserRolList,
+        ToggleSapPass: state.ToggleSapPass,
+        TogglePuestoTr: state.TogglePuestoTr,
           }}
     >
       {children}

@@ -283,25 +283,6 @@ const ParadaForm = () => {
                     </MuiPickersUtilsProvider>
                   </Grid>
                 </Grid>
-                {/* <Grid container spacing={1} alignItems="center">
-                  <Grid item>
-                    <InputLabel id="SCargo">Cargo</InputLabel>
-                    <Select
-                      native
-                      name="InCargo"
-                      label="SlCargo"
-                      className={classes.SelectStyle}
-                    >
-                      {cargos.map((cargo) => {
-                        return (
-                          <option key={cargo.Id} value={cargo.Id}>
-                            {cargo.Codigo} - {cargo.Descripcion}
-                          </option>
-                        );
-                      })}
-                    </Select>
-                  </Grid>
-                </Grid> */}
                 <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <InputLabel id="SlArea">Area</InputLabel>

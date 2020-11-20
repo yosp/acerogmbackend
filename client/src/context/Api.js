@@ -684,6 +684,174 @@ const GetPosRecTrans = (TransId, callback) => {
             callback(err, null)
         })
 }
+const SearchUser = (Usuario, callback) => {
+    axios.get(`${base}/config/SearchUser?Usuario=${Usuario}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const SearchUserSap = (Usuario, callback) => {
+    axios.get(`${base}/config/SearchUserSap?Usuario=${Usuario}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const UserRoles = (CodigoEmp, callback) => {
+    axios.get(`${base}/config/UserRoles?CodigoEmp=${CodigoEmp}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const GetUserRolesList = (CodigoEmp, callback) => {
+    axios.get(`${base}/config/UserRolList?CodigoEmp=${CodigoEmp}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+}
+const GetRolNotUser = (CodigoEmp, callback) => {
+    axios.get(`${base}/config/RolNotUser?CodigoEmp=${CodigoEmp}`
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const getRolPerfil = (CodPerf, callback) => {
+    axios.post(`${base}/config/getRolPerfil`, {CodPerf}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+}
+const getRolNotPerfil = (CodPerf, callback) => {
+    axios.post(`${base}/config/getRolNotPerfil`, {CodPerf}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+} 
+const addRolPuestoTr = (RolPtr, callback) => {
+    axios.post(`${base}/config/addRolPtr`, {RolPtr}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+} 
+const delRolPuestoTr = (RolPtr, callback) => {
+    axios.post(`${base}/config/delRolPtr`, {RolPtr}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+} 
+const getRolPtr = (RolPtr, callback) => {
+    axios.post(`${base}/config/rolPtr`, {RolPtr}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+}
+const getRolNotPtr = (RolPtr, callback) => {
+    axios.post(`${base}/config/rolNotPtr`, {RolPtr}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+}
+const addNewUser = (User, callback) => {
+    axios.post(`${base}/config/addNewUser`, {User}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){  
+            callback(err, null)
+        })
+}
+const AddUserRol = (Roldata, callback) => {
+    axios.post(`${base}/config/AddUserRol`, {Roldata}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const DelUserRol = (Roldata, callback) => {
+    axios.post(`${base}/config/DelUserRol`, {Roldata}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
 
 export {
     LoginUser,
@@ -693,6 +861,7 @@ export {
     getApiIntegrantesGrp,
     getApiTurnos,
     getApiGrupos,
+    GetRolNotUser,
     InsertHeaderRegistro,
     getHeaderReg,
     getRegProd,
@@ -744,5 +913,18 @@ export {
     DelPosRecepcion,
     UpdPosRecepcion,
     GetLoteByMaterial,
-    GetPosRecTrans
+    GetPosRecTrans,
+    SearchUser,
+    SearchUserSap,
+    UserRoles,
+    GetUserRolesList,
+    getRolPerfil,
+    getRolNotPerfil,
+    AddUserRol,
+    DelUserRol,
+    addNewUser,
+    getRolPtr,
+    getRolNotPtr,
+    addRolPuestoTr,
+    delRolPuestoTr,
 }

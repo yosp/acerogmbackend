@@ -73,7 +73,6 @@ const ParadaForm = () => {
   const [equipos, setEquipos] = useState([]);
   const [EequiposS, setEEquiposS] = useState(0);
   const [ENotas, setENotas] = useState('')
- 
   const [orden, setOrden] = useState(0)
   const [plqd, setPlqd] = useState(0)
   const [plqp, setPlqp] = useState(0)
@@ -244,7 +243,6 @@ const ParadaForm = () => {
 
     setENotas(ActiveParadaData.Notas)
     setEAreaS(ActiveParadaData.areaId) // area
-    // setECargo(ActiveParadaData.cargoId)
     setEEquiposS(ActiveParadaData.lugarId)
     setELugarFallaS(ActiveParadaData.lugarId)
     setESubAreaS(ActiveParadaData.subAreaId)
@@ -359,27 +357,6 @@ const ParadaForm = () => {
                     </MuiPickersUtilsProvider>
                   </Grid>
                 </Grid>
-                {/* <Grid container spacing={1} alignItems="center">
-                  <Grid item>
-                    <InputLabel id="SCargo">Cargo</InputLabel>
-                    <Select
-                      native
-                      name="InCargo"
-                      label="SlCargo"
-                      value={ECargo}
-                      onChange={(e) => setECargo(e.target.value)}
-                      className={classes.SelectStyle}
-                    >
-                      {cargos.map((cargo) => {
-                        return (
-                          <option key={cargo.Id} value={cargo.Id}>
-                            {cargo.Codigo} - {cargo.Descripcion}
-                          </option>
-                        );
-                      })}
-                    </Select>
-                  </Grid>
-                </Grid> */}
                 <Grid container spacing={1} alignItems="center">
                   <Grid item>
                     <InputLabel id="SlArea">Area</InputLabel>

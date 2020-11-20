@@ -80,7 +80,10 @@ const useStyles = makeStyles((theme) => ({
 const HeaderPanel = () => {
   const classes = useStyles();
   const AceroContex = useContext(GlobalContex);
-  const { chatarraHeader, chatarraPos, ClearChatarra, ChatarraHeaderId, LoadChataraHeader, setLoading } = AceroContex;
+  const [PerfLeer, setPerfLeer] = useState(false)
+  const [PerfEscr, setPerfEscr] = useState(false)
+  const [PerfBorr, setPerfBorr] = useState(false)
+  const { chatarraHeader, chatarraPos, ClearChatarra, ChatarraHeaderId, LoadChataraHeader, setLoading, userRol } = AceroContex;
   let btn = null
 
   const chatarraToSap = (e) =>{
@@ -158,15 +161,33 @@ const HeaderPanel = () => {
       }
   }
 
-  useEffect(()=> {
+  useEffect(()=>{
+    let perf = userRol.filter(f => {
+      return f.IdRol == 3
+    })
+    perf.forEach(p => {
+      if(p.IdPerfil === 1) {
+        setPerfEscr(true)
+      } 
 
-  },[chatarraHeader])
+      if(p.IdPerfil === 2) {
+        setPerfLeer(true)
+      } 
 
+      if(p.IdPerfil === 3) {
+        setPerfBorr(true)
+      } 
+    })
+  },[])
 
   if(chatarraHeader.RegistroSap != null) {
     btn = <Button className={classes.btnB} disabled>Enviar a Sap</Button>
   } else {
-    btn = <Button className={classes.btnB} onClick={chatarraToSap}>Enviar a Sap</Button>
+    if(PerfEscr){
+      btn = <Button className={classes.btnB} onClick={chatarraToSap}>Enviar a Sap</Button>
+    } else {
+      btn = <Button className={classes.btnB} disabled >Enviar a Sap</Button>
+    }
   }
 
   const handlerBack = (e) => {

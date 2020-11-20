@@ -14,10 +14,9 @@ import { Note,
           Dashboard,
           NotificationsActive,
           LocalShipping, 
-          Chat} from "@material-ui/icons";
+          Settings} from "@material-ui/icons";
 import { GlobalContex } from '../../context/GlobalState'
 
-import { Link } from 'react-router-dom'
 import DrawItem from './DrawItem'
 
 
@@ -61,6 +60,7 @@ const DrawerMenu = ({ draw, onToggle }) => {
     const [Demora, SetDemora] = useState()
     const [Ordenes, SetOrdenes] = useState()
     const [Notif, SetNotif] = useState()
+    const [Config, SetConfig] = useState()
 
     const onHandlerLogout = (e) => {
         e.preventDefault()
@@ -73,6 +73,7 @@ const DrawerMenu = ({ draw, onToggle }) => {
     let regDemora
     let regNotif
     let regOrden
+    let RegConfig
 
     if(Produccion != null || Produccion != undefined ) {
       if( Produccion.length > 0) {
@@ -141,6 +142,17 @@ const DrawerMenu = ({ draw, onToggle }) => {
       regOrden = null
     }
 
+    if(Config != null || Config != undefined) {
+      if(Config.length > 0) {
+        RegConfig = <DrawItem ToLink="/config" TextToShow="Configuracion" Icon={Settings}/>
+      }
+      else {
+        RegConfig = null
+      }
+    } else {
+      RegConfig = null
+    }
+    
     useEffect(()=>{
       if(userRol != null) {
         let prod = userRol.filter(r => {return r.IdRol === 1})
@@ -149,12 +161,15 @@ const DrawerMenu = ({ draw, onToggle }) => {
         let dem = userRol.filter(r => {return r.IdRol === 4})
         let notif = userRol.filter(r => {return r.IdRol === 5})
         let ord = userRol.filter(r => {return r.IdRol === 6})
+        let conf = userRol.filter(r => {return r.IdRol === 7})
+        
         SetProduccion(prod)
         SetRecepcion(rec)
         SetChatarra(chat)
         SetDemora(dem)
         SetNotif(notif)
         SetOrdenes(ord)
+        SetConfig(conf)
       }
     },[userRol])
 
@@ -185,6 +200,7 @@ const DrawerMenu = ({ draw, onToggle }) => {
       {regDemora}
       {regNotif}
       {regOrden}
+      {RegConfig}
       <br/>
       <Grid container
           direction="row"

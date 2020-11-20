@@ -197,8 +197,7 @@ const OrdenProduccion = () => {
   },[OrdenList])
 
   const handleFInicioChange = (date) => {
-    setFechaInicio(date);
-    setFechaFin(date);
+    setFechaInicio(date._d);
   };
 
   const handlerViewComp  =(e) => {
@@ -216,7 +215,7 @@ const OrdenProduccion = () => {
   }
 
   const handleHFinChange = (date) => {
-    setFechaFin(date);
+    setFechaFin(date._d);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -231,8 +230,8 @@ const OrdenProduccion = () => {
   const onFormSubmit = e => {
     e.preventDefault()
     
-    let fI = new Date(FechaInicio._d)
-    let ff = new Date(FechaFin._d)
+    let fI = new Date(FechaInicio)
+    let ff = new Date(FechaFin)
 
     let fidate = `${fI.getMonth()+1}/${fI.getDate()}/${fI.getFullYear()}`
     let ffdate = `${ff.getMonth()+1}/${ff.getDate()}/${ff.getFullYear()}`

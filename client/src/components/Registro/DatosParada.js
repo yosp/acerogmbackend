@@ -54,19 +54,23 @@ let rows = [];
 
 const DatosParada = () => {
   const classes = useStyles();
+  const [PerfLeer, setPerfLeer] = useState(false)
+  const [PerfEscr, setPerfEscr] = useState(false)
+  const [PerfBorr, setPerfBorr] = useState(false)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContext = useContext(GlobalContex);
   const history = useHistory()
   const {
     regparaddata,
-    fallaAreas,
     LoadFallaArea,
     headerReg,
     SetEditParadData,
     loadRegPadadData,
+    userRol,
   } = AceroContext;
 
+  let elFab = <div></div>
   
 const columns = [
   {
@@ -74,7 +78,13 @@ const columns = [
     label: "Eliminar",
     minWidth: "100",
     align: "left",
-    format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>,
+    format: (value) => {
+          if(PerfBorr) {
+            return <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+          } else {
+            return <Button disabled data-Id={value.toLocaleString()}> <DeleteForever/> </Button>
+          }
+    }
   },
   {
     id: "horaIn",
@@ -178,12 +188,38 @@ const columns = [
     label: "Editar",
     minWidth: "100",
     align: "left",
-    format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>,
+    format: (value) => {
+      if(PerfEscr) {
+        return <Button  data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+      } else {
+        return <Button disabled data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+      }
+    },
   },
 ];
-  useEffect(() => {
+
+useEffect(()=>{
+  console.log(userRol)
+  let perf = userRol.filter(f => {
+    return f.IdRol == 1
+  })
+  perf.forEach(p => {
+    if(p.IdPerfil === 1) {
+      setPerfEscr(true)
+    } 
+
+    if(p.IdPerfil === 2) {
+      setPerfLeer(true)
+    } 
+
+    if(p.IdPerfil === 3) {
+      setPerfBorr(true)
+    } 
+    
+  })
+},[])
+useEffect(() => {
     if (regparaddata !== null && regparaddata !== undefined) {
-      console.log(regparaddata)
       regparaddata.map((reg) => {
         reg.horaIn = moment(new Date(reg.horaI)).format("LT");
         reg.horaFn = moment(new Date(reg.horaF)).format("LT");
@@ -240,15 +276,21 @@ const columns = [
     })
   }
 
-  
+  if(PerfEscr) {
+    elFab = <Link to="/registro/paradreg">
+              <Fab aria-label="add" className={classes.FabStyle}>
+                <Add />
+              </Fab>
+            </Link>
+  } else {
+    elFab =  <Fab aria-label="add" className={classes.FabStyle}>
+              <Add />
+            </Fab>
+  }
 
   return (
     <Paper className={classes.root}>
-      <Link to="/registro/paradreg">
-        <Fab aria-label="add" className={classes.FabStyle}>
-          <Add />
-        </Fab>
-      </Link>
+      {elFab}
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
