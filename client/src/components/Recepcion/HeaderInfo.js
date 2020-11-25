@@ -80,15 +80,6 @@ const HeaderInfo = () => {
     resetReception()
 }
 
-
-// useEffect(()=>{
-//   console.log("Recepcion init")
-//   return function clean() {
-//     console.log("Bye Bye")
-//     resetReception()
-//   }
-// }, [])
-
     return (
         <>
           <Paper elevation={3} className={classes.PtContainer}>

@@ -176,7 +176,7 @@ const OrdenProduccion = () => {
       label: "Componentes",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerViewComp}> <Pageview/> </Button>,
+      format: (value) => <Button data-Id={value} onClick={handlerViewComp}> <Pageview/> </Button>,
     }
   ];
 

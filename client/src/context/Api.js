@@ -816,6 +816,42 @@ const getRolNotPtr = (RolPtr, callback) => {
             callback(err, null)
         })
 }
+const getPtrGrupos = (callback) => {
+    axios.get(`${base}/config/getptrgrupos`
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
+const getGrupoInPtr = (Ptr, callback) => {
+    axios.get(`${base}/config/getGrupoInPtr?Ptr=${Ptr}`
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
+const getGrupoNotInPtr = (Ptr, callback) => {
+    axios.get(`${base}/config/getGrupoNotInPtr?Ptr=${Ptr}`
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
 const addNewUser = (User, callback) => {
     axios.post(`${base}/config/addNewUser`, {User}
         , {
@@ -842,6 +878,44 @@ const AddUserRol = (Roldata, callback) => {
 }
 const DelUserRol = (Roldata, callback) => {
     axios.post(`${base}/config/DelUserRol`, {Roldata}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const getGrupoMember = (Gp, callback) => {
+    axios.post(`${base}/config/getGrupoMember`, {Gp}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const addGrupoMember = (Member, callback) => {
+    axios.post(`${base}/config/addGrupoMember`, {Member}
+        , {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function(res){
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
+const delGrupoMember = (Member, callback) => {
+    axios.post(`${base}/config/delGrupoMember`, {Member}
         , {
             headers: {
                 'Content-Type': 'application/json'
@@ -927,4 +1001,10 @@ export {
     getRolNotPtr,
     addRolPuestoTr,
     delRolPuestoTr,
+    getPtrGrupos,
+    getGrupoInPtr,
+    getGrupoNotInPtr,
+    getGrupoMember,
+    delGrupoMember,
+    addGrupoMember
 }

@@ -58,7 +58,13 @@ import {
     ACTIVE_CONF_USER,
     NOT_USER_ROL_LIST,
     TOGGLE_SAP_PASS,
-    TOGGLE_PUESTO_TR
+    TOGGLE_PUESTO_TR,
+    GRUPO_PTR_ID,
+    TOGGLE_GRUPO,
+    TOGGLE_ADD_GRUPO,
+    TOGGLE_ADD_MEMBER,
+    ACTIVE_GRUPO_ID,
+    TOGGLE_MEMBER_LIST,
 } from "./Actions";
 
 const InitialState = {
@@ -114,6 +120,13 @@ const InitialState = {
     ActiveConfUser: null,
     ToggleSapPass: false,
     TogglePuestoTr: false,
+    PtrGrupo: [],
+    GrupoPtrId: null,
+    ToggleGrupo: false,
+    ToggleAddGrupo: false,
+    ToggleAddMember: false,
+    ActiveGrupoId: null,
+    ToggleMemberList: false,
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -529,6 +542,48 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setGrupoPtrId(Ptr) {
+      dispatch({
+        type: GRUPO_PTR_ID,
+        payload: Ptr
+      })
+    }
+
+    function setToogleGrupo(grupo){
+      dispatch({
+        type: TOGGLE_GRUPO,
+        payload: grupo
+      })
+    }
+
+    function setToggleAddGrupo(grupo) {
+      dispatch({
+        type: TOGGLE_ADD_GRUPO,
+        payload: grupo
+      })
+    }
+
+    function setToggleAddMember(member) {
+      dispatch({
+        type: TOGGLE_ADD_MEMBER,
+        payload: member
+      })
+    }
+
+    function setActiveGrupoId(grupoId) {
+      dispatch({
+        type: ACTIVE_GRUPO_ID,
+        payload: grupoId
+      })
+    }
+
+    function setToggleMemberList(toggle) {
+      dispatch({
+        type: TOGGLE_MEMBER_LIST,
+        payload: toggle
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -589,6 +644,12 @@ export const GlobalProvider = ({ children }) => {
         setActiveUserConf,
         setToggleSapPass,
         setTogglePtr,
+        setGrupoPtrId,
+        setToogleGrupo,
+        setToggleAddGrupo,
+        setToggleAddMember,
+        setActiveGrupoId,
+        setToggleMemberList,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -640,6 +701,12 @@ export const GlobalProvider = ({ children }) => {
         NotUserRolList: state.NotUserRolList,
         ToggleSapPass: state.ToggleSapPass,
         TogglePuestoTr: state.TogglePuestoTr,
+        GrupoPtrId: state.GrupoPtrId,
+        ToggleGrupo: state.ToggleGrupo,
+        ToggleAddGrupo: state.ToggleAddGrupo,
+        ToggleAddMember: state.ToggleAddMember,
+        ActiveGrupoId: state.ActiveGrupoId,
+        ToggleMemberList: state.ToggleMemberList,
           }}
     >
       {children}

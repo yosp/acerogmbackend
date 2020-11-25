@@ -5,7 +5,6 @@ import HeaderPanel from './HeaderPanel'
 import NavigationBar from '../Util/NavBar'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CircularProgress }  from "@material-ui/core";
 
 import { GlobalContex } from '../../context/GlobalState'
 import { GetMotivoChatarra, GetTipoChatarra } from '../../context/Api'
@@ -18,7 +17,7 @@ const Chatarra = () => {
 
     let children 
     useEffect(() => {
-        if(tipoChatarra === null) {
+        if(tipoChatarra === null || motivoChatara === undefined) {
             GetTipoChatarra((err,data) => {
                 if(err){
                     toast.error("Error al cargar tipo de chatarra", {
@@ -33,7 +32,7 @@ const Chatarra = () => {
             })
         }
 
-        if(motivoChatara === null) {
+        if(motivoChatara === null || motivoChatara === undefined) {
             GetMotivoChatarra((err, data) => {
                 if(err) {
                     toast.error("Error al cargar el motivo de chatarra", {
@@ -52,7 +51,7 @@ const Chatarra = () => {
         }
     },[])
 
-    if(chatarraHeader == null){
+    if(chatarraHeader == null || motivoChatara === undefined){
         children = <ChatarraHead/>
     } else {
         children = <div>

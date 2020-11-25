@@ -1,6 +1,6 @@
 import "moment";
 import React, { useState, useContext } from "react";
-import { useHistory } from 'react-router-dom'
+import { useHistory } from "react-router-dom";
 import {
   Button,
   Grid,
@@ -11,15 +11,15 @@ import {
   InputLabel,
   Tooltip,
 } from "@material-ui/core";
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { GlobalContex } from "../../context/GlobalState";
 import { insChatarraPos } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
   },
   LogoSize: {
     [theme.breakpoints.down("xs")]: {
@@ -65,8 +65,9 @@ const useStyle = makeStyles((theme) => ({
 const ChatarraForm = () => {
   const classes = useStyle();
   const aceroContext = useContext(GlobalContex);
-  const history = useHistory()
-  const [chatTipo, setChatTipo] = useState([])
+  const history = useHistory();
+  const [chatTipo, setChatTipo] = useState([]);
+
   const {
     userInfo,
     chatarraHeader,
@@ -83,14 +84,19 @@ const ChatarraForm = () => {
       TypeNot: puesto.TipoNotif,
     };
   });
+  const PuestosTr = Array.from(new Set(puestos.map((a) => a.id))).map(
+    (id) => {
+      return puestos.find((a) => a.id === id);
+    }
+  );
 
   const HandlerClose = (e) => {
     e.preventDefault();
-    history.push("/chatarra")
-  }
+    history.push("/chatarra");
+  };
   const onFormSubmit = (e) => {
     e.preventDefault();
-    
+
     const {
       puestotr,
       tipoChatarra,
@@ -105,7 +111,7 @@ const ChatarraForm = () => {
       PuestoTr: puestotr.value,
       PesoEntrada: PesoEnt.value,
       PesoSalida: PesoSal.value,
-      PesoChatarra:parseInt(PesoSal.value) - parseInt(PesoEnt.value) ,
+      PesoChatarra: parseInt(PesoSal.value) - parseInt(PesoEnt.value),
       TipoChatarra: tipoChatarra.value,
       MotivoChatarra: motchatarra.value,
       Texto: Texto.value,
@@ -117,12 +123,12 @@ const ChatarraForm = () => {
     insChatarraPos(data, (err, data) => {
       if (err) {
         toast.error("Error al intentar guardar el registro de chatarra", {
-          position: toast.POSITION.BOTTOM_RIGHT
+          position: toast.POSITION.BOTTOM_RIGHT,
         });
       } else {
-        SetChatarraPos(data)
+        SetChatarraPos(data);
 
-        history.push("/chatarra")
+        history.push("/chatarra");
       }
     });
   };
@@ -131,11 +137,11 @@ const ChatarraForm = () => {
     e.preventDefault();
     let Ptr = e.target.value;
 
-    let tchatarra = tipoChatarra.filter(ch => {
-      return ch.puestotrabajoid==Ptr
-    })
-    setChatTipo(tchatarra)
-  }
+    let tchatarra = tipoChatarra.filter((ch) => {
+      return ch.puestotrabajoid == Ptr;
+    });
+    setChatTipo(tchatarra);
+  };
 
   return (
     <>
@@ -169,7 +175,7 @@ const ChatarraForm = () => {
                       onChange={HandlerChangePuestoTr}
                     >
                       <option value="0"> </option>
-                      {puestos.map((p) => {
+                      {PuestosTr.map((p) => {
                         return (
                           <option key={p.id} value={p.id}>
                             {p.Descrit}

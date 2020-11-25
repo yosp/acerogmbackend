@@ -80,9 +80,9 @@ const columns = [
     align: "left",
     format: (value) => {
           if(PerfBorr) {
-            return <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+            return <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
           } else {
-            return <Button disabled data-Id={value.toLocaleString()}> <DeleteForever/> </Button>
+            return <Button disabled > <DeleteForever/> </Button>
           }
     }
   },
@@ -190,9 +190,9 @@ const columns = [
     align: "left",
     format: (value) => {
       if(PerfEscr) {
-        return <Button  data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+        return <Button  data-Id={value} onClick={handlerEdit}> <Edit/> </Button>
       } else {
-        return <Button disabled data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+        return <Button disabled > <Edit/> </Button>
       }
     },
   },

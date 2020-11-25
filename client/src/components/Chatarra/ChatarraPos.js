@@ -113,9 +113,9 @@ const ChatarraPos = () => {
       align: "left",
       format: (value) => {
         if(PerfBorr) {
-          return <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+          return <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
         } else {
-          return <Button disabled data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+          return <Button disabled> <DeleteForever/> </Button>
         }
       },
     },
@@ -164,7 +164,7 @@ const ChatarraPos = () => {
     setPage(0);
   };
   const handleDelete = (e) => {
-    let id = e.currentTarget.dataset.id
+    let id = parseInt(e.currentTarget.dataset.id)
     delChatarraPos(id, (err, data) => {
       if(err) {
         toast.error("Error al intentar eliminar el registro", {

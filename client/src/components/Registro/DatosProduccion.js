@@ -56,9 +56,9 @@ const DatosProduccion = () => {
       align: "left",
       format: (value) => {
         if(PerfBorr){
-          return <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+          return <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
         } else {
-          return <Button disabled data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+          return <Button disabled > <DeleteForever/> </Button>
         }
       },
     },
@@ -157,7 +157,7 @@ const DatosProduccion = () => {
       label: "Componentes",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleGetPrima}> <Pageview/> </Button>,
+      format: (value) => <Button data-Id={value} onClick={handleGetPrima}> <Pageview/> </Button>,
     },{
       id: "id",
       label: "Agregar Componente",
@@ -165,9 +165,9 @@ const DatosProduccion = () => {
       align: "left",
       format: (value) =>{ 
         if(PerfEscr) {
-          return <Button data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Add/> </Button>
+          return <Button data-Id={value} onClick={handleAddMPrima}> <Add/> </Button>
         } else {
-          return <Button disabled data-Id={value.toLocaleString()} onClick={handleAddMPrima}> <Add/> </Button>
+          return <Button disabled > <Add/> </Button>
         }
       },
     },{
@@ -177,9 +177,9 @@ const DatosProduccion = () => {
       align: "left",
       format: (value) => {
         if(PerfEscr) {
-          return <Button data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+          return <Button data-Id={value} onClick={handlerEdit}> <Edit/> </Button>
         } else {
-          return <Button disabled data-Id={value.toLocaleString()} onClick={handlerEdit}> <Edit/> </Button>
+          return <Button disabled> <Edit/> </Button>
         }
       },
     },

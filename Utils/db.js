@@ -25,6 +25,114 @@ class Db {
       callback(e, null);
     }
   }
+  async getPtrGrupos(callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select Id, CodSap as PtrSap
+                                          , Descripcion as Ptr  
+                                            from strPuestosTrabajos`
+      callback(null, result)
+    } catch (error) {
+      callback(err, null)
+    }
+  }
+  async getGruposInPtr(Ptr, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select distinct
+                                            lg.Id
+                                            ,lg.Descripcion as grupo
+                                            from strListaGrupos lg
+                                                inner join StrGrupo gp on gp.GrupoId = lg.Id
+                                                left join StrUsuario u on gp.CodigoEmp = u.CodigoEmp
+                                                left join loginUsuarios lu on lu.CodigoEmp = gp.CodigoEmp
+                                                inner join strPuestosTrabajos pt on pt.id = gp.PuestoTrId
+                                                where pt.id = ${Ptr}`
+      callback(null, result)
+    } 
+    catch (e) {
+      callback(e, null)
+    }
+  }
+  async getGruposNotInPtr(Ptr, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select Id, Descripcion as grupo 
+                                          from strListaGrupos
+                                            where id not in(
+                                              select distinct
+                                                    lg.Id
+                                                  
+                                                    from strListaGrupos lg
+                                                      inner join StrGrupo gp on gp.GrupoId = lg.Id
+                                                      left join StrUsuario u on gp.CodigoEmp = u.CodigoEmp
+                                                      left join loginUsuarios lu on lu.CodigoEmp = gp.CodigoEmp
+                                                      inner join strPuestosTrabajos pt on pt.id = gp.PuestoTrId
+                                                      where pt.id = ${Ptr})`
+      callback(null, result)
+    } 
+    catch (e) {
+      callback(e, null)
+    }
+  }
+  async getGrupoMember(Gp, callback) {
+    try {
+      await sql.connect(this.setting)
+      const result = await sql.query`select distinct
+                                              lu.CodigoEmp,
+                                              lu.Nombres
+                                              from strListaGrupos lg
+                                                inner join StrGrupo gp on gp.GrupoId = lg.Id
+                                                inner join StrUsuario u on gp.CodigoEmp = u.CodigoEmp
+                                                inner join loginUsuarios lu on lu.CodigoEmp = gp.CodigoEmp
+                                                inner join strPuestosTrabajos pt on pt.id = gp.PuestoTrId
+                                                where pt.id = ${Gp.Ptr} and gp.GrupoId = ${Gp.GrupoId}`
+      callback(null, result)
+    } 
+    catch (e) {
+      callback(e, null)
+    }
+  }
+  async addGrupoMember(Member, callback) {
+    try{
+      await sql.connect(this.setting);
+      const request = new sql.Request()
+      
+      request.input('Grupo', sql.Int, Member.GrupoId)
+      request.input('Puesto', sql.Int, Member.PuestoTr)
+      request.input('CodigoEmp', sql.Int, Member.CodigoEmp)
+
+      request.execute('Sp_addGrupoMember', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+    } catch (e) {
+      callback(e, null)
+    }
+  }
+  async delGrupoMember(Member, callback) {
+    try{
+      await sql.connect(this.setting);
+      const request = new sql.Request()
+      
+      request.input('Grupo', sql.Int, Member.GrupoId)
+      request.input('Puesto', sql.Int, Member.PuestoTr)
+      request.input('CodigoEmp', sql.Int, Member.CodigoEmp)
+
+      request.execute('Sp_removeGrupoMember', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+    } catch (e) {
+      callback(e, null)
+    }
+  }
   async getGrupos(callback) {
     try {
       await sql.connect(this.setting);

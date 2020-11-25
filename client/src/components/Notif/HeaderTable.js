@@ -142,7 +142,7 @@ const HeaderTable = () => {
       label: "Posiciones",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleViewPos}> <Toc/> </Button>,
+      format: (value) => <Button data-Id={value} onClick={handleViewPos}> <Toc/> </Button>,
     },  
     {
       id: "hid",
@@ -154,7 +154,7 @@ const HeaderTable = () => {
             if(value.toLocaleString() == '0'){
               m = <Button  disabled > <Check/> </Button>
           } else {
-            m = <Button  data-Id={value.toLocaleString()} onClick={handleValid}> <Check/> </Button>
+            m = <Button  data-Id={value} onClick={handleValid}> <Check/> </Button>
           }
           return m},
     },
@@ -167,8 +167,8 @@ const HeaderTable = () => {
         let x 
         if(value.toLocaleString() == '0') {
           x = <Button disabled > <Publish/> </Button>   
-        } else if(parseInt(value.toLocaleString()) < 0 || value.toLocaleString() == null) {
-          x = <Button data-Id={value.toLocaleString()} onClick={handleSapPublish}> <Publish/> </Button>
+        } else if(parseInt(value) < 0 || value == null) {
+          x = <Button data-Id={value} onClick={handleSapPublish}> <Publish/> </Button>
         }
         else {
           x = value.toLocaleString()

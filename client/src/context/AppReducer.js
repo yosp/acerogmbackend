@@ -57,6 +57,12 @@ import {
     NOT_USER_ROL_LIST,
     TOGGLE_SAP_PASS,
     TOGGLE_PUESTO_TR,
+    GRUPO_PTR_ID,
+    TOGGLE_GRUPO,
+    TOGGLE_ADD_GRUPO,
+    TOGGLE_ADD_MEMBER,
+    ACTIVE_GRUPO_ID,
+    TOGGLE_MEMBER_LIST,
 } from './Actions'
 
 export default (state, action) => {
@@ -390,6 +396,47 @@ export default (state, action) => {
             return {
                 ...state,
                 TogglePuestoTr: action.payload
+            }
+        }
+
+        case GRUPO_PTR_ID: {
+            return {
+                ...state,
+                GrupoPtrId: action.payload
+            }
+        }
+
+        case TOGGLE_GRUPO: {
+            return {
+                ...state,
+                ToggleGrupo: action.payload
+            }
+        }
+
+        case TOGGLE_ADD_GRUPO: {
+            return {
+                ...state,
+                ToggleAddGrupo: action.payload
+            }
+        }
+        case TOGGLE_ADD_MEMBER: {
+            return {
+                ...state,
+                ToggleAddMember: action.payload
+            }
+        }
+
+        case ACTIVE_GRUPO_ID: {
+            return {
+                ...state,
+                ActiveGrupoId: action.payload
+            }
+        }
+
+        case TOGGLE_MEMBER_LIST: {
+            return {
+                ...state,
+                ToggleMemberList: action.payload
             }
         }
 

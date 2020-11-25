@@ -57,7 +57,7 @@ const PosRecepcion = () => {
         if(value.toLocaleString() == '0') {
           m = <Button disabled> <DeleteForever/> </Button>
         } else {
-          m = <Button data-Id={value.toLocaleString()} onClick={handleDelete}> <DeleteForever/> </Button>
+          m = <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
         }
         return m
       },
@@ -165,7 +165,7 @@ const PosRecepcion = () => {
       label: "Transacciones",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handleTrans}> <Pageview/> </Button>,
+      format: (value) => <Button data-Id={value} onClick={handleTrans}> <Pageview/> </Button>,
     },
   ]
 useEffect(()=>{

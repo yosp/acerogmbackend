@@ -907,7 +907,6 @@ class Routes {
                 }
             })
         })
-
         this.app.post('/api/config/addRolPtr', (req, res) => {
             this.db.addRolPuestoTr(req.body.RolPtr, (err, data) => {
                 if(err) {
@@ -920,9 +919,84 @@ class Routes {
                 }
             })
         })
-
         this.app.post('/api/config/delRolPtr', (req, res) => {
             this.db.delRolPuestoTr(req.body.RolPtr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.get('/api/config/getptrgrupos', (req, res) => {
+            this.db.getPtrGrupos((err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else{
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        this.app.get('/api/config/getGrupoInPtr', (req, res) => {
+            this.db.getGruposInPtr(req.query.Ptr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.get('/api/config/getGrupoNotInPtr', (req, res) => {
+            this.db.getGruposNotInPtr(req.query.Ptr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+        
+        this.app.post('/api/config/getGrupoMember', (req, res) => {
+            this.db.getGrupoMember(req.body.Gp, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/config/addGrupoMember', (req, res) => {
+            this.db.addGrupoMember(req.body.Member, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/config/delGrupoMember', (req, res) => {
+            this.db.delGrupoMember(req.body.Member, (err, data) => {
                 if(err) {
                     res.status(500).json({
                         error: true,

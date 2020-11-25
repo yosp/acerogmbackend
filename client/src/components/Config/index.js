@@ -7,10 +7,11 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import { SettingsApplications, GolfCourse } from "@material-ui/icons";
+import { SettingsApplications,Group ,GolfCourse } from "@material-ui/icons";
 
 import NavigationBar from "../Util/NavBar";
 import UserConfig from "./UserConfig";
+import GruposConfig from './GruposConfig'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,16 +57,17 @@ const Config = () => {
   };
 
   return (
-    <div>
+    <>
       <NavigationBar />
       <div className={classes.root}>
         <AppBar position="static" className={classes.navTapStyle}>
           <Tabs value={value} onChange={handleChange} aria-label="">
             <Tab
-              label="Configuracion de Usuarios"
+              label="Configuración de Usuarios"
               icon={<SettingsApplications />}
               {...a11yProps(0)}
             />
+            <Tab label="Configuración de Grupos" icon={<Group/>} {...a11yProps(1)} />
             <Tab label="Otros" icon={<GolfCourse/>} {...a11yProps(1)} />
           </Tabs>
         </AppBar>
@@ -73,11 +75,14 @@ const Config = () => {
           {UserConfig}
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <div>Otras configuraciones</div>
+          {GruposConfig}
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          Otras configuraciones 
         </TabPanel>
       </div>
-    </div>
+    </>
   );
 };
 
-export default Config;
+export default Config;  
