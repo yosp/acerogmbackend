@@ -65,6 +65,8 @@ import {
     TOGGLE_ADD_MEMBER,
     ACTIVE_GRUPO_ID,
     TOGGLE_MEMBER_LIST,
+    TOGGLE_DEMORA,
+    ACTIVE_DEMORA,
 } from "./Actions";
 
 const InitialState = {
@@ -127,6 +129,8 @@ const InitialState = {
     ToggleAddMember: false,
     ActiveGrupoId: null,
     ToggleMemberList: false,
+    ToggleDemora : false,
+    ActiveDemora: null,
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -584,6 +588,20 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setToggleDemora(toggle) {
+      dispatch({
+        type: TOGGLE_DEMORA,
+        payload: toggle
+      })
+    }
+
+    function setActiveDemora(demoraId) {
+      dispatch({
+        type: ACTIVE_DEMORA,
+        payload: demoraId
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -650,6 +668,8 @@ export const GlobalProvider = ({ children }) => {
         setToggleAddMember,
         setActiveGrupoId,
         setToggleMemberList,
+        setToggleDemora,
+        setActiveDemora,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -707,6 +727,8 @@ export const GlobalProvider = ({ children }) => {
         ToggleAddMember: state.ToggleAddMember,
         ActiveGrupoId: state.ActiveGrupoId,
         ToggleMemberList: state.ToggleMemberList,
+        ToggleDemora: state.ToggleDemora,
+        ActiveDemora: state.ActiveDemora
           }}
     >
       {children}

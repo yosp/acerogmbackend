@@ -63,6 +63,8 @@ import {
     TOGGLE_ADD_MEMBER,
     ACTIVE_GRUPO_ID,
     TOGGLE_MEMBER_LIST,
+    TOGGLE_DEMORA,
+    ACTIVE_DEMORA,
 } from './Actions'
 
 export default (state, action) => {
@@ -437,6 +439,20 @@ export default (state, action) => {
             return {
                 ...state,
                 ToggleMemberList: action.payload
+            }
+        }
+
+        case TOGGLE_DEMORA: {
+            return {
+                ...state,
+                ToggleDemora: action.payload
+            }
+        }
+
+        case ACTIVE_DEMORA: {
+            return {
+                ...state,
+                ActiveDemora: action.payload
             }
         }
 

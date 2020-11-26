@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -86,8 +86,9 @@ const SearchDemora = () => {
   const classes = useStyles();
   const [FechaI, SetFechaI] = useState(new Date());
   const [FechaF, SetFechaF] = useState(new Date());
+  const [Ptr, setPtr] = useState(2);
   const AceroContex = useContext(GlobalContex);
-  const { userInfo, LoadDemora } = AceroContex;
+  const { userInfo, LoadDemora, ActiveDemora } = AceroContex;
   const puestos = userInfo.map((puesto) => {
     return {
       id: puesto.PuestoTrId,
@@ -96,6 +97,7 @@ const SearchDemora = () => {
     };
   });
 
+  
   const handlerSubmit = (e) => {
     e.preventDefault();
     
@@ -111,7 +113,6 @@ const SearchDemora = () => {
           position: toast.POSITION.BOTTOM_RIGHT
         });
       } else {
-        console.log(res)
         LoadDemora(res)
       }
     } )
@@ -124,6 +125,27 @@ const SearchDemora = () => {
   const handleFFCHange = (date) => {
     SetFechaF(date._d);
   };
+
+  useEffect(()=> {
+    if(ActiveDemora === null) {
+      console.log(Ptr)
+      const demora = {
+        FechaI,
+        FechaF,
+        PtrId: Ptr
+      }
+
+      getDemoras(demora,(err, res)=> {
+        if(err) {
+          toast.error("Ocurrio un error al intentar generar la demora", {
+            position: toast.POSITION.BOTTOM_RIGHT
+          });
+        } else {
+          LoadDemora(res)
+        }
+      } )
+    }
+  },[ActiveDemora])
 
   return (
     <>
@@ -178,6 +200,7 @@ const SearchDemora = () => {
                   native
                   label="Puesto de Trabajo"
                   className={classes.SelectStyle}
+                  onChange={(e) => {setPtr(e.target.value)}}
                 >
                   {puestos.map((puesto) => {
                     return (

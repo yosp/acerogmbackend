@@ -427,6 +427,30 @@ const getDemoras = (demora, callback) => {
             callback(err, null)
         })
 } 
+const updDemoras = (demora, callback) => {
+    axios.post(`${base}/demora/updDemora`, {demora}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const getGatillos = (callback) => {
+    axios.post(`${base}/demora/gatillos`
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
 
 const getNotif = (header, callback) => {
     axios.post(`${base}/notifHead`, {header}
@@ -1006,5 +1030,7 @@ export {
     getGrupoNotInPtr,
     getGrupoMember,
     delGrupoMember,
-    addGrupoMember
+    addGrupoMember,
+    updDemoras,
+    getGatillos
 }

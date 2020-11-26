@@ -242,7 +242,7 @@ const ParadaForm = () => {
 
 
     setENotas(ActiveParadaData.Notas)
-    setEAreaS(ActiveParadaData.areaId) // area
+    setEAreaS(ActiveParadaData.areaId)
     setEEquiposS(ActiveParadaData.lugarId)
     setELugarFallaS(ActiveParadaData.lugarId)
     setESubAreaS(ActiveParadaData.subAreaId)

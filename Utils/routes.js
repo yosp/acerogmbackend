@@ -525,6 +525,32 @@ class Routes {
             })
         })
 
+        this.app.post('/api/demora/gatillos', (req, res) => {
+            this.db.getGatillos((err, data)=> {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/demora/updDemora', (req, res) => {
+            this.db.updDemora(req.body.demora, (err, data)=> {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
         this.app.post('/api/regheadernotif', (req, res) => {
             this.db.regHeaderNotif(req.body.header, (err, data) => {
                 if(err) {
@@ -1007,6 +1033,7 @@ class Routes {
                 }
             })
         })
+        
     }
     routesConfig() {
         this.appRoutes()
