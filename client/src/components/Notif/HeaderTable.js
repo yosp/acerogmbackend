@@ -40,10 +40,13 @@ const useStyles = makeStyles((theme) => ({
 
 const HeaderTable = () => {
   const classes = useStyles();
+  const [PerfLeer, setPerfLeer] = useState(false)
+  const [PerfEscr, setPerfEscr] = useState(false)
+  const [PerfBorr, setPerfBorr] = useState(false)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContex = useContext(GlobalContex)
-  const {userInfo, headerNotif, SetActiveNotif, notifPos, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos } = AceroContex
+  const {userInfo, headerNotif, SetActiveNotif, notifPos, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos, userRol } = AceroContex
 
   const columns = [
     {
@@ -151,10 +154,14 @@ const HeaderTable = () => {
       align: "left",
       format: (value) =>{ 
             let m = null;
-            if(value.toLocaleString() == '0'){
+            if(PerfEscr){
+              if(value.toLocaleString() == '0'){
+                m = <Button  disabled > <Check/> </Button>
+              } else {
+                m = <Button  data-Id={value} onClick={handleValid}> <Check/> </Button>
+              } 
+            } else {
               m = <Button  disabled > <Check/> </Button>
-          } else {
-            m = <Button  data-Id={value} onClick={handleValid}> <Check/> </Button>
           }
           return m},
     },
@@ -165,13 +172,24 @@ const HeaderTable = () => {
       align: "left",
       format: (value) => {
         let x 
-        if(value.toLocaleString() == '0') {
-          x = <Button disabled > <Publish/> </Button>   
-        } else if(parseInt(value) < 0 || value == null) {
-          x = <Button data-Id={value} onClick={handleSapPublish}> <Publish/> </Button>
-        }
-        else {
-          x = value.toLocaleString()
+        if(PerfEscr){
+          if(value.toLocaleString() == '0') {
+            x = <Button disabled > <Publish/> </Button>   
+          } else if(parseInt(value) < 0 || value == null) {
+            x = <Button data-Id={value} onClick={handleSapPublish}> <Publish/> </Button>
+          }
+          else {
+            x = value.toLocaleString()
+          } 
+        } else {
+          if(value.toLocaleString() == '0') {
+            x = <Button disabled > <Publish/> </Button>   
+          } else if(parseInt(value) < 0 || value == null) {
+            x = <Button disabled> <Publish/> </Button>
+          }
+          else {
+            x = value.toLocaleString()
+          }
         }
         return x
       },
@@ -213,7 +231,8 @@ const HeaderTable = () => {
           autoClose: 3000
       });
       } else {
-        regPosNotif({id:header.id, headerId: data.headerId }, (err, data) => {
+        predata.headerId = data.headerId
+        regPosNotif(predata, (err, data) => {
           if(err) {
             toast.error("Ocurrio un error al intentar validar las posiciones", {
               position: toast.POSITION.BOTTOM_RIGHT,
@@ -250,7 +269,6 @@ const HeaderTable = () => {
       }
     })
   }
-  
   const handleSapPublish = (e) => {
     e.preventDefault()
     let register = headerNotif.filter(head => {
@@ -319,6 +337,24 @@ const HeaderTable = () => {
     setPage(0);
   };
 
+  useEffect(()=>{
+    let perf = userRol.filter(f => {
+      return f.rol == "Notificación"
+    })
+    perf.forEach(p => {
+      if(p.IdPerfil === 1) {
+        setPerfEscr(true)
+      } 
+
+      if(p.IdPerfil === 2) {
+        setPerfLeer(true)
+      } 
+
+      if(p.IdPerfil === 3) {
+        setPerfBorr(true)
+      } 
+    })
+  },[])
   useEffect(()=>{
     if(headerNotif !== null && headerNotif !== undefined){
       headerNotif.map((reg) => {

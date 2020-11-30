@@ -5,12 +5,13 @@ import HeaderSearch from './HeadSearch'
 import HeaderTable from './HeaderTable'
 import HeaderTableMfbf from './HeaderTableMfbf'
 import PosTable from './PosTable'
+import MfbfHeaderText from './MfbfHeaderText'
 import { GlobalContex } from '../../context/GlobalState'
 import LogoutPopup from '../Util/LogoutPopup'
 
 const Index = () => {
     const AceroContext = useContext(GlobalContex)
-    const { ActiveTypeNotif, SetActiveNotif, LoadNotif, LoadNotifPos } = AceroContext
+    const { ActiveTypeNotif, SetActiveNotif, LoadNotif, LoadNotifPos, ToggleNotifMfbfText } = AceroContext
     let table = <></>
 
     useEffect(()=>{
@@ -24,7 +25,11 @@ const Index = () => {
 
     if(ActiveTypeNotif == 1) {
       table = <HeaderTable/>
-    } else {
+    } 
+    if (ToggleNotifMfbfText) {
+      table = <MfbfHeaderText/>
+    }
+    else {
       table = <HeaderTableMfbf/>
     }
     return (

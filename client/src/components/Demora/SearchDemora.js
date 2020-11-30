@@ -96,6 +96,11 @@ const SearchDemora = () => {
       TypeNot: puesto.TipoNotif,
     };
   });
+  const PuestosTr = Array.from(new Set(puestos.map((a) => a.id))).map(
+    (id) => {
+      return puestos.find((a) => a.id === id);
+    }
+  );
 
   
   const handlerSubmit = (e) => {
@@ -202,7 +207,7 @@ const SearchDemora = () => {
                   className={classes.SelectStyle}
                   onChange={(e) => {setPtr(e.target.value)}}
                 >
-                  {puestos.map((puesto) => {
+                  {PuestosTr.map((puesto) => {
                     return (
                       <option
                         key={puesto.Descrit}

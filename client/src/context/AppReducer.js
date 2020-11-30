@@ -65,6 +65,8 @@ import {
     TOGGLE_MEMBER_LIST,
     TOGGLE_DEMORA,
     ACTIVE_DEMORA,
+    TOGGLE_NOTIF_MFBF_TEXT,
+    ACTIVE_NOTIF_MFBF_ID
 } from './Actions'
 
 export default (state, action) => {
@@ -453,6 +455,20 @@ export default (state, action) => {
             return {
                 ...state,
                 ActiveDemora: action.payload
+            }
+        }
+
+        case TOGGLE_NOTIF_MFBF_TEXT: {
+            return {
+                ...state,
+                ToggleNotifMfbfText: action.payload
+            }
+        }
+
+        case ACTIVE_NOTIF_MFBF_ID: {
+            return {
+                ...state,
+                NotifMfbfId: action.payload
             }
         }
 

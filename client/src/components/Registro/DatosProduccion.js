@@ -106,14 +106,14 @@ const DatosProduccion = () => {
     },
     {
       id: "ume",
-      label: "Consumo Acumulado",
+      label: "Producido",
       minWidth: "170",
       align: "left",
       format: (value) => value.toLocaleString(),
     },
     {
       id: "mpume",
-      label: "Producción Acumulado",
+      label: "Consumido",
       minWidth: "170",
       align: "left",
       format: (value) => value.toLocaleString(),
@@ -165,7 +165,7 @@ const DatosProduccion = () => {
       align: "left",
       format: (value) =>{ 
         if(PerfEscr) {
-          return <Button data-Id={value} onClick={handleAddMPrima}> <Add/> </Button>
+          return <Button data-Id={value} disabled onClick={handleAddMPrima}> <Add/> </Button>
         } else {
           return <Button disabled > <Add/> </Button>
         }
@@ -234,7 +234,7 @@ const DatosProduccion = () => {
 
   useEffect(()=>{
     let perf = userRol.filter(f => {
-      return f.IdRol == 3
+      return f.rol == "Reg Producción"
     })
     perf.forEach(p => {
       if(p.IdPerfil === 1) {

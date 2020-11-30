@@ -40,10 +40,13 @@ let rows = []
 
 const PosRecepcion = () => {
   const classes = useStyles();
+  const [PerfLeer, setPerfLeer] = useState(false)
+  const [PerfEscr, setPerfEscr] = useState(false)
+  const [PerfBorr, setPerfBorr] = useState(false)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex)
-  const { PosRecepcion, RecepcionHeader, setPosRecepcion, setPosRecTrans } = aceroContext
+  const { PosRecepcion, RecepcionHeader, setPosRecepcion, setPosRecTrans, userRol } = aceroContext
   const history = useHistory()
 
   const columns = [
@@ -54,11 +57,16 @@ const PosRecepcion = () => {
       align: "left",
       format: (value) => {
         let m = null
-        if(value.toLocaleString() == '0') {
-          m = <Button disabled> <DeleteForever/> </Button>
+        if(PerfBorr) {
+          if(value.toLocaleString() == '0') {
+            m = <Button disabled> <DeleteForever/> </Button>
+          } else {
+            m = <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
+          }
         } else {
-          m = <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
+            m = <Button disabled> <DeleteForever/> </Button>
         }
+        
         return m
       },
     },
@@ -168,6 +176,19 @@ const PosRecepcion = () => {
       format: (value) => <Button data-Id={value} onClick={handleTrans}> <Pageview/> </Button>,
     },
   ]
+  let elFab =<div></div>
+
+  if(PerfEscr) {
+    elFab = <Link to="/Recepcion/FormPosRecep">
+            <Fab aria-label="add" className={classes.FabStyle}>
+              <Add />
+            </Fab>
+          </Link>
+  } else {
+    elFab = <Fab aria-label="add" disabled className={classes.FabStyle}>
+              <Add />
+            </Fab>
+  }
 useEffect(()=>{
   if(PosRecepcion != null || PosRecepcion != undefined){ 
     PosRecepcion.forEach(p => {
@@ -186,6 +207,25 @@ useEffect(()=>{
   
 },[PosRecepcion])
 
+useEffect(()=>{
+  let perf = userRol.filter(f => {
+    return f.rol == "Recepciones"
+  })
+  perf.forEach(p => {
+    if(p.IdPerfil === 1) {
+      setPerfEscr(true)
+    } 
+
+    if(p.IdPerfil === 2) {
+      setPerfLeer(true)
+    } 
+
+    if(p.IdPerfil === 3) {
+      setPerfBorr(true)
+    } 
+    
+  })
+},[])
   const handleDelete = (e) => {
     DelPosRecepcion(e.currentTarget.dataset.id, (err, data)=>{
       if(err) {
@@ -231,11 +271,7 @@ useEffect(()=>{
 
     return (
       <Paper className={classes.root}>
-        <Link to="/Recepcion/FormPosRecep">
-          <Fab aria-label="add" className={classes.FabStyle}>
-            <Add />
-          </Fab>
-        </Link>
+        {elFab}
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

@@ -403,6 +403,31 @@ const regHeaderNotif = (header, callback) => {
         })
 }
 
+const regheadermfbftext = (head, callback) => {
+    axios.post(`${base}/regheadermfbftext`, {head}
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data)
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+const getheadermfbftext = (headerid, callback) => {
+    axios.get(`${base}/getheadermfbftext?headerid=${headerid}`, 
+    {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res) {
+            callback(null, res.data[0])
+        }).catch(function(err){
+            callback(err, null)
+        })
+}
+
 const regPosNotif = (posData, callback) => {
     axios.post(`${base}/regposnotif`, {posData}
     , {
@@ -1032,5 +1057,7 @@ export {
     delGrupoMember,
     addGrupoMember,
     updDemoras,
-    getGatillos
+    getGatillos,
+    regheadermfbftext,
+    getheadermfbftext
 }

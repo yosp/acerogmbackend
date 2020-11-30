@@ -104,8 +104,8 @@ const ProdFrom = () => {
       OrdenProdId: orden.value,
       Hora: hora,
       MPrima: mprima.value,
-      PT_UME: consacumulado.value,
-      PT_UMB: prodacumulado.value,
+      PT_UME: prodacumulado.value,
+      PT_UMB: consacumulado.value,
       Notas: observ.value,
       EPH: torden.EPH, 
       Batch: mLote.value,
@@ -364,7 +364,7 @@ const ProdFrom = () => {
                       <TextField
                         id="ConsAcu"
                         name="consacumulado"
-                        label="Consumo Acumulado"
+                        label="Consumo"
                         type="number"
                         className={classes.InputTextStyle}
                       />
@@ -377,7 +377,7 @@ const ProdFrom = () => {
                     <NumberFormat
                       id="ProdAcu"
                       name="prodacumulado"
-                      label="Producción Acumulado"
+                      label="Producción"
                       customInput={TextField}
                       type="text"
                       className={classes.InputTextStyle}

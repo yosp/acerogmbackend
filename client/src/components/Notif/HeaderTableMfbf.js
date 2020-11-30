@@ -14,7 +14,7 @@ import {
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import moment from "moment";
-import { Check, Toc, Publish } from '@material-ui/icons'
+import { Check, Toc, Publish, Assignment } from '@material-ui/icons'
 import { GlobalContex } from '../../context/GlobalState'
 
 import { regHeaderNotifMfbf, regPosNotifMfbf, getmfbf, getmfbfPos, sapSendMfbf} from '../../context/Api'
@@ -40,10 +40,14 @@ const useStyles = makeStyles((theme) => ({
 
 const HeaderTable = () => {
   const classes = useStyles();
+  const [PerfLeer, setPerfLeer] = useState(false)
+  const [PerfEscr, setPerfEscr] = useState(false)
+  const [PerfBorr, setPerfBorr] = useState(false)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContex = useContext(GlobalContex)
-  const {userInfo, headerNotif, SetActiveNotif, ActivePtr, ActiveFechaN, LoadNotif, LoadNotifPos, notifPos } = AceroContex
+  const {userInfo, headerNotif, SetActiveNotif, ActivePtr, ActiveFechaN, 
+          LoadNotif, LoadNotifPos, notifPos, userRol, setActiveNotifMbffId, setToggleNotifMfbfText } = AceroContex
 
   const columns = [{
     id: "Material",
@@ -57,14 +61,14 @@ const HeaderTable = () => {
     label: "Cantro Planif",
     minWidth: "175",
     align: "left",
-    format: (value) => value.toLocaleString(),
+    format: (value) => value,
   },
   {
     id: "Centro",
     label: "Centro",
     minWidth: "195",
     align: "left",
-    format: (value) => value.toLocaleString(),
+    format: (value) => value,
   },
   {
     id: "almacen",
@@ -109,12 +113,20 @@ const HeaderTable = () => {
     format: (value) => value.toLocaleString(),
   },
   {
-    id: "cantnot",
+    id: "CantNot",
     label: "CantNot",
     minWidth: "195",
     align: "left",
     format: (value) => value.toLocaleString(),
   },
+  {
+    id: "TextId",
+    label: "Text Cab",
+      minWidth: "100",
+      align: "left",
+      format: (value) => <Button data-Id={value} onClick={handleAddText}> <Assignment/> </Button>,
+  }
+  ,
   {
     id: "Id",
     label: "Posiciones",
@@ -127,12 +139,16 @@ const HeaderTable = () => {
     label: "Validar",
     minWidth: "100",
     align: "left",
-    format: (value) =>{ 
+    format: (value) => { 
           let m = null;
+          if(PerfEscr) {
           if(value.toLocaleString() == '0' ){
             m = <Button  disabled > <Check/> </Button>
         } else {
           m = <Button data-Id={value} onClick={handleValidMfbf}> <Check/> </Button>
+        } }
+        else {
+          m = <Button  disabled > <Check/> </Button>
         }
         return m},
   },
@@ -143,6 +159,7 @@ const HeaderTable = () => {
     align: "left",
     format: (value) => {
       let x 
+        if (PerfEscr) {
         if(value.toLocaleString() == '0') {
           x = <Button disabled > <Publish/> </Button>   
         } else if(parseInt(value) < 0 || value.toLocaleString() == null) {
@@ -152,13 +169,32 @@ const HeaderTable = () => {
           x = value.toLocaleString()
         }
         return x
-      },
+      } 
+      else {
+        if(value.toLocaleString() == '0') {
+          x = <Button disabled > <Publish/> </Button>   
+        } else if(parseInt(value) < 0 || value.toLocaleString() == null) {
+          x = <Button data-Id={value} disabled> <Publish/> </Button>
+        }
+        else {
+          x = value.toLocaleString()
+        }
+        return x
+      }
+    },
   },
   ]
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+
+  const handleAddText = (e) => {
+    e.preventDefault()
+    SetActiveNotif(null)
+    setActiveNotifMbffId(e.currentTarget.dataset.id)
+    setToggleNotifMfbfText(true)
+  }
 
   const handleViewPos = (e) => {
     e.preventDefault()
@@ -271,7 +307,7 @@ const HeaderTable = () => {
       Postdate: `${dareg.getFullYear()}-${dareg.getMonth()+1}-${day}`,//"2020-10-08",
       Docdate: `${Docreg.getFullYear()}-${Docreg.getMonth()+1}-${Dday}`,//"2020-10-08",
       Backflquants: register[0].CantNot,//4000.00,
-      Textocab: "RETW2 2",
+      Textocab: register[0].texto,
       Unidad: register[0].UndMedida //"KG" 
       
   }
@@ -312,6 +348,24 @@ const HeaderTable = () => {
     setPage(0);
   };
 
+  useEffect(()=>{
+    let perf = userRol.filter(f => {
+      return f.rol == "Notificación"
+    })
+    perf.forEach(p => {
+      if(p.IdPerfil === 1) {
+        setPerfEscr(true)
+      } 
+
+      if(p.IdPerfil === 2) {
+        setPerfLeer(true)
+      } 
+
+      if(p.IdPerfil === 3) {
+        setPerfBorr(true)
+      } 
+    })
+  },[])
   useEffect(()=>{
     if(headerNotif !== null && headerNotif !== undefined){
       headerNotif.map((reg) => {

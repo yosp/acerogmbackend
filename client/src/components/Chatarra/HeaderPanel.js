@@ -163,7 +163,7 @@ const HeaderPanel = () => {
 
   useEffect(()=>{
     let perf = userRol.filter(f => {
-      return f.IdRol == 3
+      return f.rol == "Chatarra"
     })
     perf.forEach(p => {
       if(p.IdPerfil === 1) {

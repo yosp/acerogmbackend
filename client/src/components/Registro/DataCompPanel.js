@@ -98,7 +98,7 @@ const DataCompPanel = () => {
       label: "Borrar",
       minWidth: "100",
       align: "left",
-      format: (value) => <Button data-Id={value.toLocaleString()} onClick={handlerDeletePrima}> <Delete/> </Button>,
+      format: (value) => <Button data-Id={value.toLocaleString()} disabled onClick={handlerDeletePrima}> <Delete/> </Button>,
     }
   ]
   

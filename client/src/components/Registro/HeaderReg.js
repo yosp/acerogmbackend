@@ -117,7 +117,7 @@ const HeaderReg = ({ header }) => {
         })
 
         let perf = userRol.filter(f => {
-          return f.IdRol == 1
+          return f.rol == "Reg Producción"
         })
         perf.forEach(p => {
           if(p.IdPerfil === 1) {

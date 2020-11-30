@@ -38,7 +38,7 @@ const PosTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const AceroContex = useContext(GlobalContex);
-  const { notifPos, ActiveNotifId } = AceroContex;
+  const { notifPos, ActiveNotifId, ToggleNotifMfbfText } = AceroContex;
   let display = null;
 
   const columns = [
@@ -54,7 +54,7 @@ const PosTable = () => {
       label: "Centro",
       minWidth: "175",
       align: "left",
-      format: (value) => value.toLocaleString(),
+      format: (value) => value,
     },
     {
       id: "almacen",
@@ -103,7 +103,6 @@ const PosTable = () => {
   };
 
   useEffect(() => {
-    console.log(notifPos)
     if (notifPos !== null && notifPos !== undefined) {
       rows = notifPos.filter((pos) => {
           if(pos.hid != undefined || pos.hid != null){

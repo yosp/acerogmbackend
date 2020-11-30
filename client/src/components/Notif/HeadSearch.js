@@ -8,6 +8,7 @@ import {
   InputLabel,
   Select,
 } from "@material-ui/core";
+import _ from 'underscore'
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -90,7 +91,6 @@ const HeadSearch = () => {
   const [Tipo, SetTipo] = useState(new Date());
   const AceroContex = useContext(GlobalContex);
   const { userInfo, LoadNotifPos, LoadNotif, SetTypoNotif, SetActivePtr, SetActiveFechaN } = AceroContex;
-
   const puestos = userInfo.map((puesto) => {
     return {
       id: puesto.PuestoTrId,
@@ -98,6 +98,13 @@ const HeadSearch = () => {
       TypeNot: puesto.TipoNotif,
     };
   });
+  const PuestosTr = Array.from(new Set(puestos.map((a) => a.id))).map(
+    (id) => {
+      return puestos.find((a) => a.id === id);
+    }
+  );
+  
+
 
   const PtrChange = (e) => {
     e.preventDefault();
@@ -207,7 +214,7 @@ const HeadSearch = () => {
                   onChange={PtrChange}
                 >
                   <option value="0">...</option>
-                  {puestos.map((puesto) => {
+                  {PuestosTr.map((puesto) => {
                     return (
                       <option
                         key={puesto.Descrit}

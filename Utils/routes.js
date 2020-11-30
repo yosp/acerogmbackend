@@ -564,6 +564,31 @@ class Routes {
             })
         })
 
+        this.app.post('/api/regheadermfbftext', (req, res) => {
+            this.db.RegHeaderNotifMFBFText(req.body.head, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.get('/api/getheadermfbftext', (req, res) => {
+            this.db.GetHeaderNotifMFBFText(req.query.headerid, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
         this.app.post('/api/regposnotif', (req, res) => {
             this.db.regPosNotif(req.body.posData, (err, data) => {
                 if(err) {

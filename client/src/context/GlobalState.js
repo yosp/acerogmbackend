@@ -67,6 +67,8 @@ import {
     TOGGLE_MEMBER_LIST,
     TOGGLE_DEMORA,
     ACTIVE_DEMORA,
+    TOGGLE_NOTIF_MFBF_TEXT,
+    ACTIVE_NOTIF_MFBF_ID
 } from "./Actions";
 
 const InitialState = {
@@ -131,6 +133,8 @@ const InitialState = {
     ToggleMemberList: false,
     ToggleDemora : false,
     ActiveDemora: null,
+    ToggleNotifMfbfText: false,
+    NotifMfbfId: null
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -602,6 +606,20 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setToggleNotifMfbfText(toggle) {
+      dispatch({
+        type: TOGGLE_NOTIF_MFBF_TEXT,
+        payload: toggle
+      })
+    }
+
+    function setActiveNotifMbffId(id) {
+      dispatch({
+        type:ACTIVE_NOTIF_MFBF_ID,
+        payload: id
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -670,6 +688,8 @@ export const GlobalProvider = ({ children }) => {
         setToggleMemberList,
         setToggleDemora,
         setActiveDemora,
+        setToggleNotifMfbfText,
+        setActiveNotifMbffId,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -728,7 +748,9 @@ export const GlobalProvider = ({ children }) => {
         ActiveGrupoId: state.ActiveGrupoId,
         ToggleMemberList: state.ToggleMemberList,
         ToggleDemora: state.ToggleDemora,
-        ActiveDemora: state.ActiveDemora
+        ActiveDemora: state.ActiveDemora,
+        ToggleNotifMfbfText: state.ToggleNotifMfbfText,
+        NotifMfbfId: state.NotifMfbfId
           }}
     >
       {children}

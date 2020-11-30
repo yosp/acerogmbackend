@@ -82,13 +82,18 @@ const PuestoTr = () => {
   const AceroContex = useContext(GlobalContex) 
   const { userInfo, turnos, grupos, user, setHeaderRegActive } = AceroContex
   const [TodayDate, setTodayDate] = React.useState(new Date());
-  const puestos = userInfo.map(puesto => {
-        return {
-            id: puesto.PuestoTrId,
-            Descrit: puesto.PuestoTr,
-            TypeNot: puesto.TipoNotif
-        }
-    })
+  const puestos = userInfo.map((puesto) => {
+    return {
+      id: puesto.PuestoTrId,
+      Descrit: puesto.PuestoTr,
+      TypeNot: puesto.TipoNotif,
+    };
+  });
+  const PuestosTr = Array.from(new Set(puestos.map((a) => a.id))).map(
+    (id) => {
+      return puestos.find((a) => a.id === id);
+    }
+  );
   let listaGrupos = null
   let grp = grupos.map(grupo => {
       return { id: grupo.Id, grupo: grupo.grupo }
@@ -169,7 +174,7 @@ const PuestoTr = () => {
                   label="Puesto de Trabajo"
                   className={classes.SelectStyle}
                 >
-                  {puestos.map(puesto => {
+                  {PuestosTr.map(puesto => {
                     return (
                       <option
                         key={puesto.Descrit}
