@@ -68,7 +68,8 @@ import {
     TOGGLE_DEMORA,
     ACTIVE_DEMORA,
     TOGGLE_NOTIF_MFBF_TEXT,
-    ACTIVE_NOTIF_MFBF_ID
+    ACTIVE_NOTIF_MFBF_ID,
+    GET_ORDEN_PTR,
 } from "./Actions";
 
 const InitialState = {
@@ -134,7 +135,8 @@ const InitialState = {
     ToggleDemora : false,
     ActiveDemora: null,
     ToggleNotifMfbfText: false,
-    NotifMfbfId: null
+    NotifMfbfId: null,
+    OrdenPtr: []
 };
 
 const LocalState = JSON.parse(localStorage.getItem("acero"))
@@ -620,6 +622,13 @@ export const GlobalProvider = ({ children }) => {
       })
     }
 
+    function setOrdenPtr(orden) {
+      dispatch({
+        type: GET_ORDEN_PTR,
+        payload: orden
+      })
+    }
+
   return (
     <GlobalContex.Provider
       value={{
@@ -690,6 +699,7 @@ export const GlobalProvider = ({ children }) => {
         setActiveDemora,
         setToggleNotifMfbfText,
         setActiveNotifMbffId,
+        setOrdenPtr,
 
         userInfo: state.userInfo,
         user: state.user,
@@ -750,7 +760,8 @@ export const GlobalProvider = ({ children }) => {
         ToggleDemora: state.ToggleDemora,
         ActiveDemora: state.ActiveDemora,
         ToggleNotifMfbfText: state.ToggleNotifMfbfText,
-        NotifMfbfId: state.NotifMfbfId
+        NotifMfbfId: state.NotifMfbfId,
+        OrdenPtr: state.OrdenPtr
           }}
     >
       {children}

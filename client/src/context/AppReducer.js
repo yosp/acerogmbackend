@@ -66,7 +66,8 @@ import {
     TOGGLE_DEMORA,
     ACTIVE_DEMORA,
     TOGGLE_NOTIF_MFBF_TEXT,
-    ACTIVE_NOTIF_MFBF_ID
+    ACTIVE_NOTIF_MFBF_ID,
+    GET_ORDEN_PTR,
 } from './Actions'
 
 export default (state, action) => {
@@ -469,6 +470,13 @@ export default (state, action) => {
             return {
                 ...state,
                 NotifMfbfId: action.payload
+            }
+        }
+
+        case GET_ORDEN_PTR: {
+            return {
+                ...state,
+                OrdenPtr: action.payload
             }
         }
 

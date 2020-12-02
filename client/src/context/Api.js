@@ -206,7 +206,22 @@ const getApiOdenenes = (callback) => {
     }).catch((error) => {
         callback(error, null)
     })
-} 
+}  
+
+const getApiOrdeneByPtr = (Ptr,callback) => {
+    axios.get(`${base}/ordenes/getOrdenesByPtr?Ptr=${Ptr}`,
+        {
+            headers: {
+                    'Content-Type': 'application/json'
+            }
+        }
+    ).then((response) => {
+        callback(null, response.data)
+    }).catch((error) => {
+        callback(error, null)
+    })
+}
+
 const getOdenenComp = (Orden, callback) => {
     axios.post(`${base}/ordenes/getOrdenesComp`, { Orden }
         , {
@@ -985,6 +1000,7 @@ export {
     getApiTurnos,
     getApiGrupos,
     GetRolNotUser,
+    getApiOrdeneByPtr,
     InsertHeaderRegistro,
     getHeaderReg,
     getRegProd,

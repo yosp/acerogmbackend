@@ -365,6 +365,18 @@ class Routes {
                 }
             })
         })
+        this.app.get('/api/ordenes/getOrdenesByPtr', (req, res) => {
+            this.db.getOrdenesByPtr(req.query.Ptr, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
 
         this.app.post('/api/ordenes/getOrdenesComp', (req, res)=>{
             this.db.getMPrima(req.body.Orden, (err, data)=>{

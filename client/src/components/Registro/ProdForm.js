@@ -77,7 +77,7 @@ const ProdFrom = () => {
   const [comb, setComb] = useState([]);
   const [Restante, setRestante] = useState(0)
   const aceroContext = useContext(GlobalContex);
-  const { isLam, ordenes, headerReg, user, loadRegProdData, setHeaderRegActive } = aceroContext;
+  const { isLam, OrdenPtr, headerReg, user, loadRegProdData, setHeaderRegActive } = aceroContext;
   const history = useHistory();
   let Lam = null;
 
@@ -95,7 +95,7 @@ const ProdFrom = () => {
       conscombustible,
     } = e.target.elements;
 
-    let torden = ordenes.filter((o) => {
+    let torden = OrdenPtr.filter((o) => {
       return o.Id == orden.value;
     });
     
@@ -273,7 +273,7 @@ const ProdFrom = () => {
                       onChange={onChangeOrden}
                     >
                       <option value="0"> </option>
-                      {ordenes.map((orden) => {
+                      {OrdenPtr.map((orden) => {
                         return (
                           <option key={orden.Id} value={orden.Id} >
                             {orden.Orden}

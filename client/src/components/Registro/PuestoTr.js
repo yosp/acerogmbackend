@@ -18,7 +18,8 @@ import MomentUtils from "@date-io/moment";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { GlobalContex } from '../../context/GlobalState'
-import { InsertHeaderRegistro } from '../../context/Api'
+import { InsertHeaderRegistro, getApiOrdeneByPtr } from '../../context/Api'
+
 
 const useStyle = makeStyles(theme => ({
 
@@ -80,7 +81,7 @@ const useStyle = makeStyles(theme => ({
 const PuestoTr = () => {
   const classes = useStyle();
   const AceroContex = useContext(GlobalContex) 
-  const { userInfo, turnos, grupos, user, setHeaderRegActive } = AceroContex
+  const { userInfo, turnos, grupos, user, setHeaderRegActive, setOrdenPtr } = AceroContex
   const [TodayDate, setTodayDate] = React.useState(new Date());
   const puestos = userInfo.map((puesto) => {
     return {
@@ -140,6 +141,13 @@ const PuestoTr = () => {
             });
             console.error(err)
           } else {
+            getApiOrdeneByPtr(parseInt(Ptr.value), (err, data) => {
+              if(err) {
+
+              } else {
+                setOrdenPtr(data)
+              }
+            })
             setHeaderRegActive(res)
           }
           

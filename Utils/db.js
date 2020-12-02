@@ -605,40 +605,62 @@ class Db {
   }
   async insProdData(proddat, callback) {
     try {
+      const request = new sql.Request()
       await sql.connect(this.setting);
-      const query = await sql.query`insert into PosRegProd 
-                                                (HeaderRegId, OrdenProdId, mpId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, Batch, UsrReg, RegDate, UpdDate)
-                                                values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.MPrima}, ${proddat.Hora}, ${proddat.PT_UME}, 
-                                                    ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TipoCombId}, ${proddat.TotalComb}, ${proddat.EPH}, ${proddat.Batch}, 
-                                                    ${proddat.UsrReg}, getdate(), getDate())`; 
+      console.log(proddat)
+      request.input('HeaderRegId', sql.Int, proddat.HeaderRegId)
+      request.input('OrdenProdId', sql.Int, proddat.OrdenProdId)
+      request.input('MPrima', sql.Int, proddat.MPrima)
+      request.input('PT_UME', sql.Int, proddat.PT_UME)
+      request.input('MP_UME', sql.Float, proddat.PT_UMB)
+      request.input('Hora', sql.DateTime, proddat.Hora)
+      request.input('Notas', sql.Text, proddat.Notas)
+      request.input('TotalComb', sql.Int, proddat.TotalComb)
+      request.input('UsrReg', sql.NVarChar, proddat.UsrReg)
+      request.input('Batch', sql.NVarChar, proddat.Batch)
+      request.input('TipoCombId', sql.Int, proddat.TipoCombId)
 
-      const result = await sql.query`select  prod.id
-                                            ,prod.HeaderRegId
-                                            ,prod.OrdenProdId
-                                            ,ord.Orden 
-                                            ,prod.mpid 
-                                            ,comp.Componente as mprima
-                                            ,par.Partida as lote
-                                            ,ord.Material as producto
-                                            ,prod.Hora
-                                            ,ord.Eph
-                                            ,prod.Batch 
-                                            ,comp.Un_Medida as umb
-                                            ,prod.PT_UME as ume
-                                            ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
-                                            ,isNull(cb.Id,0) combId
-                                            ,isNull(cb.Descripcion,'') as comb
-                                            ,isNull(prod.TotalComb,0) as conscomb
-                                            ,isNull(prod.Total_Potencia,0) as conselect 
-                                            ,prod.Notas
-                                                from PosRegProd prod
-                                                inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
-                                                inner join tbOrdenProduccionComp comp on comp.Id = prod.mpid
-                                                left join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
-                                                left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
-                                          where prod.HeaderRegId = ${proddat.HeaderRegId}`;
+      request.execute('Sp_insProdData', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result.recordset)
+        }
+      })
+      // await sql.connect(this.setting);
+      // const query = await sql.query`insert into PosRegProd 
+      //                                           (HeaderRegId, OrdenProdId, mpId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, Batch, UsrReg, RegDate, UpdDate)
+      //                                           values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.MPrima}, ${proddat.Hora}, ${proddat.PT_UME}, 
+      //                                               ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TipoCombId}, ${proddat.TotalComb}, ${proddat.EPH}, ${proddat.Batch}, 
+      //                                               ${proddat.UsrReg}, getdate(), getDate())`; 
 
-      callback(null, result);
+      // const result = await sql.query`select  prod.id
+      //                                       ,prod.HeaderRegId
+      //                                       ,prod.OrdenProdId
+      //                                       ,ord.Orden 
+      //                                       ,prod.mpid 
+      //                                       ,comp.Componente as mprima
+      //                                       ,par.Partida as lote
+      //                                       ,ord.Material as producto
+      //                                       ,prod.Hora
+      //                                       ,ord.Eph
+      //                                       ,prod.Batch 
+      //                                       ,comp.Un_Medida as umb
+      //                                       ,prod.PT_UME as ume
+      //                                       ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
+      //                                       ,isNull(cb.Id,0) combId
+      //                                       ,isNull(cb.Descripcion,'') as comb
+      //                                       ,isNull(prod.TotalComb,0) as conscomb
+      //                                       ,isNull(prod.Total_Potencia,0) as conselect 
+      //                                       ,prod.Notas
+      //                                           from PosRegProd prod
+      //                                           inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
+      //                                           inner join tbOrdenProduccionComp comp on comp.Id = prod.mpid
+      //                                           left join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
+      //                                           left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
+      //                                     where prod.HeaderRegId = ${proddat.HeaderRegId}`;
+
+      // callback(null, result); Sp_insProdData
     } catch (e) {
       callback(e, null);
     }
@@ -652,13 +674,12 @@ class Db {
       request.input('OrdenProdId', sql.Int, proddat.OrdenProdId)
       request.input('MpId', sql.Int, proddat.MPrima)
       request.input('PT_UME', sql.Int, proddat.PT_UME)
-      request.input('PT_UMB', sql.Float, proddat.PT_UMB)
+      request.input('MP_UME', sql.Int, proddat.PT_UMB)
       request.input('Hora', sql.DateTime, proddat.Hora)
       request.input('OldH', sql.DateTime, proddat.OldH)
       request.input('Notas', sql.Text, proddat.Notas)
       request.input('TotalComb', sql.Int, proddat.TotalComb)
       request.input('UsrReg', sql.NVarChar, proddat.UsrReg)
-      request.input('EPH', sql.Float, proddat.EPH)
       request.input('Batch', sql.NVarChar, proddat.Batch)
       request.input('TipoCombId', sql.Int, proddat.TipoCombId)
 
@@ -777,6 +798,19 @@ class Db {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`select * from TbOrdenProduccion where Estatus = 'A'`;
+      callback(null, result);
+    } catch (e) {
+      callback(e, null);
+    }
+  }
+
+  async getOrdenesByPtr(Ptr, callback) {
+    try {
+      await sql.connect(this.setting);
+      const result = await sql.query`select o.* from 
+                                            TbOrdenProduccion o
+                                              inner join strPuestosTrabajos p on p.CodSap =o.PuestoTrabajo
+                                                where Estatus = 'A' and p.Id =${Ptr}`;
       callback(null, result);
     } catch (e) {
       callback(e, null);

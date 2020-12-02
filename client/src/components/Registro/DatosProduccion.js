@@ -190,7 +190,6 @@ const DatosProduccion = () => {
       return reg.id == e.currentTarget.dataset.id
     })
     let CompOrden = registro[0]
-    console.log(CompOrden)
     SetOrdenComp(CompOrden)
     SetNumComp(e.currentTarget.dataset.id)
     history.push("/registro/prodcomp")
