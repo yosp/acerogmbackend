@@ -264,8 +264,8 @@ const ProdFormEdit = () => {
         SetRegId(activeproddata.id)
         setOrd(activeproddata.OrdenProdId)
         SetPrima(activeproddata.mpid)
-        SetConsAc(activeproddata.ume)
-        SetProAc(activeproddata.mpume)
+        SetConsAc(activeproddata.mpume)
+        SetProAc(activeproddata.ume)
         SetNotas(activeproddata.Notas)
         SetCombs(activeproddata.combId)
         SetConsComb(activeproddata.conscomb)
@@ -431,7 +431,7 @@ const ProdFormEdit = () => {
                       <TextField
                         id="ConsAcu"
                         name="consacumulado"
-                        label="Consumo Acumulado"
+                        label="Consumo"
                         type="number"
                         className={classes.InputTextStyle}
                         value={consAc}
@@ -446,7 +446,7 @@ const ProdFormEdit = () => {
                     <NumberFormat
                       id="ProdAcu"
                       name="prodacumulado"
-                      label="Producción Acumulado"
+                      label="Producción"
                       customInput={TextField}
                       type="text"
                       className={classes.InputTextStyle}

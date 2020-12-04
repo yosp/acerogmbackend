@@ -1,8 +1,8 @@
 ﻿import axios from 'axios'
 
-//const base = "http://10.82.33.72:5000/api" // Quality Server
+const base = "http://10.82.33.72:5000/api" // Quality Server
 //const base = "http://10.82.33.70:5000/api" // production Server
-const base = "http://localhost:5000/api" // Development server
+//const base = "http://localhost:5000/api" // Development server
 
 const LoginUser = (CodigoEmp, Password, callback) => {    
     axios.post(`${base}/agm/loginUser`, {CodigoEmp, Password}
