@@ -88,7 +88,7 @@ const ProdFormEdit = () => {
   const [RegId, SetRegId] = useState(0)
 
   const aceroContext = useContext(GlobalContex);
-  const { isLam, ordenes, headerReg, user, loadRegProdData, setHeaderRegActive, activeproddata } = aceroContext;
+  const { isLam, OrdenPtr, headerReg, user, loadRegProdData, setHeaderRegActive, activeproddata } = aceroContext;
   const history = useHistory();
   let Lam = null;
 
@@ -108,7 +108,7 @@ const ProdFormEdit = () => {
       conscombustible,
     } = e.target.elements;
 
-    let torden = ordenes.filter((o) => {
+    let torden = OrdenPtr.filter((o) => {
       return o.Id == orden.value;
     })[0];
 
@@ -338,7 +338,7 @@ const ProdFormEdit = () => {
                       onChange={onChangeOrden}
                     >
                       <option value="0"> </option>
-                      {ordenes.map((orden) => {
+                      {OrdenPtr.map((orden) => {
                         return (
                           <option key={orden.Id} value={orden.Id}>
                             {orden.Orden}

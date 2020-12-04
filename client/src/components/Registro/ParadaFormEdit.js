@@ -80,7 +80,7 @@ const ParadaForm = () => {
   const history = useHistory();
   const {
     isLam,
-    ordenes,
+    OrdenPtr,
     fallaAreas,
     user,
     headerReg,
@@ -462,7 +462,7 @@ const ParadaForm = () => {
                       className={classes.SelectStyle}
                     >
                       <option value="0"> </option>
-                      {ordenes.map((orden) => {
+                      {OrdenPtr.map((orden) => {
                         return (
                           <option key={orden.Id} value={orden.Id}>
                             {orden.Orden}

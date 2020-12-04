@@ -26,7 +26,7 @@ const Index = () => {
     if(ActiveTypeNotif == 1) {
       table = <HeaderTable/>
     } 
-    if (ToggleNotifMfbfText) {
+    else if (ToggleNotifMfbfText) {
       table = <MfbfHeaderText/>
     }
     else {

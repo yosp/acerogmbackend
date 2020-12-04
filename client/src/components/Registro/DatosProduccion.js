@@ -77,7 +77,7 @@ const DatosProduccion = () => {
       format: (value) => value.toLocaleString(),
     },
     {
-      id: "lote",
+      id: "Batch",
       label: "Lote Mp",
       minWidth: "170",
       align: "left",
@@ -253,6 +253,7 @@ const DatosProduccion = () => {
   useEffect(() => {
     if (regproddata !== null && regproddata !== undefined) {
       regproddata.map((reg) => {
+        console.log(reg)
         reg.HoraEdit = moment(new Date(reg.Hora)).format("LT");
         
         return reg;

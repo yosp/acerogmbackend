@@ -607,7 +607,7 @@ class Db {
     try {
       const request = new sql.Request()
       await sql.connect(this.setting);
-      console.log(proddat)
+      
       request.input('HeaderRegId', sql.Int, proddat.HeaderRegId)
       request.input('OrdenProdId', sql.Int, proddat.OrdenProdId)
       request.input('MPrima', sql.Int, proddat.MPrima)
@@ -624,43 +624,10 @@ class Db {
         if(err) {
           callback(err, null);
         } else {
-          callback(null, result.recordset)
+          callback(null, result)
         }
       })
-      // await sql.connect(this.setting);
-      // const query = await sql.query`insert into PosRegProd 
-      //                                           (HeaderRegId, OrdenProdId, mpId, Hora, PT_UME, PT_UMB, Notas, TipoCombId, TotalComb, EPH, Batch, UsrReg, RegDate, UpdDate)
-      //                                           values (${proddat.HeaderRegId}, ${proddat.OrdenProdId}, ${proddat.MPrima}, ${proddat.Hora}, ${proddat.PT_UME}, 
-      //                                               ${proddat.PT_UMB}, ${proddat.Notas}, ${proddat.TipoCombId}, ${proddat.TotalComb}, ${proddat.EPH}, ${proddat.Batch}, 
-      //                                               ${proddat.UsrReg}, getdate(), getDate())`; 
-
-      // const result = await sql.query`select  prod.id
-      //                                       ,prod.HeaderRegId
-      //                                       ,prod.OrdenProdId
-      //                                       ,ord.Orden 
-      //                                       ,prod.mpid 
-      //                                       ,comp.Componente as mprima
-      //                                       ,par.Partida as lote
-      //                                       ,ord.Material as producto
-      //                                       ,prod.Hora
-      //                                       ,ord.Eph
-      //                                       ,prod.Batch 
-      //                                       ,comp.Un_Medida as umb
-      //                                       ,prod.PT_UME as ume
-      //                                       ,(select sum(MP_UME) from PosRegProdComponente where PosProdId = prod.Id ) as mpume
-      //                                       ,isNull(cb.Id,0) combId
-      //                                       ,isNull(cb.Descripcion,'') as comb
-      //                                       ,isNull(prod.TotalComb,0) as conscomb
-      //                                       ,isNull(prod.Total_Potencia,0) as conselect 
-      //                                       ,prod.Notas
-      //                                           from PosRegProd prod
-      //                                           inner join tbOrdenProduccion ord on prod.OrdenProdId = ord.id
-      //                                           inner join tbOrdenProduccionComp comp on comp.Id = prod.mpid
-      //                                           left join tbOrdenCompPartida par on comp.Id = par.OrdenComponenteId
-      //                                           left join tbCombustibleTipoAux cb on cb.Id = prod.TipoCombId
-      //                                     where prod.HeaderRegId = ${proddat.HeaderRegId}`;
-
-      // callback(null, result); Sp_insProdData
+      
     } catch (e) {
       callback(e, null);
     }
