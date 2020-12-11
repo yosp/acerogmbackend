@@ -19,7 +19,7 @@ import {
 import moment from 'moment'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-import { getRegProd, getRegParada } from '../../context/Api' 
+import { getRegProd, getRegParada, getApiIntegrantesGrp } from '../../context/Api' 
 
 const useStyles = makeStyles(theme => ({
     PaperSite: {
@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     padding: "2rem",
     margin: "2rem",
-    height: "16rem",
     [theme.breakpoints.down('xs')]: {
         overflow: "scroll"
     },
@@ -84,15 +83,7 @@ const HeaderReg = ({ header }) => {
     const [PerfLeer, setPerfLeer] = useState(false)
     const [PerfEscr, setPerfEscr] = useState(false)
     const [PerfBorr, setPerfBorr] = useState(false)
-    let listaGrp = integrantesGrp.map(grp => {
-        return {
-            nombre: grp.Nombres,
-            grupo: grp.grupo
-        }
-    }).filter(g => {
-        return g.grupo === header.Grupo
-    })
-    listaGrp = [... new Set(listaGrp)]
+    const [listaGrp, setListaGrp] = useState([])
 
     useEffect(() => {
         getRegProd(header.id, (err, data) => {
@@ -131,9 +122,14 @@ const HeaderReg = ({ header }) => {
           if(p.IdPerfil === 3) {
             setPerfBorr(true)
           } 
-
         })
     },[headerReg])
+
+    useEffect(() => {
+      getApiIntegrantesGrp({puestoTr:header.PuestoTrabajoId, grupo: header.Grupo }, (err, data) => {
+        setListaGrp(data)
+      })
+    },[])
 
     let btnElim = <div>
       <Button type="submit" className={classes.btnB} startIcon={<Delete />} >
@@ -179,7 +175,7 @@ const HeaderReg = ({ header }) => {
             <div><b>Puesto de Trabajo: </b> {header.Puesto}</div>
             {
                 listaGrp.map(l => {
-                    return <div key={l.nombre}><b>Operador: </b>{l.nombre}</div>
+                    return <div key={l.Nombres}><b>Operador: </b>{l.Nombres}</div>
                 })
             }
           </Grid>

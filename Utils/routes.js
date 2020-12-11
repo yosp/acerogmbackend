@@ -98,8 +98,8 @@ class Routes {
             })
         })
 
-        this.app.get('/api/agm/getGruposIntegrantes', (req, res)=> {
-            this.db.getGruposIntegrantes((err, data)=> {
+        this.app.post('/api/agm/getGruposIntegrantes', (req, res)=> {
+            this.db.getGruposIntegrantes(req.body.grt, (err, data)=> {
                 if(err){
                     res.status(500).json({
                         error: true,
@@ -653,6 +653,18 @@ class Routes {
             })
         })
 
+        this.app.post('/api/notifSap', (req, res) => {
+            this.db.setSapConfirmNotif(req.body.notif, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
         this.app.post('/api/notifPos', (req, res) => {
             this.db.getNotifPos(req.body.pos, (err, data) => {
                 if(err) {

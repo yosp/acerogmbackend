@@ -7,7 +7,6 @@ import {
     LOGOUT,
     GET_TURNOS,
     GET_GRUPOS,
-    GET_INTEGRANTES_GRUPOS,
     LOAD_HEADER_REG,
     CLEAR_HEADER_REG,
     IS_LAM,
@@ -81,7 +80,6 @@ const InitialState = {
     grupos: null,
     cargos: null,
     equipos: null,
-    integrantesGrp: null,
     isLogin: false,
     userInfo: [],
     headerReg: null,
@@ -197,13 +195,6 @@ export const GlobalProvider = ({ children }) => {
         dispatch({
             type: GET_GRUPOS,
             payload: grupos
-        })
-    }
-
-    function getIntegrantesGrupos(lista){
-        dispatch({
-            type: GET_INTEGRANTES_GRUPOS,
-            payload: lista
         })
     }
 
@@ -639,7 +630,6 @@ export const GlobalProvider = ({ children }) => {
         setNotUserRolList,
         getTurnos,
         getGrupos,
-        getIntegrantesGrupos,
         setUserLogin,
         setHeaderRegActive,
         setUserInfo,
@@ -707,7 +697,6 @@ export const GlobalProvider = ({ children }) => {
         isLogin: state.isLogin,
         turnos: state.turnos,
         grupos: state.grupos,
-        integrantesGrp: state.integrantesGrp,
         headerReg: state.headerReg,
         isLam: state.isLam,
         regproddata: state.regproddata,

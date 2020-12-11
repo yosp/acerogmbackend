@@ -4,7 +4,6 @@ import { GlobalContex } from "../../context/GlobalState";
 import {
   getApiTurnos,
   getApiGrupos,
-  getApiIntegrantesGrp,
   getApiOdenenes,
   getEntradaGrupo,
 } from "../../context/Api";
@@ -18,15 +17,11 @@ const Dashboard = () => {
   const {
     getTurnos,
     getGrupos,
-    getIntegrantesGrupos,
     turnos,
     grupos,
     setGrupoRecep,
-    integrantesGrp,
     ordenes,
     getOrdenes,
-    // , setSuplidores
-    // , Suplidores
     GrupoRecepcion,
   } = AceroContext;
 
@@ -81,14 +76,14 @@ const Dashboard = () => {
           getGrupos(grupos);
         }
       });
-      if (integrantesGrp === null || integrantesGrp === undefined) {
-        getApiIntegrantesGrp((err, lista) => {
-          if (err) {
-          } else {
-            getIntegrantesGrupos(lista);
-          }
-        });
-      }
+      // if (integrantesGrp === null || integrantesGrp === undefined) {
+      //   getApiIntegrantesGrp((err, lista) => {
+      //     if (err) {
+      //     } else {
+      //       getIntegrantesGrupos(lista);
+      //     }
+      //   });
+      // }
     }
   }, []);
 

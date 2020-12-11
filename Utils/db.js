@@ -448,22 +448,23 @@ class Db {
       
     }
   }
-  async getGruposIntegrantes(callback) {
+  async getGruposIntegrantes(grt, callback) {
     try {
       await sql.connect(this.setting);
       const result = await sql.query`select distinct
-                                                lg.Id
-                                                ,gp.Id as GrupoId
-                                                ,lg.Descripcion as grupo
-                                                ,u.CodigoEmp
-                                                ,lu.Nombres
-                                                ,gp.PuestoTrId
-                                                ,pt.Descripcion as puestoTr
-                                                from strListaGrupos lg
-                                                    inner join StrGrupo gp on gp.GrupoId = lg.Id
-                                                    inner join StrUsuario u on gp.CodigoEmp = u.CodigoEmp
-                                                    inner join loginUsuarios lu on lu.CodigoEmp = gp.CodigoEmp
-                                                    inner join strPuestosTrabajos pt on pt.id = gp.PuestoTrId`;
+                                              lg.Id
+                                              ,gp.Id as GrupoId
+                                              ,lg.Descripcion as grupo
+                                              ,u.CodigoEmp
+                                              ,lu.Nombres
+                                              ,gp.PuestoTrId
+                                              ,pt.Descripcion as puestoTr
+                                              from strListaGrupos lg
+                                                  inner join StrGrupo gp on gp.GrupoId = lg.Id
+                                                  inner join StrUsuario u on gp.CodigoEmp = u.CodigoEmp
+                                                  inner join loginUsuarios lu on lu.CodigoEmp = gp.CodigoEmp
+                                                  inner join strPuestosTrabajos pt on pt.id = gp.PuestoTrId
+                                        where gp.PuestoTrId = ${grt.puestoTr} and lg.Descripcion = ${grt.grupo}`;
       callback(null, result);
     } catch (e) {
       callback(e, null);
@@ -770,7 +771,6 @@ class Db {
       callback(e, null);
     }
   }
-
   async getOrdenesByPtr(Ptr, callback) {
     try {
       await sql.connect(this.setting);
@@ -1256,7 +1256,11 @@ class Db {
                           n.[CIMv PT] as Clmv,
                           sum(p.PT_UMB) as cant,
                           n.[UM PT] as UndMed,
-                          c.Batch,
+                          case n.TipoLote 
+                            when 0 then c.Batch 
+                            when 1 then  SUBSTRING(c.Batch,1,7)+SUBSTRING(substring(o.Orden, patindex('%[^0]%',o.Orden), 10),1,3) --c.Batch+SUBSTRING(o.Orden,1,3)
+                            when 2 then ' '
+                            end as Batch,
 						              ${posData.headerId},
 						              h.PuestoTrabajoId,
 						              GETDATE()
@@ -1267,7 +1271,7 @@ class Db {
                               inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
                               where convert(date,h.Fecha,101) = CONVERT(date,${posData.Fecha},101) and h.PuestoTrabajoId = ${posData.PtrId}
                                   and h.id not in ( select RegHeaderId from PosNotificacion where PuestoTrabajoId = ${posData.PtrId} and RegHeaderId = h.Id) 
-                              group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT], c.Batch, h.PuestoTrabajoId
+                              group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT], c.Batch, h.PuestoTrabajoId, n.TipoLote,o.Orden
                   union all 
                       select  h.id  as hid,
                             m.Componente as Material,
@@ -1277,7 +1281,7 @@ class Db {
                             sum(C.MP_UMB) as cant,
                             n.[UM MP] as UndMed,
                             c.Batch,
-                            h.Id,
+                            ${posData.headerId},
                             h.PuestoTrabajoId,
                             GETDATE()
                             from HeaderReg h
@@ -1295,6 +1299,25 @@ class Db {
       callback(e, null)
     }
   }
+  async setSapConfirmNotif(notif, callback) {
+    try {
+      const request = new sql.Request()
+      await sql.connect(this.setting);
+      
+      request.input('IdNotif', sql.Int, notif.IdNotif)
+      request.input('Confirm', sql.NVarChar, notif.Confirm)
+
+      request.execute('sp_setSapConfirmNotif', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+    } catch (e) {
+      callback(e, null)
+    }
+  } 
   async getNotifHeader (header, callback) {
     try {
       await sql.connect(this.setting) 
@@ -1363,7 +1386,11 @@ class Db {
                           n.[CIMv PT] as Clmv,
                           sum(p.PT_UMB) as cant,
                           n.[UM PT] as UndMed,
-                          c.Batch
+                          case n.TipoLote 
+                            when 0 then c.Batch 
+                            when 1 then  SUBSTRING(c.Batch,1,7)+SUBSTRING(substring(o.Orden, patindex('%[^0]%',o.Orden), 10),1,3) --c.Batch+SUBSTRING(o.Orden,1,3)
+                            when 2 then ' '
+                            end as Batch
                           from HeaderReg h
                               inner join PosRegProd p on p.HeaderRegId = h.Id
                               inner join PosRegProdComponente c on c.PosProdId = p.id
@@ -1371,7 +1398,7 @@ class Db {
                               inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
                               where convert(date,h.Fecha,101) = CONVERT(date,${pos.Fecha},101) and h.PuestoTrabajoId = ${pos.PtrId}
                       and h.id not in ( select RegHeaderId from PosNotificacion where PuestoTrabajoId = ${pos.PtrId} and RegHeaderId = h.Id) 
-                              group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT], c.Batch
+                              group by h.Id,o.Material,n.[Centro Planif], n.[Almacen PT], n.[CIMv PT], n.[UM PT], c.Batch, n.TipoLote,o.Orden
                   union all 
                   select  h.id  as hid,
                                             '0' as HeaderId,
@@ -1483,7 +1510,11 @@ class Db {
                           o.Material,
                           n.Centro as centro,
                           n.[Almacen PT] as almacen,
-                          '' as batch,
+                          case n.TipoLote 
+                            when 0 then p.Batch 
+                            when 1 then  SUBSTRING(p.Batch,1,7)+SUBSTRING(substring(o.Orden, patindex('%[^0]%',o.Orden), 10),1,3) --c.Batch+SUBSTRING(o.Orden,1,3)
+                            when 2 then ' '
+                            end as Batch,
                           n.[CIMv PT] as Clmv,
                           sum(p.PT_UMB) as PT_UMB,
                           n.[UM PT] ,
@@ -1497,13 +1528,13 @@ class Db {
                               inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
                               where convert(date,h.Fecha,101) = CONVERT(date,${PosData.Fecha},101) 
                                 and h.PuestoTrabajoId = ${PosData.ptr} and h.Id =  ${PosData.hid}
-                              group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.PuestoTrabajoId, h.Id, h.Fecha
+                              group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.PuestoTrabajoId, h.Id, h.Fecha, n.TipoLote, p.Batch, o.Orden
                       union all
                       select ${PosData.id},
                           o.Material,
                           n.Centro as centro,
                           n.[Almacen MP] as almacen,
-                          '' as batch,
+                          p.Batch,
                           n.[CIMv MP] as Clmv,
                           sum(c.MP_UMB) as PT_UMB,
                           n.[UM MP] ,
@@ -1519,7 +1550,7 @@ class Db {
                           inner join tbNotificacionAux n on n.PuestoTrabajoid = h.PuestoTrabajoId
                               where convert(date,h.Fecha,101) = CONVERT(date,${PosData.Fecha},101) 
                                 and h.PuestoTrabajoId = ${PosData.ptr} and h.Id =  ${PosData.hid}
-                              group by o.Material, n.Centro, n.[Almacen MP], n.[CIMv MP], n.[UM MP], h.PuestoTrabajoId, h.Id, h.Fecha, t.Componente`
+                              group by o.Material, n.Centro, n.[Almacen MP], n.[CIMv MP], n.[UM MP], h.PuestoTrabajoId, h.Id, h.Fecha, t.Componente, p.Batch`
       callback(null, 'OK')
     } catch (error) {
       callback(error, null)
@@ -1584,7 +1615,11 @@ class Db {
                                               o.Material,
                                               n.Centro as centro,
                                               n.[Almacen PT] as almacen,
-                                              '' as batch,
+                                              case n.TipoLote 
+                                                when 0 then p.Batch 
+                                                when 1 then  SUBSTRING(p.Batch,1,7)+SUBSTRING(substring(o.Orden, patindex('%[^0]%',o.Orden), 10),1,3) --c.Batch+SUBSTRING(o.Orden,1,3)
+                                                when 2 then ' '
+                                                end as Batch,
                                               n.[CIMv PT] as Clmv,
                                               n.[UM PT] as UndMed,
                                               sum(p.PT_UMB) as cant
@@ -1595,7 +1630,7 @@ class Db {
                                               where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} 
                                               and h.id not in (select HeaderRegId from PosNotifMFBF where PuestoTrabajoId = ${header.PtrId} 
                                               and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)  )
-                                              group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.Id
+                                              group by o.Material, n.Centro, n.[Almacen PT], n.[CIMv PT], n.[UM PT], h.Id, p.Batch, o.Orden, n.TipoLote
                                           union all
                                       select  h.id,
                                               h.Id as hid,
@@ -1603,7 +1638,7 @@ class Db {
                                               o.Material,
                                               n.Centro as centro,
                                               n.[Almacen MP] as almacen,
-                                              '' as batch,
+                                              p.Batch,
                                               n.[CIMv MP] as Clmv,
                                               n.[UM MP] as UndMed,
                                               sum(c.MP_UMB) as cant
@@ -1616,7 +1651,7 @@ class Db {
                                           where convert(date,h.Fecha,101) = CONVERT(date,${header.Fecha},101) and h.PuestoTrabajoId = ${header.PtrId} 
                                           and h.id not in (select HeaderRegId from PosNotifMFBF where PuestoTrabajoId = ${header.PtrId} 
                                           and  convert(date,HeaderDate,101) = CONVERT(date,${header.Fecha},101)  )
-                                          group by o.Material, n.Centro, n.[Almacen MP], n.[CIMv MP], n.[UM MP], h.Id, t.Componente
+                                          group by o.Material, n.Centro, n.[Almacen MP], n.[CIMv MP], n.[UM MP], h.Id, t.Componente, p.Batch
                                           union all
                                           select  id,
                                               HeaderId as hid,
@@ -1624,7 +1659,7 @@ class Db {
                                               Material,
                                               Centro as centro,
                                               Almacen as almacen,
-                                              Batch as batch,
+                                              Batch,
                                               Clmv, 
                                               UndMed,
                                               Cant as cant
@@ -1817,10 +1852,11 @@ async DelPosRecepcion(PosId, callback) {
 async GetLoteByMaterial(Material, callback) {
   try {
     await sql.connect(this.setting)
-    let result = await sql.query`select p.Lote ,p.CantRecibida - isNull((select sum(CantRegistrado) from PosRecepcionTrans where PosRecId = p.Id and Lote = p.Lote),0) as Restante
-                                          from HeaderRecepcion r 
-                                              inner join PosRecepcion p on p.HeaderRecId = r.Id
-                                              where  r.Estado = 'A' and p.Material = ${Material}`
+    let result = await sql.query`select * from (
+      select p.Lote ,p.CantRecibida - isNull((select sum(CantRegistrado) from PosRecepcionTrans where PosRecId = p.Id and Lote = p.Lote),0) as Restante
+                                                from HeaderRecepcion r 
+                                                    inner join PosRecepcion p on p.HeaderRecId = r.Id
+                                                    where  r.Estado = 'A' and p.Material = ${Material} ) as x where x.Restante > 0`
     callback(null, result)
   } catch (e) {
     callback(e, null)

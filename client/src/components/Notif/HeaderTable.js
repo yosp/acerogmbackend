@@ -17,7 +17,7 @@ import moment from "moment";
 import { Check, Toc, Publish } from '@material-ui/icons'
 import { GlobalContex } from '../../context/GlobalState'
 
-import { regHeaderNotif, regPosNotif, getNotif, getNotifPos, sapSendCo11} from '../../context/Api'
+import { regHeaderNotif, regPosNotif, getNotif, getNotifPos, sapSendCo11, NotifSap} from '../../context/Api'
 
 let rows = [];
 
@@ -199,10 +199,15 @@ const HeaderTable = () => {
   const PrependZero = (value) => {
     let NumZeros = 12 - value
     let ZeroResult = '0'
-    for (let i=0; i< NumZeros-1; i++) {
-      ZeroResult = `0${ZeroResult}`
+    if(value === 12) {
+      return ''
+    } else {
+      for (let i=0; i< NumZeros-1; i++) {
+        console.log(0)
+        ZeroResult = `${ZeroResult}`
+      }
+      return ZeroResult;
     }
-    return ZeroResult;
   }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -271,12 +276,13 @@ const HeaderTable = () => {
   }
   const handleSapPublish = (e) => {
     e.preventDefault()
+    const ElId = (parseInt(e.currentTarget.dataset.id) * (-1))
     let register = headerNotif.filter(head => {
       return head.Id == (parseInt(e.currentTarget.dataset.id)* (-1)) //e.currentTarget.dataset.id
     })
     
     let pos = notifPos.filter(p => {
-      return p.HeaderId == (parseInt(e.currentTarget.dataset.id) * (-1))
+      return p.hid == (parseInt(e.currentTarget.dataset.id) * (-1))
     })
     
     let zeros = PrependZero(register[0].Orden.length)
@@ -298,22 +304,21 @@ const HeaderTable = () => {
       ConfActivity3: register[0].Turno , //1,
       ConfQuanUnit: register[0].UndMedida, //'AT',
       Operation: register[0].Operacion.trim(), //'0010',
-      Orderid: `${zeros}${register[0].Orden}`, //'000000294658',
+      Orderid: `${zeros}${register[0].Orden}`, //'000000294659',
       Plant: register[0].Centro, //'1001',
       PostgDate: `${dareg.getFullYear()}-${dareg.getMonth()+1}-${day}`, //'2020-10-15',
       YieldCant: register[0].CantNot,//1,
   }
-    pos.forEach(p => {
-      let d = {
-        Batch: p.Batch,//3163402659,
-        EntryQnt: p.cant,//1,
-        EntryUom: p.UndMed.trim(),
-        Material: p.Material,//"CPC-001",
-        MoveType: p.Clmv,//"261",
-        Plant: p.centro,//"1001",
-        StgeLoc: p.almacen.trim()//"0400"
-    }
-    Movimientos.push(d)
+      pos.forEach(p => {
+          Movimientos.push({
+            Batch: p.Batch,//3163402659,
+            EntryQnt: p.cant,//1,
+            EntryUom: p.UndMed.trim(),
+            Material: p.Material,//"CPC-001",
+            MoveType: p.Clmv,//"261",
+            Plant: p.centro,//"1001",
+            StgeLoc: p.almacen.trim()//"0400"
+        })
     })
 
     let Co11 = {
@@ -326,7 +331,13 @@ const HeaderTable = () => {
       if(err){
         console.error(err);
       } else {
-        console.log(data)
+        NotifSap({Confirm: data.confNoField, IdNotif: ElId }, (err, res)=> {
+          if(err){
+
+          } else {
+            LoadNotif(res)
+          }
+        }) 
       }
     })
     

@@ -295,20 +295,19 @@ const HeaderTable = () => {
     if(Dday < 10) {
       Dday =`0${Dday}`
     } 
-    console.log(register)
 
     let HeaderNotif = {
-      Materialnr: register[0].Material,//"EE100",
+      Materialnr: register[0].Material.trim(),//"EE100",
       Planplant: register[0].centroPlanif,//"1001",
       Prodplant: register[0].Centro,// "1001",
       Storageloc: register[0].almacen,//"0400",
       Prodversion: `${zeros}${register[0].VerFab.trim()}`,//"0001",
-      Prodline: register[0].PuestoTrabajo,//"ESTRGRU",
+      Prodline: register[0].PuestoTrabajo.trim(),//"ESTRGRU",
       Postdate: `${dareg.getFullYear()}-${dareg.getMonth()+1}-${day}`,//"2020-10-08",
       Docdate: `${Docreg.getFullYear()}-${Docreg.getMonth()+1}-${Dday}`,//"2020-10-08",
       Backflquants: register[0].CantNot,//4000.00,
       Textocab: register[0].texto,
-      Unidad: register[0].UndMedida //"KG" 
+      Unidad: register[0].UndMedida.trim() //"KG" 
       
   }
 

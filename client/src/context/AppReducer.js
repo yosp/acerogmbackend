@@ -5,7 +5,6 @@ import {
     LOGOUT,
     GET_TURNOS,
     GET_GRUPOS,
-    GET_INTEGRANTES_GRUPOS,
     LOAD_HEADER_REG,
     GET_REG_PARAD_DATA,
     CLEAR_HEADER_REG,
@@ -109,11 +108,6 @@ export default (state, action) => {
             return {
                 ...state,
                 grupos: action.payload
-            }
-        case GET_INTEGRANTES_GRUPOS:
-            return {
-                ...state,
-                integrantesGrp: action.payload
             }
         case IS_LAM:
             return {

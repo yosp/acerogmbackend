@@ -1,8 +1,8 @@
 ﻿import axios from 'axios'
 
-const base = "http://10.82.33.72:5000/api" // Quality Server
+//const base = "http://10.82.33.72:5000/api" // Quality Server
 //const base = "http://10.82.33.70:5000/api" // production Server
-//const base = "http://localhost:5000/api" // Development server
+const base = "http://localhost:5000/api" // Development server
 
 const LoginUser = (CodigoEmp, Password, callback) => {    
     axios.post(`${base}/agm/loginUser`, {CodigoEmp, Password}
@@ -46,8 +46,8 @@ const UserInfo = (CodigoEmp, callback) => {
             callback(error, null)
         }) 
 }
-const getApiIntegrantesGrp = (callback) => {
-    axios.get(`${base}/agm/getGruposIntegrantes`, {
+const getApiIntegrantesGrp = (grt,callback) => {
+    axios.post(`${base}/agm/getGruposIntegrantes`, {grt},{
         headers: {
             'Context-Type': 'application/json'
         }
@@ -991,6 +991,18 @@ const delGrupoMember = (Member, callback) => {
         })
 }
 
+const NotifSap = (notif, callback) => {
+    axios.post(`${base}/notifSap`, {notif}, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
+
 export {
     LoginUser,
     UserInfo,
@@ -1075,5 +1087,6 @@ export {
     updDemoras,
     getGatillos,
     regheadermfbftext,
-    getheadermfbftext
+    getheadermfbftext,
+    NotifSap
 }

@@ -64,7 +64,7 @@ const PosTable = () => {
       format: (value) => moment(value.toLocaleString()).format("L"), 
     },
     {
-      id: "batch",
+      id: "Batch",
       label: "Lote",
       minWidth: "170",
       align: "left",
