@@ -174,7 +174,7 @@ const HeaderReg = ({ header }) => {
             <div><b>Grupo:</b> {header.Grupo}</div>
             <div><b>Puesto de Trabajo: </b> {header.Puesto}</div>
             {
-                listaGrp.map(l => {
+                listaGrp.slice(0, 5).map(l => {
                     return <div key={l.Nombres}><b>Operador: </b>{l.Nombres}</div>
                 })
             }

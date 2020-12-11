@@ -318,7 +318,7 @@ const HeaderTable = () => {
       Batch: p.Batch,//3163402658,
       EntryQnt: p.cant,//200,
       EntryUom: p.UndMed.trim(),
-      Material: p.Material,//"VC083",
+      Material: p.Material.trim(),//"VC083",
       MoveType: p.Clmv,//"261",
       Plant: p.centro,//"1001",
       StgeLoc: p.almacen.trim()//"0450"
