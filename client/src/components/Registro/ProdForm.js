@@ -276,7 +276,7 @@ const ProdFrom = () => {
                       {OrdenPtr.map((orden) => {
                         return (
                           <option key={orden.Id} value={orden.Id} >
-                            {orden.Orden}
+                            {orden.Orden}-{orden.Material}
                           </option>
                         );
                       })}

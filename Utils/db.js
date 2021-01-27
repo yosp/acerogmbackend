@@ -977,6 +977,38 @@ class Db {
       callback(e, null); 
     }
   }
+
+  async addOrdenComp(Component, callback) {
+    try {
+      const request = new sql.Request()
+      await sql.connect(this.setting);
+      
+      request.input('Id', sql.Int, Component.Id)
+      request.input('Material', sql.NVarChar, Component.Material)
+      request.input('UndBase', sql.NVarChar, Component.UndBase)
+
+      request.execute('Sp_addComponent', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, result)
+        }
+      })
+    } catch (e) {
+      callback(e, null);
+    }
+  }
+  async getOrdenesMaterialLike( callback) {
+    try {
+    await sql.connect(this.setting);
+      
+      const result = await sql.query`select Material, UndBase from tbMateriales`;
+      callback(null, result); 
+    }
+    catch (e) {
+      callback(e, null); 
+    }
+  }
   //Chatarra
   async insChatarraHeader(chatarraHeader, callback) {
     try {
@@ -1038,6 +1070,7 @@ class Db {
                                               , RTRIM(ti.Almacen) as StgeLoc
                                               , RTRIM(ti.UM) as EntryUom
                                               , ti.CIMov as MoveType
+                                              , ti.COMov as MoveTypeDel
                                               , m.Denominacion as motivo  
                                               , ti.Denominacion as tipochatarra
                                               , ti.Centro as Plant
@@ -1072,6 +1105,7 @@ class Db {
                                       , RTRIM(ti.Almacen) as StgeLoc
                                       , RTRIM(ti.UM) as EntryUom
                                       , ti.CIMov as MoveType
+                                      , ti.COMov as MoveTypeDel
                                       , m.Denominacion as motivo  
                                       , ti.Denominacion as tipochatarra
                                       , ti.Centro as Plant
@@ -1124,6 +1158,27 @@ class Db {
       callback(null, result);
     } catch (e) {
       callback(e, null);
+    }
+  }
+
+  async delChatarraSap(Chatarra, callback) {
+    try {
+      await sql.connect(this.setting);
+      const request = new sql.Request()
+      request.input('Id', sql.Int, Chatarra.Id)
+      request.input('regSap', sql.NVarChar, Chatarra.regSap)
+      request.input('usrId', sql.Int, Chatarra.usrId)
+  
+      request.execute('sp_chatarraDel', (err, result) => {
+        if(err) {
+          callback(err, null);
+        } else {
+          callback(null, 'Ok')
+        }
+      })
+  
+    } catch (err) {
+      callback(err, null);
     }
   }
   async getChatarraMotivo(callback) {

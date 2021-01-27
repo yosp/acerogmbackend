@@ -47,7 +47,7 @@ const ChatarraPos = () => {
   const [PerfBorr, setPerfBorr] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const aceroContext = useContext(GlobalContex)
-  const { chatarraPos, ChatarraHeaderId, SetChatarraPos, userRol } = aceroContext
+  const { chatarraPos, ChatarraHeaderId, SetChatarraPos, userRol, chatarraHeader } = aceroContext
   
   const columns = [
     {
@@ -112,10 +112,14 @@ const ChatarraPos = () => {
       minWidth: "100",
       align: "left",
       format: (value) => {
-        if(PerfBorr) {
-          return <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
-        } else {
+        if(chatarraHeader.RegistroSap !== null) {
           return <Button disabled> <DeleteForever/> </Button>
+        } else {
+          if(PerfBorr) {
+            return <Button data-Id={value} onClick={handleDelete}> <DeleteForever/> </Button>
+          } else {
+            return <Button disabled> <DeleteForever/> </Button>
+          }
         }
       },
     },
@@ -139,7 +143,6 @@ const ChatarraPos = () => {
       if(p.IdPerfil === 3) {
         setPerfBorr(true)
       } 
-      console.log(PerfEscr)
     })
   },[])
   useEffect(() => {
@@ -180,12 +183,18 @@ const ChatarraPos = () => {
 
   }
 
-  if(PerfEscr) {
-    elFab = <Fab aria-label="add" className={classes.FabStyle}>
-              <Add/>
-          </Fab>
+  if(chatarraHeader.RegistroSap !== null) {
+    elFab = <Fab disabled aria-label="add" className={classes.FabStyle}>
+                <Add/>
+              </Fab>
+  } else {
+    if(PerfEscr) {
+      elFab = <Fab aria-label="add" className={classes.FabStyle}>
+                <Add/>
+            </Fab>
+    }
   }
-
+  
   return (
     <Paper className={classes.root}>
       <Link to="/chatarra/chatarForm">

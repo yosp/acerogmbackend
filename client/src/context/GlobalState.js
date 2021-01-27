@@ -723,7 +723,7 @@ export const GlobalProvider = ({ children }) => {
         ChatarraHeaderId: state.ChatarraHeaderId,
         OrdenList: state.OrdenList,
         OrdenCompList: state.OrdenCompList,
-        Loading: state.setLoading,
+        Loading: state.Loading,
         RecepcionHeader: state.RecepcionHeader,
         Suplidores: state.Suplidores,
         GrupoRecepcion: state.GrupoRecepcion,

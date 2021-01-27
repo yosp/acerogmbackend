@@ -29,6 +29,7 @@ import { getOrdenList, getOrdenCompList } from "../../context/Api"
 import NavigationBar from "../Util/NavBar";
 import Componentes from './Componentes'
 import LogoutPopup from '../Util/LogoutPopup'
+import AddComponent from './AddComponent'
 
 const useStyles = makeStyles(theme => ({
   rootContainer: {},
@@ -61,6 +62,7 @@ const OrdenProduccion = () => {
   const [FechaFin, setFechaFin] = useState(new Date());
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [ActiveId, SetActiveId] = useState(0)
   const aceroContext = useContext(GlobalContex);
   const { OrdenList, setOrdenList, setOrdenCompList } = aceroContext
 
@@ -202,6 +204,7 @@ const OrdenProduccion = () => {
 
   const handlerViewComp  =(e) => {
     e.preventDefault()
+    SetActiveId(e.currentTarget.dataset.id)
     getOrdenCompList(e.currentTarget.dataset.id, (err, data)=> {
       if(err){
         toast.error("Error al intentar obtener los componentes de la orden", {
@@ -353,6 +356,7 @@ const OrdenProduccion = () => {
       <Componentes/>
       <ToastContainer/>
       <LogoutPopup/>
+      <AddComponent/>
     </Grid>
   );
 };

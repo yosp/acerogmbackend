@@ -405,6 +405,12 @@ const sapSendChatarra = (ZgmAcerogmChatarra, callback) => {
         })
 }
 
+const delChatarraSap = (Chatarra, callback) => {
+    axios.post(`${base}/chatarra/delChatarraSap`,{Chatarra}
+    )
+    .then(response => { callback(null, response.data)})
+    .catch(err => console.warn(err));
+}
 const regHeaderNotif = (header, callback) => {
     axios.post(`${base}/regheadernotif`, {header}
     , {
@@ -614,6 +620,13 @@ const getOrdenList = (OrdenFiltro, callback) => {
 
 const getOrdenCompList = (Orden, callback) => {
     axios.get(`${base}/ordenes/getOrdenesCompList?Orden=${Orden}`
+    )
+    .then(response => { callback(null, response.data)})
+    .catch(err => console.warn(err));
+}
+
+const getOrdenCompMaterialLike = (callback) => {
+    axios.get(`${base}/ordenes/getOrdenesMaterialLike`
     )
     .then(response => { callback(null, response.data)})
     .catch(err => console.warn(err));
@@ -1035,6 +1048,7 @@ export {
     GetTipoChatarra,
     GetMotivoChatarra,
     sapSendChatarra,
+    delChatarraSap,
     sapSendMfbf,
     getDemoras,
     getNotif,
@@ -1088,5 +1102,6 @@ export {
     getGatillos,
     regheadermfbftext,
     getheadermfbftext,
-    NotifSap
+    NotifSap,
+    getOrdenCompMaterialLike
 }

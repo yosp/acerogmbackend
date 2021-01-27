@@ -391,6 +391,31 @@ class Routes {
             })
         } )
 
+        this.app.post('/api/ordenes/addOrdenesComp', (req, res)=>{
+            this.db.addOrdenComp(req.body.Component, (err, data)=>{
+                if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                }else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        } )
+
+        this.app.get('/api/ordenes/getOrdenesMaterialLike', (req, res) => {
+            this.db.getOrdenesMaterialLike( (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
         this.app.get('/api/ordenes/getOrdenesList', (req, res) => {
             this.db.getOrdenesProdList({FechaI: req.query.FechaI, FechaF: req.query.FechaF}, (err, data)=> {
                 if(err){
@@ -514,6 +539,19 @@ class Routes {
         this.app.get('/api/chatarra/getmotivo', (req, res) => {
             this.db.getChatarraMotivo((err, data)=>{
                 if(err){
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
+        })
+
+        this.app.post('/api/chatarra/delChatarraSap', (req, res) => {
+            this.db.delChatarraSap(req.body.Chatarra ,(err, data) => {
+                if(err) {
                     res.status(500).json({
                         error: true,
                         message: err

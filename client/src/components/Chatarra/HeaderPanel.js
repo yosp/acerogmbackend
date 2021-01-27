@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Grid, Paper, Button, makeStyles  } from "@material-ui/core";
+import { Grid, Paper, Button, makeStyles, CircularProgress  } from "@material-ui/core";
 import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ArrowBackIosRounded } from "@material-ui/icons";
 import { GlobalContex } from "../../context/GlobalState";
-import { sapSendChatarra, setChatarraRegSap } from '../../context/Api'
+import { sapSendChatarra, setChatarraRegSap, delChatarraSap } from '../../context/Api'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -57,6 +57,26 @@ const useStyles = makeStyles((theme) => ({
       color: "white",
       background: " #003499",
     },
+  btnBI: {
+      background: "#003366",
+      color: "#ffcc00",
+      margin: ".6em 0",
+      marginBottom: "-5rm",
+      "&:hover": {
+        color: "white",
+        background: " #003499",
+      },
+    },
+  btnDel: {
+    background: "#d50000",
+    color: "white",
+    margin: ".6em 0",
+    marginBottom: "-5rm",
+    "&:hover": {
+      color: "white",
+      background: "#9b0000",
+    },
+  },
   spinColor: {
       margin: 'auto',
       padding: '10px',
@@ -77,31 +97,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let btn = null
+let btnDel = null
 const HeaderPanel = () => {
   const classes = useStyles();
   const AceroContex = useContext(GlobalContex);
   const [PerfLeer, setPerfLeer] = useState(false)
   const [PerfEscr, setPerfEscr] = useState(false)
   const [PerfBorr, setPerfBorr] = useState(false)
-  const { chatarraHeader, chatarraPos, ClearChatarra, ChatarraHeaderId, LoadChataraHeader, setLoading, userRol } = AceroContex;
-  let btn = null
+  const { chatarraHeader, chatarraPos, ClearChatarra, ChatarraHeaderId, LoadChataraHeader, userRol, userInfo, Loading, setLoading } = AceroContex;
+  
 
   const chatarraToSap = (e) =>{
     e.preventDefault();
     
     try {
+        setLoading(true)
+        console.log('Loading On')
         let date = new Date()
         let dareg = new Date(chatarraHeader.Fecha)
         let Posiciones = [];
+        let month = dareg.getMonth()+1
         let day = dareg.getDate()
         if(day < 10) {
           day =`0${day}`
         } 
-        
+        if(month < 10) {
+          month = `0${month}`
+        }
 
         const Header = {
-          DocDate : `${dareg.getFullYear()}-${dareg.getMonth()+1}-${day}`,
-          PstngDate : `${date.getFullYear()}-${date.getMonth()+1}-${day}`,
+          DocDate : `${dareg.getFullYear()}-${month}-${day}`,
+          PstngDate : `${date.getFullYear()}-${month}-${day}`,
           HeaderTxt : `Chatarra ${chatarraHeader.OperadorId}`
         }
         
@@ -138,20 +165,104 @@ const HeaderPanel = () => {
                 toast.error(err, {
                   position: toast.POSITION.BOTTOM_RIGHT
                 });
+                setLoading(false)
+                console.log('Loading On')
               } else {
                 if(parseInt(data) == NaN){
                   toast.error(data, {
                     position: toast.POSITION.BOTTOM_RIGHT
                   });
+                  setLoading(false)
+                  console.log('Loading On')
                 } else{
                     setLoading(false)
                     LoadChataraHeader(data) 
+                    console.log('Loading off')
                     toast.success("Registro Completado", {
                       position: toast.POSITION.TOP_RIGHT
                     });
+
                   }
               }
             })
+          }
+        })
+      } catch (error) {
+        toast.error("Ocurrio un error al intentar enviar los datos", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      }
+  }
+
+  const chatarraDelToSap = (e) =>{
+    e.preventDefault();
+    
+    try {
+        setLoading(true)
+        let date = new Date()
+        let dareg = new Date(chatarraHeader.Fecha)
+        let Posiciones = [];
+        let month = dareg.getMonth()+1
+        let day = dareg.getDate()
+        if(day < 10) {
+          day =`0${day}`
+        } 
+        if(month < 10) {
+          month = `0${month}`
+        }
+        
+
+        const Header = {
+          DocDate : `${dareg.getFullYear()}-${month}-${day}`,
+          PstngDate : `${date.getFullYear()}-${month}-${day}`,
+          HeaderTxt : `Chatarra ${chatarraHeader.OperadorId}`
+        }
+        
+        chatarraPos.map((p) => {
+          Posiciones.push({
+            Material: p.Material,
+            Plant: p.Plant,
+            StgeLoc: p.StgeLoc,
+            MoveType: p.MoveTypeDel,
+            EntryQnt: p.PesoChatarra,
+            EntryUom: p.EntryUom,
+            Costcenter: p.Costcenter,
+            MoveReas: '0001'
+          })
+        })
+
+        let ZgmAcerogmChatarra = {
+          Header,
+          Posiciones
+      }
+
+        sapSendChatarra(ZgmAcerogmChatarra, (err, data) =>{
+          if(err) {
+            toast.error(err, {
+              position: toast.POSITION.BOTTOM_RIGHT
+            });
+            setLoading(false)
+          } else {
+            let Chatarra = {
+              Id: ChatarraHeaderId,
+              regSap: data,
+              usrId: userInfo[0].CodigoEmp
+            }
+            delChatarraSap(Chatarra, (err, data) => {
+              if(err) {
+                setLoading(false)
+                toast.error(err, {
+                  position: toast.POSITION.BOTTOM_RIGHT
+                });
+              } else{
+                setLoading(false)
+                toast.success('Los resistros han sido eliminados', {
+                  position: toast.POSITION.BOTTOM_RIGHT
+                });
+                ClearChatarra()
+              }
+            })
+
           }
         })
       } catch (error) {
@@ -180,15 +291,39 @@ const HeaderPanel = () => {
     })
   },[])
 
-  if(chatarraHeader.RegistroSap != null) {
-    btn = <Button className={classes.btnB} disabled>Enviar a Sap</Button>
-  } else {
-    if(PerfEscr){
-      btn = <Button className={classes.btnB} onClick={chatarraToSap}>Enviar a Sap</Button>
+  useEffect(()=>{
+    if (Loading) {
+        btn = <CircularProgress  />
+        console.log(Loading)
     } else {
-      btn = <Button className={classes.btnB} disabled >Enviar a Sap</Button>
+      if(chatarraHeader.RegistroSap !== null) {
+        btn = <Button className={classes.btnB} disabled>Enviar a Sap</Button>
+        if(PerfBorr) {
+          btnDel = <Button style={{background: "#d50000", color: "white"}} onClick={chatarraDelToSap} >Eliminar Registro Sap</Button>
+        } else {
+          btnDel = null
+        }
+      } else {
+        if(PerfEscr){
+          console.log(Loading)
+          console.log(chatarraPos)
+          if(chatarraPos !== null && chatarraPos.length > 0 ) {
+            btn = <Button className={classes.btnB} onClick={chatarraToSap}>Enviar a Sap</Button>
+          } else {
+            btn = <Button className={classes.btnBI} disabled >Enviar a Sap</Button>
+          }
+          
+        } else {
+          btn = <Button className={classes.btnBI} disabled >Enviar a Sap</Button>
+        }
+      }
     }
-  }
+    return () => {
+      setLoading(false)
+    }
+
+  },[Loading, chatarraPos, chatarraHeader, PerfEscr])
+
 
   const handlerBack = (e) => {
     e.preventDefault();
@@ -226,7 +361,7 @@ const HeaderPanel = () => {
               <b>Registro Sap:</b> {chatarraHeader.RegistroSap}
             </div>
             <div>
-              {btn}
+              {btn} {btnDel}
             </div>
           </Grid>
         </Grid>
