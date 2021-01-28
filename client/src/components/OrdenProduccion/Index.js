@@ -2,9 +2,12 @@ import "moment";
 import React, { useState, useEffect, useContext } from "react";
 import { makeStyles, 
           Paper, 
-          Grid, 
-          TextField, 
+          Grid,  
           Button,
+          Fab,
+          Dialog,
+          DialogContent,
+          DialogTitle,
           Table,
           TableBody,
           TableCell,
@@ -13,6 +16,7 @@ import { makeStyles,
           TableRow,
           TablePagination
         } from "@material-ui/core";
+import { Add } from "@material-ui/icons";
 import { Search, Pageview } from "@material-ui/icons";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
@@ -63,9 +67,11 @@ const OrdenProduccion = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [ActiveId, SetActiveId] = useState(0)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(false)
   const aceroContext = useContext(GlobalContex);
   const { OrdenList, setOrdenList, setOrdenCompList } = aceroContext
-
+  let ElFab = null
 
   const columns = [
     {
@@ -182,6 +188,14 @@ const OrdenProduccion = () => {
     }
   ];
 
+  const HandlerClose = () => {
+    setOpen(false)
+  }
+
+  const HandlerAdd = () => {
+    setOpen(true)
+  }
+
   useEffect(() => {
     if(OrdenList != null || OrdenList != undefined) {
       OrdenList.map(ord => {
@@ -216,6 +230,7 @@ const OrdenProduccion = () => {
     })
 
   }
+
 
   const handleHFinChange = (date) => {
     setFechaFin(date._d);
@@ -256,6 +271,17 @@ const OrdenProduccion = () => {
     })
     
   }
+  useEffect(()=>{
+    if(ActiveId !== 0) {
+      setActive(true)
+    }
+  },[ActiveId])
+
+  if(active){
+    ElFab = <Fab onClick={HandlerAdd} style={{background: "#FFCC00", color: "#003366", marginLeft : "90%"}}><Add/></Fab>
+  } else {
+    ElFab = null
+  }
 
   return (
     <Grid>
@@ -268,7 +294,7 @@ const OrdenProduccion = () => {
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <KeyboardDatePicker 
                     margin="normal"
-                    id="time-picker"
+                    id="time-picker-A"
                     label="Fecha Inicio"
                     value={FechaInicio}
                     format="DD/MM/YYYY"
@@ -284,7 +310,7 @@ const OrdenProduccion = () => {
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardDatePicker 
                       margin="normal"
-                      id="time-picker"
+                      id="time-picker-B"
                       label="Fecha Fin"
                       value={FechaFin}
                       format="DD/MM/YYYY"
@@ -353,10 +379,16 @@ const OrdenProduccion = () => {
         />
         </Paper>
       </Grid>
+      {ElFab}
       <Componentes/>
+      <Dialog open={open} onClose={HandlerClose} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">Agregar Componente</DialogTitle>
+          <DialogContent>
+            <AddComponent HandlerClose={HandlerClose} Id={ActiveId}/>
+          </DialogContent>
+        </Dialog>
       <ToastContainer/>
       <LogoutPopup/>
-      <AddComponent/>
     </Grid>
   );
 };
