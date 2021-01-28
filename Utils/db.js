@@ -978,20 +978,19 @@ class Db {
     }
   }
 
-  async addOrdenComp(Component, callback) {
+  async addOrdenComp(Componente, callback) {
     try {
       const request = new sql.Request()
       await sql.connect(this.setting);
       
-      request.input('Id', sql.Int, Component.Id)
-      request.input('Material', sql.NVarChar, Component.Material)
-      request.input('UndBase', sql.NVarChar, Component.UndBase)
-
+      request.input('Id', sql.Int, Componente.Id)
+      request.input('Material', sql.NVarChar, Componente.Material)
+      request.input('UndBase', sql.NVarChar, Componente.UndBase)
       request.execute('Sp_addComponent', (err, result) => {
         if(err) {
           callback(err, null);
         } else {
-          callback(null, result)
+          callback(null, 'Ok')
         }
       })
     } catch (e) {

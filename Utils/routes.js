@@ -392,7 +392,7 @@ class Routes {
         } )
 
         this.app.post('/api/ordenes/addOrdenesComp', (req, res)=>{
-            this.db.addOrdenComp(req.body.Component, (err, data)=>{
+            this.db.addOrdenComp(req.body.Componente, (err, data)=>{
                 if(err){
                     res.status(500).json({
                         error: true,
