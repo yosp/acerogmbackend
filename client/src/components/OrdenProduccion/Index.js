@@ -38,12 +38,8 @@ import AddComponent from './AddComponent'
 const useStyles = makeStyles(theme => ({
   rootContainer: {},
   SearchPaper: {
-    margin: "1rem 0 .5rem 0",
-    padding: '.5rem',
-    width: "50rem"
-  },
-  SearchImput: {
-    width: "20rem"
+    padding: '.5rem .3em',
+    width: "40rem"
   },
   SearchButton: {
     margin: '.5rem .5rem',
@@ -56,7 +52,14 @@ const useStyles = makeStyles(theme => ({
   ResultPaper: {
     margin: '.5rem',
     padding: '0.5rem',
-    width: '80rem'
+    width: '90%',
+    overflow: "scroll"
+  },
+  GridMain: {
+    margin: "2.5em",
+    paddin: "1em",
+    width: "80%"
+
   }
 }));
 let rows = [];
@@ -284,41 +287,49 @@ const OrdenProduccion = () => {
   }
 
   return (
-    <Grid>
-      <Grid container direction="column" justify="center" alignItems="center">
-        <NavigationBar />
+    <>
+      <NavigationBar />
+      <Grid container
+        spacing={1}
+        justify="center"
+        alignItems="center"
+        direction="column"
+        wrap="nowrap"
+        className={classes.GridMain}>
         <form onSubmit={onFormSubmit}>
           <Paper elevation={3} className={classes.SearchPaper}>
             <Grid container spacing={3} alignItems="center">
-              <Grid item>
+              <Grid item xs={10} sm={10} md={8} lg={6}>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <KeyboardDatePicker 
-                    margin="normal"
+                    autoOk
+                    name="Fecha"
+                    variant="inline"
+                    inputVariant="outlined"
                     id="time-picker-A"
                     label="Fecha Inicio"
                     value={FechaInicio}
                     format="DD/MM/YYYY"
                     onChange={handleFInicioChange}
+                    InputAdornmentProps={{ position: "end" }}
                     className={classes.InputTextStyle}
-                    KeyboardButtonProps={{
-                      "aria-label": "change time",
-                    }}
                   />
                 </MuiPickersUtilsProvider>
               </Grid>
-              <Grid item>
+              <Grid item xs={10} sm={10} md={8} lg={6}>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardDatePicker 
-                      margin="normal"
+                      autoOk
+                      name="Fecha"
+                      variant="inline"
+                      inputVariant="outlined"
                       id="time-picker-B"
                       label="Fecha Fin"
                       value={FechaFin}
                       format="DD/MM/YYYY"
                       onChange={handleHFinChange}
                       className={classes.InputTextStyle}
-                      KeyboardButtonProps={{
-                        "aria-label": "change time",
-                      }}
+                      InputAdornmentProps={{ position: "end" }}
                     />
                 </MuiPickersUtilsProvider>
               </Grid>
@@ -389,7 +400,7 @@ const OrdenProduccion = () => {
         </Dialog>
       <ToastContainer/>
       <LogoutPopup/>
-    </Grid>
+    </>
   );
 };
 

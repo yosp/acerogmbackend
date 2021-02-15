@@ -18,7 +18,9 @@ import { GlobalContex } from "../../context/GlobalState";
 let rows = [];
 
 const useStyles = makeStyles(theme => ({
-  rootContainer: {},
+  rootContainer: {
+    overflow:"scroll"
+  },
   SearchPaper: {
     margin: "1rem 0 .5rem 0",
     padding: '.5rem',
@@ -38,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   ResultPaper: {
     margin: '.5rem',
     padding: '0.5rem',
-    width: '80rem'
+    width: '90%'
   }
 }));
 
@@ -101,7 +103,7 @@ const Componentes = () => {
   };
 
   return (
-    <Grid container direction="column" justify="center" alignItems="center">
+    <Grid container direction="column" justify="center" alignItems="center" className={classes.rootContainer}>
         <Paper elevation={3} className={classes.ResultPaper}>
           <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">

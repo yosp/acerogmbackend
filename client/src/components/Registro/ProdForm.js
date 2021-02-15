@@ -22,6 +22,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalContex } from "../../context/GlobalState";
 import { getOdenenComp, insRegProd, getTipoComb, getHeaderReg, GetLoteByMaterial } from "../../context/Api";
+import { lang } from "moment";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -170,8 +171,8 @@ const ProdFrom = () => {
     e.preventDefault();
     let index = e.nativeEvent.target.selectedIndex;
     let label = e.nativeEvent.target[index].text;
-
-    getOdenenComp(label, (err, data) => {
+    let info = label.split('-')[0]
+    getOdenenComp(info, (err, data) => {
       if (err) {
         toast.error("Se produjo un error al cargar la materia prima", {
           position: toast.POSITION.BOTTOM_RIGHT
