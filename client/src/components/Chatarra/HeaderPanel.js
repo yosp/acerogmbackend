@@ -305,9 +305,7 @@ const HeaderPanel = () => {
         }
       } else {
         if(PerfEscr){
-          console.log(Loading)
-          console.log(chatarraPos)
-          if(chatarraPos !== null && chatarraPos.length > 0 ) {
+          if(chatarraPos !== undefined && chatarraPos !== null && chatarraPos.length > 0 ) {
             btn = <Button className={classes.btnB} onClick={chatarraToSap}>Enviar a Sap</Button>
           } else {
             btn = <Button className={classes.btnBI} disabled >Enviar a Sap</Button>
