@@ -92,8 +92,6 @@ const ProdFormEdit = () => {
   const history = useHistory();
   let Lam = null;
 
-
-
   const onFormSubmit = (e) => {
     e.preventDefault();
 
@@ -172,7 +170,6 @@ const ProdFormEdit = () => {
       }
     });
   };
-
   
   const HandlerMaterial = (e) => {
     e.preventDefault();
@@ -363,7 +360,7 @@ const ProdFormEdit = () => {
                       {mprima.map((prima) => {
                         return (
                           <option key={prima.Id} value={prima.Id}>
-                            {prima.Componente}
+                            {prima.Componente} / {prima.Un_Medida}
                           </option>
                         );
                       })}

@@ -298,7 +298,7 @@ const ProdFrom = () => {
                       {mprima.map((prima) => {
                         return (
                           <option key={prima.Id} value={prima.Id} data-Id={prima.Componente}>
-                            {prima.Componente}
+                            {prima.Componente} / {prima.Un_Medida}
                           </option>
                         );
                       })}

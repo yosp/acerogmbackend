@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   rootContainer: {},
   SearchPaper: {
     padding: '.5rem .3em',
-    width: "40rem"
+    
   },
   SearchButton: {
     margin: '.5rem .5rem',
@@ -297,7 +297,7 @@ const OrdenProduccion = () => {
         wrap="nowrap"
         className={classes.GridMain}>
         <form onSubmit={onFormSubmit}>
-          <Paper elevation={3} className={classes.SearchPaper}>
+          <Paper elevation={3} className={classes.SearchPaper} xs={10} sm={10} md={8} lg={6}>
             <Grid container spacing={3} alignItems="center">
               <Grid item xs={10} sm={10} md={8} lg={6}>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
