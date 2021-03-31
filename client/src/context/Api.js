@@ -682,6 +682,19 @@ const getMateriales = (Material,callback) => {
     })
 }
 
+const GetLoteByMaterialDet = (Material, callback) => {
+    axios.get(`${base}/GetLotes?Material=${Material}`,
+    {
+        headers: {
+            'Context-type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err) {
+        callback(err, null)
+    })
+}
+
 const getSuplidores = (GrupoId, callback) => {
     axios.get(`${base}/GetSuplidores?GrupoId=${GrupoId}`,
     {
@@ -1028,6 +1041,19 @@ const NotifSap = (notif, callback) => {
     })
 }
 
+const GetLotesSap = (Material, callback) => {
+    axios.get(`http://extgmp01:8065/?name=http_tb_iep_AceroGM_tbLotes_rd_full&where=MARA~MTART%20IN%20('ZPT',%20'ZMP',%20'ZSEM')%20AND%20MCHB~CLABS%20%3E%200%20AND%20MCHB~LGORT%20NOT%20IN%20('0100',%20'0200',%20'0201')%20AND%20MARA~MATNR%20=%20'${Material}'`
+    , {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(res){
+        callback(null, res.data)
+    }).catch(function(err){
+        callback(err, null)
+    })
+}
+
 export {
     LoginUser,
     UserInfo,
@@ -1091,6 +1117,7 @@ export {
     UpdPosRecepcion,
     addComponente,
     GetLoteByMaterial,
+    GetLoteByMaterialDet,
     GetPosRecTrans,
     SearchUser,
     SearchUserSap,
@@ -1116,5 +1143,6 @@ export {
     regheadermfbftext,
     getheadermfbftext,
     NotifSap,
-    getOrdenCompMaterialLike
+    getOrdenCompMaterialLike,
+    GetLotesSap
 }

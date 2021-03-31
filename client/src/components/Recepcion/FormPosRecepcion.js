@@ -22,7 +22,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalContex } from "../../context/GlobalState";
-import { getMateriales, InsPosRecepcion, getSuplidores } from "../../context/Api";
+import { getMateriales, InsPosRecepcion, getSuplidores, GetLoteByMaterialDet } from "../../context/Api";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -74,6 +74,8 @@ const FormPosRecepcion = () => {
   const classes = useStyle();
   const [hora, setHora] = useState(new Date());
   const [Materiales, setMateriales] = useState([])
+  const [smate, setSmate] = useState("")
+  const [Lotes, setLotes] = useState([])
   const [Suplidores, setSuplidores] = useState([])
   const aceroContext = useContext(GlobalContex);
   const { user, RecepcionHeader, setPosRecepcion } = aceroContext
@@ -85,7 +87,7 @@ const FormPosRecepcion = () => {
     const {
       AutoMaterial,
       GrupoR,
-      Lote,
+      AutoLote,
       Peso,
       Suplidor,
       CRecibida,
@@ -109,7 +111,7 @@ const FormPosRecepcion = () => {
       headerId: RecepcionHeader.Id,
       Material: AutoMaterial.value,
       Hora: d,
-      Lote: Lote.value,
+      Lote: AutoLote.value,
       Peso: Peso.value,
       Suplidor: Suplidor.value,
       Recibida: CRecibida.value,
@@ -161,6 +163,18 @@ const FormPosRecepcion = () => {
     } )
   },[])
 
+  useEffect(()=> {
+    GetLoteByMaterialDet(smate, (err, data)=>{
+      if(err) {
+        toast.error("Se produjo un error al cargar los Lotes", {
+          position: toast.POSITION.BOTTOM_RIGHT
+        });
+      } else {
+        setLotes(data)
+      }
+    })
+  },[smate])
+
     return (
         <>
           <Grid
@@ -202,9 +216,10 @@ const FormPosRecepcion = () => {
                                   {...params}
                                   className={classes.InputTextStyle}
                                   label="Material"
+                                  onChange={(e)=> setSmate(e.target.value)}
                                   inputProps={{
                                     ...params.inputProps,
-                                    autoComplete: 'new-password', // disable autocomplete and autofill
+                                    autoComplete: 'off', // disable autocomplete and autofill
                                   }}
                                 />
                               )}
@@ -230,7 +245,7 @@ const FormPosRecepcion = () => {
                     </Grid>
                     <Grid container spacing={1} alignItems="center">
                       <Grid item>
-                        <Tooltip title="Solo Numeros" placement="right">
+                        {/* <Tooltip title="Solo Numeros" placement="right">
                           <TextField
                             id="Lote"
                             name="Lote"
@@ -238,7 +253,34 @@ const FormPosRecepcion = () => {
                             type="number"
                             className={classes.InputTextStyle}
                           />
-                        </Tooltip>
+                        </Tooltip> */}
+                        <Autocomplete
+                              id="AutoLote"
+                              name="AutoLote"
+                              style={{ width: 300 }}
+                              options={Lotes}
+                              classes={{
+                                option: classes.option,
+                              }}
+                              autoHighlight
+                              getOptionLabel={(option) => option.Lote}
+                              renderOption={(option) => (
+                                <React.Fragment>
+                                  Lote: {option.Lote} |Almacen: {option.Almacen} | Stock:{option.Stock}
+                                </React.Fragment>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  className={classes.InputTextStyle}
+                                  label="Lote"
+                                  inputProps={{
+                                    ...params.inputProps,
+                                    autoComplete: 'off', // disable autocomplete and autofill
+                                  }}
+                                />
+                              )}
+                            />
                       </Grid>
                     </Grid>
                     <Grid container spacing={1} alignItems="center">

@@ -846,6 +846,19 @@ class Routes {
                     res.status(200).json(data.recordset)
                 }
             })
+        }) //GetLoteByMaterial
+
+        this.app.get('/api/GetLotes', (req, res) => {
+            this.db.GetLoteByMaterialDet(req.query.Material, (err, data) =>{
+                if(err) {
+                    res.status(500).json({
+                        error: true,
+                        message: err
+                    })
+                } else {
+                    res.status(200).json(data.recordset)
+                }
+            })
         })
 
         this.app.get('/api/GetSuplidores', (req, res) => {

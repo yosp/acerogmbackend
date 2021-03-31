@@ -1522,7 +1522,6 @@ class Db {
       callback(e, null)
     }
   }
-
   async RegHeaderNotifMFBF (header, callback) {
     try {
       await sql.connect(this.setting)
@@ -1729,6 +1728,17 @@ async GetEntradaGrupo(callback){
   try {
     await sql.connect(this.setting)
     const search = await sql.query`select * from tbEntradaGrupo`
+
+    callback(null, search)
+  } catch (e) {
+    callback(e, null)
+  }
+}
+
+async GetLoteByMaterialDet(Material, callback) {
+  try {
+    await sql.connect(this.setting)
+    const search = await sql.query`select Lote, Centro, Almacen, Stock from tblotes where PeticionBorrado = '' and Material = ${Material}`
 
     callback(null, search)
   } catch (e) {
