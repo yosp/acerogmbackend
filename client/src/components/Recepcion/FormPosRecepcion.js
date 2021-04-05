@@ -208,7 +208,7 @@ const FormPosRecepcion = () => {
                               getOptionLabel={(option) => option.title}
                               renderOption={(option) => (
                                 <React.Fragment>
-                                  {option.title.toLowerCase()} - {option.Descripcion.toLowerCase()}
+                                  {option.title.toLowerCase()} / {option.UndBase}
                                 </React.Fragment>
                               )}
                               renderInput={(params) => (
@@ -232,7 +232,7 @@ const FormPosRecepcion = () => {
                           <KeyboardTimePicker
                             margin="normal"
                             id="time-picker"
-                            label="Time picker"
+                            label="Hora"
                             value={hora}
                             onChange={handleDateChange}
                             className={classes.InputTextStyle}
@@ -245,15 +245,6 @@ const FormPosRecepcion = () => {
                     </Grid>
                     <Grid container spacing={1} alignItems="center">
                       <Grid item>
-                        {/* <Tooltip title="Solo Numeros" placement="right">
-                          <TextField
-                            id="Lote"
-                            name="Lote"
-                            label="Lote"
-                            type="number"
-                            className={classes.InputTextStyle}
-                          />
-                        </Tooltip> */}
                         <Autocomplete
                               id="AutoLote"
                               name="AutoLote"
